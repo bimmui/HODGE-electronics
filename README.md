@@ -6,7 +6,7 @@ The ground station is based on CustomTkinter, a Python GUI framework inspired by
 
 Before doing anything, install the following:
 - [Git](https://git-scm.com/downloads)
-- [Conda](https://docs.conda.io/en/latest/) or [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/)
+- [Conda](https://docs.conda.io/en/latest/) or [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/)(highly recommended)
 
 
 ### Python Environment Setup
