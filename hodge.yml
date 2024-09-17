@@ -1,0 +1,30 @@
+name: hodge
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - codecov
+  - git
+  - pip
+  ## Jupyter notebook for data analysis
+  - numpy
+  - matplotlib
+  - astropy
+  - seaborn
+  - scipy
+  - ipympl
+  - mplcursors
+  ## Serial parsing
+  - pyserial
+  ## Data processing
+  - pandas==2.1.4
+  - pip:
+  ## Diagram Generation
+    - bit-field[JSON5]==1.0.1
+    - cairosvg
+  ## Dashboard
+    - customtkinter
+    - tkintermapview
+  - cairo
+  - Pillow==10.0.1
