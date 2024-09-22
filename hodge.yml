@@ -27,5 +27,6 @@ dependencies:
     - tkinter
     - customtkinter
     - tkintermapview
+    - influxdb_client
   - cairo
   - Pillow==10.0.1
