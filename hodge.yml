@@ -24,7 +24,7 @@ dependencies:
     - bit-field[JSON5]==1.0.1
     - cairosvg
   ## Dashboard
-    - tkinter
+    - tk
     - customtkinter
     - tkintermapview
     - influxdb_client
