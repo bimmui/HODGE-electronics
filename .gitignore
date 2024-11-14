@@ -1,0 +1,6 @@
+
+/.vscode
+/flight-computer/src/.devcontainer
+/flight-computer/src/.vscode
+/flight-computer/src/build
+/flight-computer/src/sdkconfig
