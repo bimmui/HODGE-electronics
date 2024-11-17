@@ -5,7 +5,6 @@ boolean newData = false;
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("<Arduino is ready>");
 }
 
 void loop() {
@@ -13,9 +12,10 @@ void loop() {
     showNewData();*/
     if(Serial.available() > 0)
     {
-      Serial.read();
-      Serial.println("Received!");
+      
+      Serial.println(Serial.read());
     }
+    
     
 }
 
