@@ -2,7 +2,7 @@ import serial
 import time
 
 with serial.Serial('/dev/ttyACM0', 9600) as serialController:
-	serialController.write(to_bytes("Howdy"))
+	serialController.write(str.encode("Howdy", "utf-8"))
 	timeSent = time.time()
 	print(serialController.readline())
 	timeRecieved = time.time()
