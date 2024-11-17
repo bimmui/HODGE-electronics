@@ -11,6 +11,8 @@ void setup() {
 void loop() {
     /*recvOneChar();
     showNewData();*/
+    Serial.println("<Arduino is ready>");
+    delay(60);
 }
 
 void recvOneChar() {
