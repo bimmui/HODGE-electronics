@@ -2,10 +2,8 @@ import serial
 import time
 
 with serial.Serial('/dev/ttyACM0', 9600) as serialController:
+	serialController.write()
+	timeSent = time.time();
+	print(serialController.readline())
 	timeRecieved = time.time()
-	while True:
-		readSerial = serialController.readline()
-		timeRecievedUpdated = time.time()
-		print(str(readSerial))
-		print(f"Delay time: ${timeRecievedUpdated - timeRecieved}")
-		timeRecieved = timeRecievedUpdated
+	print(timeRecieved - timeSent)
