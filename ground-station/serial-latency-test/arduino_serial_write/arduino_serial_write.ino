@@ -10,11 +10,8 @@ void setup() {
 void loop() {
     /*recvOneChar();
     showNewData();*/
-    if(Serial.available() > 0)
-    {
       
       Serial.println(Serial.read());
-    }
     
     
 }
