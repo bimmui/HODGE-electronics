@@ -13,7 +13,8 @@ void loop() {
     showNewData();*/
     if(Serial.available() > 0)
     {
-      Serial.println("Received!\n");
+      Serial.read();
+      Serial.println("Received!");
     }
     
 }
