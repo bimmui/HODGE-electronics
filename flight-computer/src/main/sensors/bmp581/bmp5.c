@@ -37,6 +37,7 @@
  */
 
 /***************************************************************************/
+#include <stdio.h>
 
 /*!             Header files
  ****************************************************************************/
@@ -333,6 +334,50 @@ int8_t bmp5_init(struct bmp5_dev *dev)
     }
 
     return rslt;
+}
+
+/*!
+ *  @brief Prints the execution status of the APIs.
+ */
+void bmp5_error_codes_print_result(const char api_name[], int8_t rslt)
+{
+    if (rslt != BMP5_OK)
+    {
+        printf("%s\t", api_name);
+        if (rslt == BMP5_E_NULL_PTR)
+        {
+            printf("Error [%d] : Null pointer\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_COM_FAIL)
+        {
+            printf("Error [%d] : Communication failure\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_DEV_NOT_FOUND)
+        {
+            printf("Error [%d] : Device not found\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_INVALID_CHIP_ID)
+        {
+            printf("Error [%d] : Invalid chip id\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_POWER_UP)
+        {
+            printf("Error [%d] : Power up error\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_POR_SOFTRESET)
+        {
+            printf("Error [%d] : Power-on reset/softreset failure\r\n", rslt);
+        }
+        else if (rslt == BMP5_E_INVALID_POWERMODE)
+        {
+            printf("Error [%d] : Invalid powermode\r\n", rslt);
+        }
+        else
+        {
+            /* For more error codes refer "*_defs.h" */
+            printf("Error [%d] : Unknown error code\r\n", rslt);
+        }
+    }
 }
 
 /*!

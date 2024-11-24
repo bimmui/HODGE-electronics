@@ -86,6 +86,15 @@ extern "C"
      */
     int8_t bmp5_init(struct bmp5_dev *dev);
 
+    /*!
+     *  @brief Prints the execution status of the APIs.
+     *
+     *  @param[in] rslt     : Error code returned by the API whose execution status has to be printed.
+     *
+     *  @return void.
+     */
+    void bmp5_error_codes_print_result(const char api_name[], int8_t rslt);
+
     /**
      * \ingroup bmp5
      * \defgroup bmp5ApiRegister Registers

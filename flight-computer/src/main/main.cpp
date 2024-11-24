@@ -4,7 +4,6 @@
 #include "freertos/task.h"
 #include "driver/gpio.h"
 #include "sensors/bmp581/bmp5.h"
-#include "sensors/bmp581/common.h"
 #include <driver/i2c.h>
 
 #define ONE_SECOND_DELAY pdMS_TO_TICKS(1000)
@@ -108,37 +107,23 @@ extern "C" void app_main()
      * For I2C : BMP5_I2C_INTF
      * For SPI : BMP5_SPI_INTF
      */
-    rslt = bmp5_interface_init(&dev, BMP5_I2C_INTF);
-    bmp5_error_codes_print_result("bmp5_interface_init", rslt);
+
+    rslt = bmp5_init(&dev);
+    bmp5_error_codes_print_result("bmp5_init", rslt);
 
     if (rslt == BMP5_OK)
     {
-        rslt = bmp5_init(&dev);
-        bmp5_error_codes_print_result("bmp5_init", rslt);
-
-        if (rslt == BMP5_OK)
-        {
-            rslt = set_config(&osr_odr_press_cfg, &dev);
-            bmp5_error_codes_print_result("set_config", rslt);
-        }
-
-        if (rslt == BMP5_OK)
-        {
-            rslt = get_sensor_data(&osr_odr_press_cfg, &dev);
-            bmp5_error_codes_print_result("get_sensor_data", rslt);
-        }
+        rslt = set_config(&osr_odr_press_cfg, &dev);
+        bmp5_error_codes_print_result("set_config", rslt);
     }
 
-    bmp5_coines_deinit();
+    if (rslt == BMP5_OK)
+    {
+        rslt = get_sensor_data(&osr_odr_press_cfg, &dev);
+        bmp5_error_codes_print_result("get_sensor_data", rslt);
+    }
 
-    std::cout << "the baro Value: " << rslt << std::endl;
-
-    // while (true)
-    // {
-    //     int sensor_value = mySensor.read();
-    //     std::cout << "Sensor Value: " << sensor_value << std::endl;
-    //     vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay of 1 second
-    // }
+    (void)fflush(stdout);
 }
 
 static int8_t set_config(struct bmp5_osr_odr_press_config *osr_odr_press_cfg, struct bmp5_dev *dev)
