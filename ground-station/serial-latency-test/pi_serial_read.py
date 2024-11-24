@@ -16,7 +16,7 @@ with serial.Serial('/dev/ttyACM0', 9600) as serialController:
 		print(serialController.readline())
 		timeRecieved = time.time()
 
-		delayTimes.add(timeRecieved - timeSent)
+		delayTimes.append(timeRecieved - timeSent)
 		print(f"Delay time (s): {delayTimes[i]}\n")
 	
 	timeSum = 0
