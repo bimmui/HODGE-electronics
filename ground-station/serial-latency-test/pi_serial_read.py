@@ -20,6 +20,6 @@ with serial.Serial('/dev/ttyACM0', 9600) as serialController:
 		print(f"Delay time (s): {delayTimes[i]}\n")
 	
 	timeSum = 0
-	for i in range(delayTimes.len):
+	for i in range(len(delayTimes)):
 		timeSum += delayTimes[i]
 	print(f"Average delay time {timeSum / i} seconds")
