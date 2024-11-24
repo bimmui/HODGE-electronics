@@ -7,7 +7,7 @@ with serial.Serial('/dev/ttyACM0', 9600) as serialController:
 	for i in range(attemptsToRun):
 		
 		time.sleep(5)
-		print(f"Attempt ${i + 1}")
+		print(f"Attempt {i + 1}")
 
 		serialController.write(str.encode("Howdy\n", "utf-8"))
 		timeSent = time.time()
@@ -15,3 +15,4 @@ with serial.Serial('/dev/ttyACM0', 9600) as serialController:
 		timeRecieved = time.time()
 
 		print(timeRecieved - timeSent)
+		print()
