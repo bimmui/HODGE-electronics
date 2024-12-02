@@ -1,0 +1,41 @@
+Attempt 1:
+b'72\r\n'
+Delay time (s): 0.008596181869506836
+
+Attempt 2:
+b'111\r\n'
+Delay time (s): 0.0003571510314941406
+
+Attempt 3:
+b'119\r\n'
+Delay time (s): 0.00027179718017578125
+
+Attempt 4:
+b'100\r\n'
+Delay time (s): 0.0002892017364501953
+
+Attempt 5:
+b'121\r\n'
+Delay time (s): 0.0002739429473876953
+
+Attempt 6:
+b'10\r\n'
+Delay time (s): 0.00021886825561523438
+
+Attempt 7:
+b'72\r\n'
+Delay time (s): 0.00021409988403320312
+
+Attempt 8:
+b'111\r\n'
+Delay time (s): 0.00026345252990722656
+
+Attempt 9:
+b'119\r\n'
+Delay time (s): 0.00025177001953125
+
+Attempt 10:
+b'100\r\n'
+Delay time (s): 0.00033283233642578125
+
+Average delay time 0.0012299219767252605 seconds
