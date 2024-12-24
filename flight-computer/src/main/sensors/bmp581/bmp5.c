@@ -1473,12 +1473,43 @@ static int8_t null_ptr_check(const struct bmp5_dev *dev)
 {
     int8_t rslt;
 
-    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->delay_us == NULL))
+    /* Check if the device structure pointer is NULL */
+    if (dev == NULL)
     {
         /* Device structure pointer is not valid */
         rslt = BMP5_E_NULL_PTR;
+        printf("\n first");
     }
     else
+    {
+        /* Now that dev is confirmed to be non-NULL, check its members */
+
+        /* Check if the 'read' function pointer is NULL */
+        if (dev->read == NULL)
+        {
+            /* 'read' function pointer is not valid */
+            rslt = BMP5_E_NULL_PTR;
+            printf("\n sec");
+        }
+
+        /* Check if the 'write' function pointer is NULL */
+        if (dev->write == NULL)
+        {
+            /* 'write' function pointer is not valid */
+            rslt = BMP5_E_NULL_PTR;
+            printf("\n third");
+        }
+
+        /* Check if the 'delay_us' function pointer is NULL */
+        if (dev->delay_us == NULL)
+        {
+            /* 'delay_us' function pointer is not valid */
+            rslt = BMP5_E_NULL_PTR;
+            printf("\n fourth");
+        }
+    }
+
+    if (rslt == BMP5_OK)
     {
         /* Device structure is fine */
         rslt = BMP5_OK;
