@@ -154,7 +154,7 @@ extern "C"
 #define NMEA_PARSER_CONFIG_DEFAULT()               \
     {                                              \
         .uart = {                                  \
-            .uart_port = UART_NUM_1,               \
+            .uart_port = UART_NUM_2,               \
             .rx_pin = CONFIG_NMEA_PARSER_UART_RXD, \
             .baud_rate = 9600,                     \
             .data_bits = UART_DATA_8_BITS,         \

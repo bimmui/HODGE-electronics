@@ -71,7 +71,7 @@ void app_main(void)
 
     ESP_LOGI(TAG, "GPS Demo started. Waiting for GPS data...");
 
-    vTaskDelay(10000 / portTICK_PERIOD_MS);
+    vTaskDelay(60000 / portTICK_PERIOD_MS);
 
     /* unregister event handler */
     nmea_parser_remove_handler(nmea_hdl, gps_event_handler);
