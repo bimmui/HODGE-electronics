@@ -1,7 +1,7 @@
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
-from flightsql import FlightSQLClient
+#from flightsql import FlightSQLClient
 
 token = "x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA=="
 org = "TuftsSEDSRocketry"
@@ -30,11 +30,11 @@ tables = query_api.query(query, org="TuftsSEDSRocketry")
 #         print(record)
 
 
-client = FlightSQLClient(
-    host="localhost",
-    token="x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA==",
-    metadata={"bucket-name": "bucket1"},
-)
+#client = FlightSQLClient(
+#    host="localhost",
+#    token="x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA==",
+#    metadata={"bucket-name": "bucket1"},
+#)
 
 info = client.execute("select * from cpu limit 10")
 reader = client.do_get(info.endpoints[0].ticket)
