@@ -36,8 +36,8 @@ tables = query_api.query(query, org="TuftsSEDSRocketry")
 #    metadata={"bucket-name": "bucket1"},
 #)
 
-info = client.execute("select * from cpu limit 10")
-reader = client.do_get(info.endpoints[0].ticket)
+#info = client.execute("select * from cpu limit 10")
+#reader = client.do_get(info.endpoints[0].ticket)
 
-for batch in reader:
-    print(batch)
+#for batch in reader:
+#    print(batch)
