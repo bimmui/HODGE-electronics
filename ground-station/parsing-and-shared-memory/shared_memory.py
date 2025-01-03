@@ -82,13 +82,13 @@ defaultToken = "nU-7nwCNnjElEuI84r0DVp_fNGn5RXIibvy5956RJ9d981ZnFiy7FcAw6TZlK8GU
 defaultOrg = "TuftsSEDSRocketry"
 defaultUrl = "http://localhost:8086"
 defaultBucket = "Test"
-tableName = "Fruit Test 2"
-fieldNames = ["Favorite", "Least Favorite"]
+tableName = "Fruit Test 3"
+fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
 SM = SharedMemory(3, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
-SM.write(["apple", "banana"])
-SM.write(["pineapple", "turnip"])
-SM.write(["carrot", "mango"])
+SM.write(["apple", "banana", "broccoli"])
+SM.write(["pineapple", "turnip", "Swiss chard"])
+SM.write(["carrot", "mango", "Dragonfruit"])
 print(SM.last.data)
 print(SM.first.data)
 
