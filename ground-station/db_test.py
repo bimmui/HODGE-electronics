@@ -1,11 +1,11 @@
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
-from flightsql import FlightSQLClient
+from flightsql import FlightSQLClient #package is flightsql_dbapi
 
 token = "x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA=="
 org = "TuftsSEDSRocketry"
-url = "http://localhost:8086"
+url = "http://127.0.0.1:8086"
 
 write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
