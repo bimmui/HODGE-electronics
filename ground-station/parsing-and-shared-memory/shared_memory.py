@@ -1,3 +1,4 @@
+
 class SharedMemory:
 
 	class node:
@@ -26,6 +27,8 @@ class SharedMemory:
 		if self.length > self.maxLength: #Remove last node if list is too long
 			self.last = self.last.next
 			self.length -= 1
+
+	
 
 SM = SharedMemory(3, ["favorite", "leastFavorite"])
 SM.write(["apple", "banana"])

@@ -3,9 +3,9 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 from flightsql import FlightSQLClient #package is flightsql_dbapi
 
-token = "x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA=="
+token = "nU-7nwCNnjElEuI84r0DVp_fNGn5RXIibvy5956RJ9d981ZnFiy7FcAw6TZlK8GU6hVxa5OyakRFZ-tDMIbdQA=="
 org = "TuftsSEDSRocketry"
-url = "http://127.0.0.1:8086"
+url = "http://localhost:8086"
 
 write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 
@@ -29,10 +29,9 @@ for table in tables:
      for record in table.records:
          print(record)
 
-
 client = FlightSQLClient(
     host="localhost",
-    token="x9XGYWi6Mz5jJBo7LXUqrrhfSDEQokSVE2LdTQQFn-YmAZpDE78eB5LOd64loJ_x92xioNZTrUPQGqoanRH2zA==",
+    token="nU-7nwCNnjElEuI84r0DVp_fNGn5RXIibvy5956RJ9d981ZnFiy7FcAw6TZlK8GU6hVxa5OyakRFZ-tDMIbdQA==",
     metadata={"bucket-name": "bucket1"},
 )
 
@@ -41,3 +40,4 @@ reader = client.do_get(info.endpoints[0].ticket)
 
 for batch in reader:
     print(batch)
+
