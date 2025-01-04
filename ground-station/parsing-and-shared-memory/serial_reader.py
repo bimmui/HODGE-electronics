@@ -19,19 +19,24 @@ db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, t
 valueSeparator = ","
 #\n is the entry separator
 
+processStarted = False
+
 def logSharedMemoryToDB():
+	global processStarted
+	processStarted = True
 	while True:
 		if mem.first.data != fieldNames:
 			db.writeToDB(mem.first.data)
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
+
 p = multiprocessing.Process(target=logSharedMemoryToDB)
 p.start()
 
 with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 	serialController.flush()
-	while True:
+	while processStarted:
 		addInput = serialController.readline().decode("utf-8").strip()
 		#print(addInput)
 		mem.write(addInput.split(valueSeparator))
