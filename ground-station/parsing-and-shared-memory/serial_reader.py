@@ -23,7 +23,7 @@ def logSharedMemoryToDB():
 	while True:
 		if mem.first.data != fieldNames:
 			db.writeToDB(mem.first.data)
-			time.sleep(0.01) #Temporarily here for now
+			#time.sleep(0.01) #Temporarily here for now
 
 p = multiprocessing.Process(target=logSharedMemoryToDB)
 p.start()
