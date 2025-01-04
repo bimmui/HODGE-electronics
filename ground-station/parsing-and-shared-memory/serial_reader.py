@@ -13,7 +13,7 @@ tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
 mem = shared_memory.SharedMemory(3, fieldNames)
-db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames, mem)
+db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
 
 valueSeparator = ","
 #\n is the entry separator
