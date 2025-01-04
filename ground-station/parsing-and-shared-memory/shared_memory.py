@@ -1,13 +1,14 @@
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
+from multiprocessing.managers import BaseManager
 
 #MAKE SURE TO START THE INFLUX DB BEFORE LAUNCHING
 
 #The SharedMemory class is a linked list with that keeps track of data transferred from the arduino
 #SharedMemory has a fixed length that is specified to prevent memory overflow
 #SharedMemory opens a connection to an InfluxDB to write the data for long term use
-class SharedMemory:
+class SharedMemory(BaseManager):
 
 	#The node class represents a node in the linked the linked list
 	class node:
