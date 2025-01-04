@@ -30,7 +30,7 @@ class SharedMemory(BaseManager):
 	#bucket: the InfluxDB bucket you are writing to
 	#tableName: the name of the InfluxDB measurement you are writing to
 	#columnNames: the names of the fields in the InfluxDB measurement
-	def __init__(self, maxLength, columnNames):
+	def __init__(self=None, maxLength=None, columnNames=None):
 		self.maxLength = maxLength
 		self.length = 1
 		self.first = self.node(None, None, columnNames)
