@@ -21,22 +21,20 @@ valueSeparator = ","
 processStarted = False
 
 
-def logSharedMemoryToDB():
-	global processStarted, db, mem
-	processStarted = True
+def logSharedMemoryToDB(sharedMemoryReference, dbReference):
 	while True:
-		if mem.first.data != fieldNames:
-			db.writeToDB(mem.first.data)
+		if sharedMemoryReference.first.data != fieldNames:
+			dbReference.writeToDB(mem.first.data)
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
 
-p = multiprocessing.Process(target=logSharedMemoryToDB)
+p = multiprocessing.Process(target=logSharedMemoryToDB, args=(mem, db))
 p.start()
 
 with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 	serialController.flush()
-	while processStarted:
+	while True:
 		addInput = serialController.readline().decode("utf-8").strip()
 		#print(addInput)
 		mem.write(addInput.split(valueSeparator))

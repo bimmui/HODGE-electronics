@@ -12,7 +12,7 @@ class DBHandler:
 	#tableName: the name of the table (measurement) which the data should be recorded to
 	#fieldNames: an array containing the names of the fields which data should be recorded to in the table
 	#sharedMemoryReference: a reference to a sharedMemory class
-	def __init__(self, token, org, url, bucket, tableName, fieldNames, sharedMemoryReference):
+	def __init__(self, token, org, url, bucket, tableName, fieldNames):
 		self.org = org
 		self.writeClient = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
 		self.writeApi = self.writeClient.write_api(write_options=SYNCHRONOUS)
@@ -20,8 +20,6 @@ class DBHandler:
 		self.bucket = bucket
 		self.tableName = tableName
 		self.fieldNames = fieldNames
-
-		self.sharedMemoryReference = sharedMemoryReference
 	
 	#writes data to influx DB database
 	#FIELD NAMES MUST BE INSTANTIATED BEFOREHAND
@@ -38,10 +36,6 @@ class DBHandler:
 			fieldValuePairs[self.fieldNames[i]] = data[i]
 
 		self.writeApi.write(self.bucket, self.org, [{"measurement": self.tableName, "tags": {}, "fields": fieldValuePairs}])
-
-	#writes last data from sharedMemory class to influx DB
-	def writeLastFromSharedMemory(self):
-		self.writeToDB(self.sharedMemoryReference.last.data)
 
 #SM.write(["apple", "banana", "broccoli"])
 #SM.write(["pineapple", "turnip", "Swiss chard"])
