@@ -24,5 +24,5 @@ with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 	while True:
 		addInput = serialController.readline().decode("utf-8").strip()
 		#print(addInput)
-		mem.write(addInput.split())
+		mem.write(addInput.split(","))
 		print(mem.first.data)
