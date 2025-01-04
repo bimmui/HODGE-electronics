@@ -12,7 +12,7 @@ defaultBucket = "Test"
 tableName = "Fruit Test With Serial"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
-mem = shared_memory.SharedMemory(3, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
+mem = shared_memory.SharedMemory(3, fieldNames)
 db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames, mem)
 
 entryStart = "["
