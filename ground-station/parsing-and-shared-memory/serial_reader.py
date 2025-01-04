@@ -23,6 +23,7 @@ def logSharedMemoryToDB():
 	while True:
 		if mem.first.data != fieldNames:
 			db.writeToDB(mem.first.data)
+			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
 p = multiprocessing.Process(target=logSharedMemoryToDB)
@@ -35,5 +36,3 @@ with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 		#print(addInput)
 		mem.write(addInput.split(valueSeparator))
 		print(mem.first.data)
-
-p.join()
