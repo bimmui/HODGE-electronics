@@ -4,15 +4,32 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 #MAKE SURE TO START THE INFLUX DB BEFORE LAUNCHING
 
+#The SharedMemory class is a linked list with that keeps track of data transferred from the arduino
+#SharedMemory has a fixed length that is specified to prevent memory overflow
+#SharedMemory opens a connection to an InfluxDB to write the data for long term use
 class SharedMemory:
 
+	#The node class represents a node in the linked the linked list
 	class node:
 
+		#Constructor: initializes a node in the linked list
+		#next: the next node in the linked list
+		#previous: the previous node in the linked list
+		#data: the data stored by the node
 		def __init__(self, next, previous, data):
 			self.next = next
 			self.prev = previous
 			self.data = data
 
+	#Constructor: initializes a linked list with a specified maximum length
+	#Opens a connection to an InfluxDB as well
+	#maxLength: the maximum length of the linked list
+	#token: the InfluxDB access token
+	#org: the InfluxDB organization
+	#url: the InfluxDB connection url (generally on port 8086)
+	#bucket: the InfluxDB bucket you are writing to
+	#tableName: the name of the InfluxDB measurement you are writing to
+	#columnNames: the names of the fields in the InfluxDB measurement
 	def __init__(self, maxLength, token, org, url, bucket, tableName, columnNames):
 		self.maxLength = maxLength
 		self.length = 1
@@ -40,12 +57,12 @@ class SharedMemory:
 	#data: an array with a row to be added to a CSV sheet
 	def write(self, data):
 		self._addNode(data)
-		self.database.writeToDB(data)
+		self.database.writeToDB(self.first.data) #Identical to self.database.writeToDB(data)
 
-
+#This class opens a connection to an active InfluxDB, and allows you to write to it
 class DBHandler:
 
-	#Contructor: creates a request to an InfluxDB.  Fieldnames can be left empty on initialization but it must be specified before writing to the database
+	#Contructor: opens a link to an InfluxDB.  Fieldnames can be left empty on initialization but it must be specified before writing to the database
 	#token: the influxDB access token
 	#org: the influxDB organization
 	#url: the access url of the influx DB
@@ -66,12 +83,15 @@ class DBHandler:
 		self.fieldNames = fieldNames
 
 	#writes data to influx DB database
+	#FIELD NAMES MUST BE INSTANTIATED BEFOREHAND
 	#data: an array containing the data to be recorded.  The first element of the array corresponds with the first field, etc.  
 	def writeToDB(self, data):
 
+		#If field names are no instantiated, raise an error
 		if self.fieldNames == None:
 			raise Exception("Field Names not initialized")
 		
+		#Fields corresponding to values must be a dictionary (field is the key, value is the value).  Therefore, we must rearrange data accordingly
 		fieldValuePairs= {}
 		for i in range(len(self.fieldNames)):
 			fieldValuePairs[self.fieldNames[i]] = data[i]
@@ -92,4 +112,3 @@ SM.write(["pineapple", "turnip", "Swiss chard"])
 SM.write(["carrot", "mango", "Dragonfruit"])
 print(SM.last.data)
 print(SM.first.data)
-
