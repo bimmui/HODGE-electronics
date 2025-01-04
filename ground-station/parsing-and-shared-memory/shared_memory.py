@@ -78,7 +78,7 @@ class DBHandler:
 
 		self.writeApi.write(self.bucket, self.org, [{"measurement": self.tableName, "tags": {}, "fields": fieldValuePairs}])
 
-defaultToken = "nU-7nwCNnjElEuI84r0DVp_fNGn5RXIibvy5956RJ9d981ZnFiy7FcAw6TZlK8GU6hVxa5OyakRFZ-tDMIbdQA=="
+defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
 defaultOrg = "TuftsSEDSRocketry"
 defaultUrl = "http://localhost:8086"
 defaultBucket = "Test"
