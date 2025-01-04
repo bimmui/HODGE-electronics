@@ -20,6 +20,7 @@ valueSeparator = ","
 #\n is the entry separator
 
 processStarted = False
+multiprocessing.set_start_method("spawn")
 
 def logSharedMemoryToDB():
 	global processStarted
