@@ -3,8 +3,6 @@ import db_handler
 
 import serial
 import multiprocessing
-if __name__ == "__main__":
-	multiprocessing.set_start_method("spawn")
 
 defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
 defaultOrg = "TuftsSEDSRocketry"
@@ -24,7 +22,7 @@ processStarted = False
 
 
 def logSharedMemoryToDB():
-	global processStarted
+	global processStarted, db, mem
 	processStarted = True
 	while True:
 		if mem.first.data != fieldNames:
