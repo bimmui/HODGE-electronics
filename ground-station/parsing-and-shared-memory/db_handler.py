@@ -43,20 +43,6 @@ class DBHandler:
 	def writeLastFromSharedMemory(self):
 		self.writeToDB(self.sharedMemoryReference.last.data)
 
-
-defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
-defaultOrg = "TuftsSEDSRocketry"
-#defautlUrl = "http://localhost:8086" #uncomment this value for local testing
-defaultUrl = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
-defaultBucket = "Test"
-tableName = "Fruit Test 3"
-fieldNames = ["Favorite", "Least Favorite", "Mid"]
-
-SM = SharedMemory(3, fieldNames)
-
-def initializeDBLogProcess(sharedMemoryReference):
-	DBHandlerVariable = DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames, SM)
-
 SM.write(["apple", "banana", "broccoli"])
 SM.write(["pineapple", "turnip", "Swiss chard"])
 SM.write(["carrot", "mango", "Dragonfruit"])
