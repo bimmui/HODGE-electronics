@@ -10,7 +10,7 @@ defaultOrg = "TuftsSEDSRocketry"
 #defautlUrl = "http://localhost:8086" #uncomment this value for local testing
 defaultUrl = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
 defaultBucket = "Test"
-tableName = "Fruit Test With Serial"
+tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
 mem = shared_memory.SharedMemory(3, fieldNames)
@@ -21,13 +21,12 @@ valueSeparator = ","
 
 def logSharedMemoryToDB():
 	while True:
-		if mem.first.data != None:
+		if mem.first.data != fieldNames:
 			db.writeToDB(mem.first.data)
 			time.sleep(0.01) #Temporarily here for now
 
 p = multiprocessing.Process(target=logSharedMemoryToDB)
 p.start()
-p.join()
 
 with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 	serialController.flush()
@@ -36,3 +35,5 @@ with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 		#print(addInput)
 		mem.write(addInput.split(valueSeparator))
 		print(mem.first.data)
+
+p.join()
