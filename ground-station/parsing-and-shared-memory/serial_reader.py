@@ -28,14 +28,21 @@ def logSharedMemoryToDB(sharedMemoryReference, dbReference):
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
+def readSerial(sharedMemoryReference):
+	with serial.Serial('/dev/ttyACM0', 57600) as serialController:
+		serialController.flush()
+		while True:
+			addInput = serialController.readline().decode("utf-8").strip()
+			#print(addInput)
+			sharedMemoryReference.write(addInput.split(valueSeparator))
+			print(sharedMemoryReference.first.data)
 
-p = multiprocessing.Process(target=logSharedMemoryToDB, args=(mem, db))
-p.start()
+p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(mem,db))
+p2 = multiprocessing.Process(target=readSerial, args=(mem,))
 
-with serial.Serial('/dev/ttyACM0', 57600) as serialController:
-	serialController.flush()
-	while True:
-		addInput = serialController.readline().decode("utf-8").strip()
-		#print(addInput)
-		mem.write(addInput.split(valueSeparator))
-		print(mem.first.data)
+p1.start()
+p2.start()
+
+p1.join()
+p2.join()
+
