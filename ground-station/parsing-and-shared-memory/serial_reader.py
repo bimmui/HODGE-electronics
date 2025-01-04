@@ -1,5 +1,8 @@
-import shared_memory as SM
+import shared_memory
+import db_handler
+
 import serial
+import multiprocessing
 
 defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
 defaultOrg = "TuftsSEDSRocketry"
@@ -9,17 +12,17 @@ defaultBucket = "Test"
 tableName = "Fruit Test With Serial"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
-mem = SM.SharedMemory(3, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
+mem = shared_memory.SharedMemory(3, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
+db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames, mem)
 
 entryStart = "["
 entryEnd = "]"
 valueSeparator = ","
 
 with serial.Serial('/dev/ttyACM0', 57600) as serialController:
-	inputString = ""
+	serialController.flush()
 	while True:
-		addInput = serialController.read(1000)
-		inputString = addInput + inputString
-		if(addInput.find(entryStart)):
-			inputToWrite = addInput[addInput.find(entryStart):addInput.find(entryEnd)]
-			print(inputToWrite)
+		addInput = serialController.readline().decode("utf-8").strip()
+		print(addInput)
+		mem.write(addInput.split())
+		print(mem.first.data)
