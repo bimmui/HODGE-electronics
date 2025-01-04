@@ -3,7 +3,8 @@ import db_handler
 
 import serial
 import multiprocessing
-multiprocessing.set_start_method("spawn")
+if __name__ == "__main__":
+	multiprocessing.set_start_method("spawn")
 
 defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
 defaultOrg = "TuftsSEDSRocketry"
