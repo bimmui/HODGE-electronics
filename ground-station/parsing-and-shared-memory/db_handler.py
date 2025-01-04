@@ -43,8 +43,8 @@ class DBHandler:
 	def writeLastFromSharedMemory(self):
 		self.writeToDB(self.sharedMemoryReference.last.data)
 
-SM.write(["apple", "banana", "broccoli"])
-SM.write(["pineapple", "turnip", "Swiss chard"])
-SM.write(["carrot", "mango", "Dragonfruit"])
-print(SM.last.data)
-print(SM.first.data)
+#SM.write(["apple", "banana", "broccoli"])
+#SM.write(["pineapple", "turnip", "Swiss chard"])
+#SM.write(["carrot", "mango", "Dragonfruit"])
+#print(SM.last.data)
+#print(SM.first.data)
