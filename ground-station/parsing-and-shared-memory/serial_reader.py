@@ -4,6 +4,7 @@ import db_handler
 
 import serial
 import multiprocessing
+import time
 
 defaultToken = "jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
 defaultOrg = "TuftsSEDSRocketry"
@@ -41,7 +42,6 @@ def readSerial(sharedMemoryReferenceList):
 
 with multiprocessing.managers.BaseManager() as manager:
 	manager.register("SharedMemory", shared_memory.SharedMemory)
-	manager.start()
 	sharedMem = manager.SharedMemory(100, fieldNames)
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMem, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
 	p2 = multiprocessing.Process(target=readSerial, args=(sharedMem,))
