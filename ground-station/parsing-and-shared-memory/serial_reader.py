@@ -1,3 +1,4 @@
+import multiprocessing.managers
 import shared_memory
 import db_handler
 
@@ -18,9 +19,6 @@ db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, t
 valueSeparator = ","
 #\n is the entry separator
 
-processStarted = False
-
-
 def logSharedMemoryToDB(sharedMemoryReferenceList):
 	sharedMemoryReference = sharedMemoryReferenceList[0]
 	dbReference = sharedMemoryReferenceList[1]
@@ -40,7 +38,11 @@ def readSerial(sharedMemoryReferenceList):
 			sharedMemoryReference.write(addInput.split(valueSeparator))
 			print(sharedMemoryReference.first.data)
 
-with multiprocessing.Manager() as manager:
+class CustomManager(multiprocessing.managers.BaseManager):
+	pass
+CustomManager.register("list", list)
+
+with CustomManager as manager:
 	sharedMemList = manager.list([mem, db])
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,))
 	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
