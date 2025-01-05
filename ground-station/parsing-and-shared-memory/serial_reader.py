@@ -14,14 +14,12 @@ tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
 mem = shared_memory.SharedMemory(100, fieldNames)
-db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
-
 valueSeparator = ","
 #\n is the entry separator
 
-def logSharedMemoryToDB(sharedMemoryReferenceList):
+def logSharedMemoryToDB(sharedMemoryReferenceList, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames):
+	dbReference = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
 	sharedMemoryReference = sharedMemoryReferenceList[0]
-	dbReference = sharedMemoryReferenceList[1]
 	while True:
 		if sharedMemoryReferenceList[0].first.data != fieldNames:
 			dbReference.writeToDB(sharedMemoryReferenceList[0].first.data)
@@ -45,7 +43,7 @@ CustomManager.register("list", list)
 with CustomManager as manager:
 	sharedMemList = manager.list([mem, db])
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,))
-	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
+	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
 
 	p1.start()
 	p2.start()
