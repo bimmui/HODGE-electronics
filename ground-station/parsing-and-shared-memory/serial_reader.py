@@ -21,8 +21,9 @@ valueSeparator = ","
 processStarted = False
 
 
-def logSharedMemoryToDB(sharedMemoryReferenceList, dbReference):
+def logSharedMemoryToDB(sharedMemoryReferenceList):
 	sharedMemoryReference = sharedMemoryReferenceList[0]
+	dbReference = sharedMemoryReference[1]
 	while True:
 		if sharedMemoryReference.first.data != fieldNames:
 			dbReference.writeToDB(mem.first.data)
@@ -40,9 +41,9 @@ def readSerial(sharedMemoryReferenceList):
 			print(sharedMemoryReference.first.data)
 
 with multiprocessing.Manager() as manager:
-	sharedMemList = manager.list([mem])
-	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,db))
-	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
+	sharedMemList = manager.list([mem,db])
+	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList))
+	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList))
 
 	p1.start()
 	p2.start()
