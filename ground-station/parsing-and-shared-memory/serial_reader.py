@@ -12,7 +12,7 @@ defaultBucket = "Test"
 tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
-mem = shared_memory.SharedMemory(3, fieldNames)
+mem = shared_memory.SharedMemory(100, fieldNames)
 db = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
 
 valueSeparator = ","
@@ -26,7 +26,7 @@ def logSharedMemoryToDB(sharedMemoryReferenceList):
 	dbReference = sharedMemoryReferenceList[1]
 	while True:
 		if sharedMemoryReference.first.data != fieldNames:
-			dbReference.writeToDB(mem.first.data)
+			dbReference.writeToDB(sharedMemoryReference.first.data)
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
