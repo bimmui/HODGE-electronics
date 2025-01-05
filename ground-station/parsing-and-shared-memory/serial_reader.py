@@ -13,7 +13,7 @@ defaultBucket = "Test"
 tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
-mem = shared_memory.SharedMemory(100, fieldNames)
+
 valueSeparator = ","
 #\n is the entry separator
 
@@ -41,7 +41,7 @@ def readSerial(sharedMemoryReferenceList):
 #CustomManager.register("list", list)
 
 with multiprocessing.Manager() as manager:
-	sharedMemList = manager.list([mem])
+	sharedMemList = manager.list([shared_memory.SharedMemory(100, fieldNames)])
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
 	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
 
