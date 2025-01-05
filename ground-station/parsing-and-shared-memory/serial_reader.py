@@ -23,7 +23,7 @@ processStarted = False
 
 def logSharedMemoryToDB(sharedMemoryReferenceList):
 	sharedMemoryReference = sharedMemoryReferenceList[0]
-	dbReference = sharedMemoryReference[1]
+	dbReference = sharedMemoryReferenceList[1]
 	while True:
 		if sharedMemoryReference.first.data != fieldNames:
 			dbReference.writeToDB(mem.first.data)
