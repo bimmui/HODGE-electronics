@@ -21,7 +21,7 @@ valueSeparator = ","
 def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tableName, fieldNames):
 	dbReference = db_handler.DBHandler(token, org, url, bucket, tableName, fieldNames)
 	while True:
-		if sharedMemoryReferenceList.first.data != fieldNames:
+		if sharedMemoryReferenceList.getFirst().getData() != fieldNames:
 			dbReference.writeToDB(sharedMemoryReferenceList.getFirst().getData())
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
