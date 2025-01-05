@@ -40,15 +40,18 @@ def readSerial(sharedMemoryReferenceList):
 #	pass
 #CustomManager.register("list", list)
 
-with multiprocessing.managers.BaseManager() as manager:
-	manager.register("SharedMemory", shared_memory.SharedMemory)
-	sharedMem = manager.SharedMemory(100, fieldNames)
-	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMem, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
-	p2 = multiprocessing.Process(target=readSerial, args=(sharedMem,))
+manager = multiprocessing.managers.BaseManager()
+manager.register("SharedMemory", shared_memory.SharedMemory)
+manager.start()
 
-	p1.start()
-	p2.start()
+sharedMem = manager.SharedMemory(100, fieldNames)
 
-	p1.join()
-	p2.join()
+p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMem, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
+p2 = multiprocessing.Process(target=readSerial, args=(sharedMem,))
+
+p1.start()
+p2.start()
+
+p1.join()
+p2.join()
 
