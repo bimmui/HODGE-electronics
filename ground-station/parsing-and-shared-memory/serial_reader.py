@@ -17,8 +17,9 @@ mem = shared_memory.SharedMemory(100, fieldNames)
 valueSeparator = ","
 #\n is the entry separator
 
-def logSharedMemoryToDB(sharedMemoryReferenceList, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames):
-	dbReference = db_handler.DBHandler(defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames)
+#This process reads data from the shared memory class and logs it to the DB
+def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tableName, fieldNames):
+	dbReference = db_handler.DBHandler(token, org, url, bucket, tableName, fieldNames)
 	sharedMemoryReference = sharedMemoryReferenceList[0]
 	while True:
 		if sharedMemoryReferenceList[0].first.data != fieldNames:
@@ -26,6 +27,7 @@ def logSharedMemoryToDB(sharedMemoryReferenceList, defaultToken, defaultOrg, def
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
+#This process reads data from the serial input and logs it to the shared memory class
 def readSerial(sharedMemoryReferenceList):
 	sharedMemoryReference = sharedMemoryReferenceList[0]
 	with serial.Serial('/dev/ttyACM0', 57600) as serialController:
@@ -33,12 +35,12 @@ def readSerial(sharedMemoryReferenceList):
 		while True:
 			addInput = serialController.readline().decode("utf-8").strip()
 			#print(addInput)
-			sharedMemoryReference.write(addInput.split(valueSeparator))
-			print(sharedMemoryReference.first.data)
+			sharedMemoryReferenceList[0].write(addInput.split(valueSeparator))
+			print(sharedMemoryReferenceList[0].first.data)
 
-class CustomManager(multiprocessing.managers.BaseManager):
-	pass
-CustomManager.register("list", list)
+#class CustomManager(multiprocessing.managers.BaseManager):
+#	pass
+#CustomManager.register("list", list)
 
 with multiprocessing.Manager() as manager:
 	sharedMemList = manager.list([mem])
