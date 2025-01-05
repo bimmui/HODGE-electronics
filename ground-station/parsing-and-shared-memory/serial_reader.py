@@ -28,12 +28,13 @@ def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tabl
 
 #This process reads data from the serial input and logs it to the shared memory class
 def readSerial(sharedMemoryReferenceList):
+	sharedMemoryReferenceProxy = sharedMemoryReferenceList
 	with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 		serialController.flush()
 		while True:
 			addInput = serialController.readline().decode("utf-8").strip()
 			#print(addInput)
-			sharedMemoryReferenceList.write(addInput.split(valueSeparator))
+			sharedMemoryReferenceProxy.write(addInput.split(valueSeparator))
 			print(sharedMemoryReferenceList.first.data)
 
 #class CustomManager(multiprocessing.managers.BaseManager):
