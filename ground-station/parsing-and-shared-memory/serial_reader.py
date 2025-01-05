@@ -42,8 +42,8 @@ CustomManager.register("list", list)
 
 with multiprocessing.Manager() as manager:
 	sharedMemList = manager.list([mem])
-	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,))
-	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
+	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
+	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
 
 	p1.start()
 	p2.start()
