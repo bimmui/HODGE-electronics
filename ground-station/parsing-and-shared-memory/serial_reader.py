@@ -40,7 +40,7 @@ def readSerial(sharedMemoryReferenceList):
 			print(sharedMemoryReference.first.data)
 
 with multiprocessing.Manager() as manager:
-	sharedMemList = manager.list(mem)
+	sharedMemList = manager.list(mem, 0)
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,db))
 	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
 
