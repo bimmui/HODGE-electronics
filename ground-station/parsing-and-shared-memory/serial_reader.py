@@ -30,7 +30,7 @@ def logSharedMemoryToDB(sharedMemoryReferenceList, dbReference):
 			#time.sleep(0.01) #Temporarily here for now
 
 def readSerial(sharedMemoryReferenceList):
-	sharedMemoryReference = sharedMemoryReferenceList
+	sharedMemoryReference = sharedMemoryReferenceList[0]
 	with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 		serialController.flush()
 		while True:
@@ -40,7 +40,7 @@ def readSerial(sharedMemoryReferenceList):
 			print(sharedMemoryReference.first.data)
 
 with multiprocessing.Manager() as manager:
-	sharedMemList = manager.list([mem,])
+	sharedMemList = manager.list([mem])
 	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList,db))
 	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
 
