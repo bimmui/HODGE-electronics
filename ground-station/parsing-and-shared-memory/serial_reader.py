@@ -36,10 +36,6 @@ def readSerial(sharedMemoryReferenceList):
 			sharedMemoryReferenceList.write(addInput.split(valueSeparator))
 			print(sharedMemoryReferenceList.getFirst().getData())
 
-#class CustomManager(multiprocessing.managers.BaseManager):
-#	pass
-#CustomManager.register("list", list)
-
 manager = multiprocessing.managers.BaseManager()
 manager.register("SharedMemory", shared_memory.SharedMemory)
 manager.start()
