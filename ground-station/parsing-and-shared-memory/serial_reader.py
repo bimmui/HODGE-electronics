@@ -25,8 +25,8 @@ def logSharedMemoryToDB(sharedMemoryReferenceList):
 	sharedMemoryReference = sharedMemoryReferenceList[0]
 	dbReference = sharedMemoryReferenceList[1]
 	while True:
-		if sharedMemoryReference.first.data != fieldNames:
-			dbReference.writeToDB(sharedMemoryReference.first.data)
+		if sharedMemoryReferenceList[0].first.data != fieldNames:
+			dbReference.writeToDB(sharedMemoryReferenceList[0].first.data)
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
