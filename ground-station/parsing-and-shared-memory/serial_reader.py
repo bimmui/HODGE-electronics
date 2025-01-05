@@ -13,7 +13,6 @@ defaultBucket = "Test"
 tableName = "Fruit Test With Serial 2"
 fieldNames = ["Favorite", "Least Favorite", "Mid"]
 
-
 valueSeparator = ","
 #\n is the entry separator
 
@@ -21,8 +20,8 @@ valueSeparator = ","
 def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tableName, fieldNames):
 	dbReference = db_handler.DBHandler(token, org, url, bucket, tableName, fieldNames)
 	while True:
-		if sharedMemoryReferenceList[0].first.data != fieldNames:
-			dbReference.writeToDB(sharedMemoryReferenceList[0].first.data)
+		if sharedMemoryReferenceList.first.data != fieldNames:
+			dbReference.writeToDB(sharedMemoryReferenceList.first.data)
 			print("Logged!")
 			#time.sleep(0.01) #Temporarily here for now
 
@@ -33,17 +32,19 @@ def readSerial(sharedMemoryReferenceList):
 		while True:
 			addInput = serialController.readline().decode("utf-8").strip()
 			#print(addInput)
-			sharedMemoryReferenceList[0].write(addInput.split(valueSeparator))
-			print(sharedMemoryReferenceList[0].first.data)
+			sharedMemoryReferenceList.write(addInput.split(valueSeparator))
+			print(sharedMemoryReferenceList.first.data)
 
 #class CustomManager(multiprocessing.managers.BaseManager):
 #	pass
 #CustomManager.register("list", list)
 
-with multiprocessing.Manager() as manager:
-	sharedMemList = manager.list([shared_memory.SharedMemory(100, fieldNames)])
-	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMemList, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
-	p2 = multiprocessing.Process(target=readSerial, args=(sharedMemList,))
+with multiprocessing.managers.BaseManager() as manager:
+	manager.register("SharedMemory", shared_memory.SharedMemory)
+	manager.start()
+	sharedMem = manager.SharedMemory(100, fieldNames)
+	p1 = multiprocessing.Process(target=logSharedMemoryToDB, args=(sharedMem, defaultToken, defaultOrg, defaultUrl, defaultBucket, tableName, fieldNames))
+	p2 = multiprocessing.Process(target=readSerial, args=(sharedMem,))
 
 	p1.start()
 	p2.start()
