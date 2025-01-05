@@ -20,7 +20,6 @@ valueSeparator = ","
 #This process reads data from the shared memory class and logs it to the DB
 def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tableName, fieldNames):
 	dbReference = db_handler.DBHandler(token, org, url, bucket, tableName, fieldNames)
-	sharedMemoryReference = sharedMemoryReferenceList[0]
 	while True:
 		if sharedMemoryReferenceList[0].first.data != fieldNames:
 			dbReference.writeToDB(sharedMemoryReferenceList[0].first.data)
@@ -29,7 +28,6 @@ def logSharedMemoryToDB(sharedMemoryReferenceList, token, org, url, bucket, tabl
 
 #This process reads data from the serial input and logs it to the shared memory class
 def readSerial(sharedMemoryReferenceList):
-	sharedMemoryReference = sharedMemoryReferenceList[0]
 	with serial.Serial('/dev/ttyACM0', 57600) as serialController:
 		serialController.flush()
 		while True:
