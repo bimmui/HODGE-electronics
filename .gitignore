@@ -2,3 +2,5 @@
 *build/
 *sdkconfig
 *.vscode
+*.o
+*.exe
