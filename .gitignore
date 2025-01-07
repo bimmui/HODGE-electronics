@@ -5,3 +5,4 @@
 /flight-computer/src/build
 /flight-computer/src/sdkconfig
 /ground-station/parsing-and-shared-memory/__pycache__/*
+*.pyc
