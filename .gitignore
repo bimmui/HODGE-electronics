@@ -6,3 +6,4 @@
 /flight-computer/src/sdkconfig
 /ground-station/parsing-and-shared-memory/__pycache__/*
 *.pyc
+/ground-station/parsing-and-shared-memory/variables.env
