@@ -85,8 +85,8 @@ class SerialReader():
 
 #Load environment variables
 dotenv.load_dotenv()
-token = os.environ["DB_TOKEN"] #"jkbT8S2dsoHKx_MaG2A8zoboDJF04mssk-F6-1Vt-GMaAuQzlyakxF0ONJ3HEsitjXqd0NrQN0vvJ8qPnZv6MQ=="
-org = os.environ["DB_ORG"] #"TuftsSEDSRocketry"
+token = os.environ["DB_TOKEN"]
+org = os.environ["DB_ORG"]
 
 #Not sensitive info
 #defautlUrl = "http://localhost:8086" #uncomment this value for local testing
