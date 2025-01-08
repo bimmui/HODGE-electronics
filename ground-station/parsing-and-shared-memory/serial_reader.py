@@ -26,15 +26,22 @@ class SerialReader():
 	#baud_rate (int): the baud rate of the serial connection. It should match the baud rate specified in the arduino code.  
 	def __init__(self, token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_list_length):
 		#Create a manager, register the SharedMemory class with the manager, and start the manager
+		
 		manager = multiprocessing.managers.BaseManager()
 		manager.register("SharedMemory", shared_memory.SharedMemory)
 		manager.start()
 
-		shared_mem = manager.SharedMemory(shared_memory_list_length, field_names)
+		#_shared_mem is a member to prevent it being dereferenced (and garbage collected).  This would cause an error
+		self._shared_memory_object = manager.SharedMemory(shared_memory_list_length, field_names)
 
 		#create both processes
-		self._process_1 = multiprocessing.Process(target=self._log_shared_memory_to_database, args=(shared_mem, token, org, url, bucket, table_name, field_names))
-		self._process_2 = multiprocessing.Process(target=self._read_serial, args=(shared_mem, serial_connection_path, baud_rate))
+		self._process_1 = multiprocessing.Process(target=self._log_shared_memory_to_database, args=(self._shared_memory_object, token, org, url, bucket, table_name, field_names))
+		self._process_2 = multiprocessing.Process(target=self._read_serial, args=(self._shared_memory_object, serial_connection_path, baud_rate))
+		
+	#Destructor: kills processes when object is garbage collected
+	#Prevents an error where the manager is dereferenced
+	def __del__(self):
+		self.kill()
 
 	#This process reads data from the shared memory class and logs it to the DB
 	#shared_memory_reference (Manager): a reference to the shared memory where daata can be pulled from.  The Manager should have registered a SharedMemory class
