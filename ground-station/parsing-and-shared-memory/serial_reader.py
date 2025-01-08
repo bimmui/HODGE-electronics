@@ -12,7 +12,7 @@ import db_handler
 #The SerialReader runs two processes:
 # - Reads data from a serial connection, parses it, and places it logs it to shared memory.  
 # - Continually logs the first data from shared memory into the influxDB
-#
+#ONLY TO BE USED IN TOP_LEVEL CODE
 #This is being implemented as a class because we can initialize two objects for each antenna
 class SerialReader():
 
@@ -25,8 +25,11 @@ class SerialReader():
 	#serial_connection_path (string): the path that represents the USB connection.  For Linux, it comes in the form: "/dev/ttyACM*" where "*" is a number
 	#baud_rate (int): the baud rate of the serial connection. It should match the baud rate specified in the arduino code.  
 	def __init__(self, token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_list_length):
-		#Create a manager, register the SharedMemory class with the manager, and start the manager
+		#check to make sure this is only used in top level code
+		if __name__ != "__main__":
+			raise Exception("Error: SerialReader executed in child process!")
 		
+		#Create a manager, register the SharedMemory class with the manager, and start the manager
 		manager = multiprocessing.managers.BaseManager()
 		manager.register("SharedMemory", shared_memory.SharedMemory)
 		manager.start()
@@ -96,7 +99,7 @@ token = os.environ["DB_TOKEN"]
 org = os.environ["DB_ORG"]
 
 #Not sensitive info
-#defautlUrl = "http://localhost:8086" #uncomment this value for local testing
+#url = "http://localhost:8086" #uncomment this value for local testing
 url = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
 bucket = "Test"
 table_name = "Fruit Test With Serial 2"
