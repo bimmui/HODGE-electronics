@@ -1,4 +1,5 @@
 #Dependency Imports
+import multiprocessing.managers
 import serial
 import multiprocessing
 import os
