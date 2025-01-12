@@ -1,6 +1,7 @@
 *.devcontainer
 *build/
 *sdkconfig
+*sdkconfig.old
 *sdkconfig.defaults
 *.vscode
 *.o
