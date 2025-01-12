@@ -230,12 +230,16 @@ void ICM20948::setGyroSensitivity()
     {
     case GYRO_FS_250DPS:
         gyro_sensitivity = 131;
+        break;
     case GYRO_FS_500DPS:
         gyro_sensitivity = 65.5;
+        break;
     case GYRO_FS_1000DPS:
         gyro_sensitivity = 32.8;
+        break;
     case GYRO_FS_2000DPS:
         gyro_sensitivity = 16.4;
+        break;
     default:
         break;
     }
@@ -319,12 +323,16 @@ void ICM20948::setAccelSensitivity()
     {
     case ACCEL_FS_2G:
         accel_sensitivity = 16384;
+        break;
     case ACCEL_FS_4G:
         accel_sensitivity = 8192;
+        break;
     case ACCEL_FS_8G:
         accel_sensitivity = 4096;
+        break;
     case ACCEL_FS_16G:
         accel_sensitivity = 2048;
+        break;
     default:
         break;
     }
