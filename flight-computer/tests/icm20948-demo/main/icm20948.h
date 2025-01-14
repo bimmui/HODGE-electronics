@@ -22,6 +22,13 @@ typedef struct
     float gyro_z;
 } icm20948_gyro_value_t;
 
+typedef struct
+{
+    float mag_x;
+    float mag_y;
+    float mag_z;
+} ak09916_mag_value_t;
+
 class ICM20948
 {
 public:
@@ -40,6 +47,14 @@ public:
         GYRO_FS_1000DPS = 2, // Gyroscope full scale range is +/- 1000 degree per sencond
         GYRO_FS_2000DPS = 3, // Gyroscope full scale range is +/- 2000 degree per sencond
     } icm20948_gyro_fs_t;
+
+    typedef enum
+    {
+        AK09916_CONT_MODE_10HZ = 1,
+        AK09916_CONT_MODE_20HZ = 2,
+        AK09916_CONT_MODE_50HZ = 3,
+        AK09916_CONT_MODE_100HZ = 4,
+    } ak09916_sample_rate_t;
 
     typedef enum
     {
@@ -102,6 +117,7 @@ public:
     // ICM20948 &operator=(const ICM20948 &other);
 
     void configureICM20948(icm20948_accel_fs_t acce_fs, icm20948_gyro_fs_t gyro_fs);
+    void configureAK09916(ak09916_sample_rate_t sample_rate);
     uint8_t getICM20948ID();
     void wakeup();
     void sleep();
@@ -112,6 +128,8 @@ public:
 
     icm20948_accel_fs_t getAccelFS();
     void getAccel(icm20948_accel_value_t *accel_vals);
+
+    void getMag(ak09916_mag_value_t *mag_vals);
 
     void initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed);
     void configureAK09916();
@@ -139,6 +157,7 @@ private:
     } icm20948_raw_mag_value_t;
 
     void setBank(uint8_t bank);
+    void activateBypassMode();
 
     void setGyroFS(icm20948_gyro_fs_t gyro_fs);
     void setGyroSensitivity();
@@ -147,6 +166,8 @@ private:
     void setAccelFS(icm20948_accel_fs_t accel_fs);
     void setAccelSensitivity();
     void getRawAccel();
+
+    void setMagSampleRate(ak09916_sample_rate_t rate);
 
     void enableDLPF(bool enable);
     void setAccelDLPF(icm20948_dlpf_t dlpf_accel);
