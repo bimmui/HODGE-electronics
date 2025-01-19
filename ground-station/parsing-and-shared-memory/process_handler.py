@@ -90,6 +90,11 @@ class ProcessHandler():
 		self._process_1.kill()
 		self._process_2.kill()
 
+	#Returns the SharedMemory linked list 
+	#Return: (SharedMemory)
+	def get_shared_memory(self):
+		return self._shared_memory_object
+
 #Load environment variables
 dotenv.load_dotenv()
 token = os.environ["DB_TOKEN"]
