@@ -12,7 +12,7 @@ import db_handler
 #The SerialReader runs two processes:
 # - Reads data from a serial connection, parses it, and places it logs it to shared memory.  
 # - Continually logs the first data from shared memory into the influxDB
-#ONLY TO BE USED IN TOP_LEVEL CODE
+#ONLY TO BE USED IN TOP LEVEL CODE
 #This is being implemented as a class because we can initialize two objects for each antenna
 class ProcessHandler():
 
