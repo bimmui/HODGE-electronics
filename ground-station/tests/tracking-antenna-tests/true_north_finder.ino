@@ -38,6 +38,7 @@
 Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1();
 
 // VERY IMPORTANT!
+// magnetometers really do need to be calibrated inside their final operating environment
 // These are the previously determined offsets and scale factors for accelerometer and magnetometer, using MPU9250_cal and Magneto
 float Gscale = (M_PI / 180.0) * 0.00875; // 245 dps scale sensitivity = 8.75 mdps/LSB
 float G_offset[3] = {0.0528, 0.0221, -0.0357};
