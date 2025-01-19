@@ -4,7 +4,7 @@
 void setup()
 {
   //Open serial port (USB and wait for connection)
-	Serial.begin(57600);
+	Serial.begin(115200);
 	while (!Serial); //Wait for serial port connection
   Serial.write("apple,banana,brocoli\n");
   Serial.write("pineapple,turnip,swiss chard\n");

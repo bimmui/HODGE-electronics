@@ -14,9 +14,10 @@ import db_handler
 # - Continually logs the first data from shared memory into the influxDB
 #ONLY TO BE USED IN TOP_LEVEL CODE
 #This is being implemented as a class because we can initialize two objects for each antenna
-class SerialReader():
+class ProcessHandler():
 
-	#Constructor: initializes a SerialReader class, which must be started by calling the start() function.  
+	#Constructor: initializes a SerialReader class, which must be started by calling the start() function. 
+	#ENCAPSULATE WITH if __name__ = "__main__" 
 	#token (string): the DB token
 	#org (string): the DB organization name
 	#bucket (string): the DB bucket which SerialReader should write to
@@ -25,10 +26,6 @@ class SerialReader():
 	#serial_connection_path (string): the path that represents the USB connection.  For Linux, it comes in the form: "/dev/ttyACM*" where "*" is a number
 	#baud_rate (int): the baud rate of the serial connection. It should match the baud rate specified in the arduino code.  
 	def __init__(self, token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_list_length):
-		#check to make sure this is only used in top level code
-		if __name__ != "__main__":
-			raise Exception("Error: SerialReader executed in child process!")
-		
 		#Create a manager, register the SharedMemory class with the manager, and start the manager
 		manager = multiprocessing.managers.BaseManager()
 		manager.register("SharedMemory", shared_memory.SharedMemory)
@@ -42,7 +39,7 @@ class SerialReader():
 		self._process_2 = multiprocessing.Process(target=self._read_serial, args=(self._shared_memory_object, serial_connection_path, baud_rate))
 		
 	#Destructor: kills processes when object is garbage collected
-	#Prevents an error where the manager is dereferenced
+	#Makes sure processes are killed on dereference
 	def __del__(self):
 		self.kill()
 
@@ -99,15 +96,16 @@ token = os.environ["DB_TOKEN"]
 org = os.environ["DB_ORG"]
 
 #Not sensitive info
-#url = "http://localhost:8086" #uncomment this value for local testing
-url = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
+url = "http://localhost:8086" #uncomment this value for local testing
+#url = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
 bucket = "Test"
 table_name = "Fruit Test With Serial 2"
 field_names = ["Favorite", "Least Favorite", "Mid"]
 serial_connection_path = "/dev/ttyACM0"
-baud_rate = 57600
+baud_rate = 115200
 shared_memory_length = 1000
 
-my_serial_reader = SerialReader(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
-my_serial_reader.start()
-my_serial_reader.join_processes()
+if __name__ == "__main__":
+	my_serial_reader = ProcessHandler(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
+	my_serial_reader.start()
+	my_serial_reader.join_processes()
