@@ -1,3 +1,11 @@
+/.vscode
+/flight-computer/src/.devcontainer
+/flight-computer/src/.vscode
+/flight-computer/src/build
+/flight-computer/src/sdkconfig
+/ground-station/parsing-and-shared-memory/__pycache__/*
+*.pyc
+/ground-station/parsing-and-shared-memory/.env
 *.devcontainer
 *build/
 *sdkconfig
@@ -6,3 +14,5 @@
 *.vscode
 *.o
 *.exe
+*.env
+
