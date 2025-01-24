@@ -13,7 +13,7 @@ Follow the instructions here: [https://docs.espressif.com/projects/esp-idf/en/st
 
 For the IDE, it's recommended that you use the VSCode extension, instrctions for setting them up are on the getting started page or you could click here: [https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md](https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md)
 
-We used IDF version 5.3.1 but several members found things working fine using version 5.4. 
+We used ESP-IDF version 5.4 for our build. 
 
 
 ### Python Environment Setup
