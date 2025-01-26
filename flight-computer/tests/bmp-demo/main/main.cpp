@@ -14,9 +14,11 @@
 #include "esp_system.h"
 #include "driver/i2c_master.h"
 #include "esp_log.h"
+#include <math.h>
 
 #define TAG "BMP581_INIT"
 
+/* Initalization defines */
 #define I2C_MASTER_PORT                 I2C_NUM_0
 #define I2C_MASTER_SCL_IO               22
 #define I2C_MASTER_SDA_IO               21
@@ -25,9 +27,9 @@
 #define MASTER_TRANSMIT_TIMEOUT         (500)
 #define POWER_UP_DELAY_MS               20
 #define SOFT_RESET_DELAY_MS             5
-/* BMP581 Registers */
-#define ODR_CONFIG_REG                  0x37
-#define OSR_CONFIG_REG                  0x36
+#define EXPECTED_PRESSURE_PA            101142.0  // Adjusted expected pressure for Somerville
+
+/* BMP581 Initialization defines */
 #define CMD_REG                         0x7E
 #define STATUS_REG                      0x28
 #define STATUS_NVM_RDY_BIT              0x02
@@ -44,20 +46,31 @@
 #define TEMP_DATA_LSB_REG               0x1E
 #define TEMP_DATA_XLSB_REG              0x1D
 
-/* BMP581 Commands*/
+/* BMP581 Command defines */
 #define SOFT_RESET_CMD                  0xB6
 #define STANDBY_MODE_MSB                0x0B
 #define STANDBY_MODE_LSB                0x00
+
+/* BMP581 Configurations defines */
+#define ODR_CONFIG_REG                  0x37
+#define ODR_CONTINUOUS_MODE_BITS        0x03
+#define OSR_CONFIG_REG                  0x36
+#define OSR_ENABLE_PRESSURE_BIT         0x40
+#define RECONFIG_DELAY_MS               3
+
+
 
 i2c_master_bus_handle_t bus_handle =    NULL;
 i2c_master_dev_handle_t device_handle = NULL;
 
 /* Function contracts */
-void i2c_controller_init(void);
-void i2c_peripheral_init(void);
+static void i2c_controller_init(void);
+static void i2c_peripheral_init(void);
 static void sensor_check(void);
+static void configure_bmp581(void);
+static void BMP581_get_data(void);
 
-void i2c_controller_init(void)
+static void i2c_controller_init(void)
 {
     /* I was able to get the correct ordering from 
     https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html#_CPPv4N23i2c_master_bus_config_t8i2c_portE*/
@@ -76,7 +89,7 @@ void i2c_controller_init(void)
     ESP_LOGI(TAG, "I2C controller bus initialized.");
 }
 
-void i2c_peripheral_init(void){
+static void i2c_peripheral_init(void){
     
     /* Adding this delay to ensure sensor has stabalized after power up */
     vTaskDelay(pdMS_TO_TICKS(POWER_UP_DELAY_MS));
@@ -93,22 +106,29 @@ void i2c_peripheral_init(void){
     ESP_LOGI(TAG, "BMP581 sensor added to I2C bus.");
 }
 
-static void i2c_write(i2c_master_dev_handle_t sensor,
-                      uint8_t const *data_buf, const uint8_t data_len){
-
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len,
+static void BMP581_get_data(void){
+    uint8_t data[6];
+    uint8_t data_reg = TEMP_DATA_XLSB_REG; //pressure data register
+    ESP_ERROR_CHECK(i2c_master_transmit(device_handle, &data_reg, 1,
                     MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_receive(device_handle, data, 6,
+                                        MASTER_TRANSMIT_TIMEOUT));
+
+    ESP_LOGI(TAG, "Raw Data: %02X %02X %02X %02X %02X %02X", data[0], data[1], data[2], data[3], data[4], data[5]);
+    // Convert raw pressure data (24-bit unsigned integer)
+    uint32_t raw_temperature = (data[0]) | (data[1] << 8) | data[2] << 16;
+    float temperature = raw_temperature / (pow(2,16));  // Scale as per datasheet
+    raw_temperature &= 0xFFFFF;
+
+    // Convert raw temperature data (24-bit unsigned integer)
+    uint32_t raw_pressure = (data[3]) | (data[4] << 8) | data[5] << 16;
+    raw_pressure -= EXPECTED_PRESSURE_PA;
+    float pressure = raw_pressure / (pow(2,6));  // Scale as per datasheet
+
+    // Log the results
+    ESP_LOGI("BMP581", "Pressure: %.2f Pa, Temperature: %.2f °C", pressure, temperature);
 }
 
-static void i2c_read(i2c_master_dev_handle_t sensor,
-                     const uint8_t reg_start_addr, uint8_t *rx,
-                     uint8_t rx_size){
-        
-    const uint8_t tx[] = {reg_start_addr};
-    // In order to read, we first have to write?
-    // ESP_ERROR_CHECK(i2c_master_transmit(sensor, tx, sizeof(tx), MASTER_TRANSMIT_TIMEOUT));
-    // ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, MASTER_TRANSMIT_TIMEOUT));
-}
 static void reset_bmp581(void){
 
     /* We organize the data in a container that we will write to reg */
@@ -202,33 +222,47 @@ static void sensor_check(void){
     ESP_LOGI(TAG, "INT_STATUS.por check passed.");
 }
 
-static void configure_bmp581(){
+static void configure_bmp581(void){
         
-        // /* Performing a reboot to clear out the registers before we start*/
-        // reset_bmp581();
+    /* First we configure the sensor to register both temp and pressure. */
+    //Let's first grab what is currently there
+    uint8_t curr_config = 0;
+    uint8_t osr_config_reg = OSR_CONFIG_REG;
+    ESP_ERROR_CHECK(i2c_master_transmit(device_handle, &osr_config_reg,
+                                        1, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_receive(device_handle, &curr_config, 1,
+                                        MASTER_TRANSMIT_TIMEOUT));
 
-        /* Let's make sure that the sensor is properly up and running */
-        // sensor_check();
+    //Next lets update it with the 6th bit enabled for pressure
+    curr_config = curr_config || OSR_ENABLE_PRESSURE_BIT;
+    uint8_t enable_press_data[2];
+    enable_press_data[0] = OSR_CONFIG_REG;
+    enable_press_data[1] = curr_config;
 
-        // /* Lets start configuring the sensor */
-        
-        // //First we configure the sensor to register both temp and pressure.
-        // //The data sheet calls for 0x3 to be placed int here for both temp
-        // //and pressure.
-        // uint8_t tmp[1] = {0};
-        // i2c_read(device_handle, OSR_CONFIG_REG, tmp, sizeof(tmp));
-        // tmp[0] |= BIT6; 
-        // const uint8_t reg_and_data[] = {OSR_CONFIG_REG, tmp[0]};
-        // i2c_write(device_handle, reg_and_data, sizeof(reg_and_data));
+    //Let's now send it over to the peripheral
+    ESP_ERROR_CHECK(i2c_master_transmit(device_handle, enable_press_data,
+                        sizeof(enable_press_data), MASTER_TRANSMIT_TIMEOUT));
 
-        // //Next we put the device in continuous mode
-        // uint8_t tmp2[1] = {0};
-        // i2c_read(device_handle, ODR_CONFIG_REG, tmp2, sizeof(tmp2));
-        // tmp2[0] |= BIT1; // esp_bit_defs.h
-        // tmp2[0] |= BIT2;
-        // const uint8_t reg_and_data2[] = {ODR_CONFIG_REG, tmp2[0]};
-        // i2c_write(device_handle, reg_and_data2, sizeof(reg_and_data2));
+    /* Now we put the device in continuous mode */
+    // We first grab what is currently there
+    curr_config = 0;
+    uint8_t odr_config_reg = ODR_CONFIG_REG;
+    ESP_ERROR_CHECK(i2c_master_transmit(device_handle, &osr_config_reg,
+                                        1, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_receive(device_handle, &curr_config, 1,
+                                        MASTER_TRANSMIT_TIMEOUT));
 
+    // We now enable the bit for continous mode
+    curr_config = curr_config || ODR_CONTINUOUS_MODE_BITS;
+    uint8_t enable_continuous_data[2];
+    enable_continuous_data[0] = ODR_CONFIG_REG;
+    enable_continuous_data[1] = curr_config;
+
+    //Let's now send it over to the peripheral
+    ESP_ERROR_CHECK(i2c_master_transmit(device_handle, enable_continuous_data,
+                    sizeof(enable_continuous_data), MASTER_TRANSMIT_TIMEOUT));
+    vTaskDelay(pdMS_TO_TICKS(RECONFIG_DELAY_MS));
+    ESP_LOGI(TAG, "Configuration complete.");
 }
 
 extern "C" void app_main(void)
@@ -245,6 +279,12 @@ extern "C" void app_main(void)
     /* We initalize the device again*/
     i2c_peripheral_init();
     sensor_check();
-    // configure_bmp581();
+    configure_bmp581();
     ESP_LOGI(TAG, "BMP581 initialization complete.");
+
+    /* Now we attempt to get readings */
+    for (size_t i = 0; i < 10; i++)
+    {
+        BMP581_get_data();
+    }
 }
