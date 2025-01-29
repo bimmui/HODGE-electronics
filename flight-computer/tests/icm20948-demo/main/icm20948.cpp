@@ -24,7 +24,7 @@ static const char *TAG = "icm test";
 /* ICM20948 registers */
 #define ICM20948_GYRO_CONFIG_1 (0x01)
 #define ICM20948_ACCEL_CONFIG (0x14)
-#define ICM20948_INT_PIN_CFG (0x0F)
+#define ICM20948_USER_CTRL (0x03)
 #define ICM20948_INT_ENABLE (0x10)
 #define ICM20948_INT_ENABLE_1 (0x11)
 #define ICM20948_INT_ENABLE_2 (0x12)
@@ -47,7 +47,6 @@ static const char *TAG = "icm test";
 #define DLPF_SET_MASK (0xC7)
 #define DLPF_ENABLE_MASK (0x07)
 #define DLPF_DISABLE_MASK (0xFE)
-#define BYPASS_MASK (0xFD)
 
 /* AK09916 registers */
 #define AK09916_CNTL3 (0x32)
@@ -110,6 +109,7 @@ ICM20948::~ICM20948()
 void ICM20948::initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed)
 {
     activateBypassMode();
+    // add a check to ensure that the BYPASS_EN bit is 0
     // maybe add a delay
     ak09916_addr_len = addr_len;
     ak09916_addr = ak09916_address;
@@ -372,11 +372,11 @@ void ICM20948::activateBypassMode()
     setBank(0);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_INT_PIN_CFG, tmp, sizeof(tmp));
+    icm20948_read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp, sizeof(tmp));
 
-    tmp[0] |= BIT1;
+    tmp[0] |= BIT5;
 
-    const uint8_t reg_and_data[] = {ICM20948_INT_PIN_CFG, tmp[0]};
+    const uint8_t reg_and_data[] = {ICM20948_USER_CTRL, tmp[0]};
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
