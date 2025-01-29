@@ -18,27 +18,27 @@ static const char *TAG = "icm test";
     (byte & 0x80 ? '1' : '0'), (byte & 0x40 ? '1' : '0'), (byte & 0x20 ? '1' : '0'), (byte & 0x10 ? '1' : '0'), \
         (byte & 0x08 ? '1' : '0'), (byte & 0x04 ? '1' : '0'), (byte & 0x02 ? '1' : '0'), (byte & 0x01 ? '1' : '0')
 
-#define ALPHA 0.99f             /*!< Weight of gyroscope */
-#define RAD_TO_DEG 57.27272727f /*!< Radians to degrees */
+#define ALPHA 0.99f             // Weight of gyroscope
+#define RAD_TO_DEG 57.27272727f // Radians to degrees
 
 /* ICM20948 registers */
 #define ICM20948_GYRO_CONFIG_1 (0x01)
-#define ICM20948_ACCEL_CONFIG 0x14
-#define ICM20948_INT_PIN_CFG 0x0F
-#define ICM20948_INT_ENABLE 0x10
-#define ICM20948_INT_ENABLE_1 0x11
-#define ICM20948_INT_ENABLE_2 0x12
-#define ICM20948_INT_ENABLE_3 0x13
-#define ICM20948_INT_STATUS 0x19
-#define ICM20948_INT_STATUS_1 0x1A
-#define ICM20948_INT_STATUS_2 0x1B
-#define ICM20948_INT_STATUS_3 0x1C
-#define ICM20948_ACCEL_XOUT_H 0x2D
-#define ICM20948_GYRO_XOUT_H 0x33
-#define ICM20948_TEMP_XOUT_H 0x39
-#define ICM20948_PWR_MGMT_1 0x06
-#define ICM20948_WHO_AM_I 0x00
-#define ICM20948_REG_BANK_SEL 0x7F
+#define ICM20948_ACCEL_CONFIG (0x14)
+#define ICM20948_INT_PIN_CFG (0x0F)
+#define ICM20948_INT_ENABLE (0x10)
+#define ICM20948_INT_ENABLE_1 (0x11)
+#define ICM20948_INT_ENABLE_2 (0x12)
+#define ICM20948_INT_ENABLE_3 (0x13)
+#define ICM20948_INT_STATUS (0x19)
+#define ICM20948_INT_STATUS_1 (0x1A)
+#define ICM20948_INT_STATUS_2 (0x1B)
+#define ICM20948_INT_STATUS_3 (0x1C)
+#define ICM20948_ACCEL_XOUT_H (0x2D)
+#define ICM20948_GYRO_XOUT_H (0x33)
+#define ICM20948_TEMP_XOUT_H (0x39)
+#define ICM20948_PWR_MGMT_1 (0x06)
+#define ICM20948_WHO_AM_I (0x00)
+#define ICM20948_REG_BANK_SEL (0x7F)
 
 /* ICM20948 masks */
 #define REG_BANK_MASK (0x30)
