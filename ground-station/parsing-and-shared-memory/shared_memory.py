@@ -16,7 +16,7 @@ class SharedMemory:
 			self.data = data
 
 		#Gets data in a node 
-		#Return: (any)
+		#Return: (array: any)
 		def get_data(self):
 			return self.data
 		
@@ -58,3 +58,17 @@ class SharedMemory:
 		if self.length > self.max_length: #Remove last node if list is too long
 			self.last = self.last.next
 			self.length -= 1
+	
+	#Converts one categoryName in the linkedList to an array
+	#category_number (int): the index corresponding to the categoryName. 
+	#return: (array)
+	def convert_to_array(self, category_number):
+		returnArray = []
+		#We don't want to include the category header node
+		currentNode = self.get_last().get_next()
+
+		while currentNode != None:
+			returnArray.append(currentNode.get_data()[category_number])
+			currentNode = currentNode.get_next()
+		
+		return returnArray
