@@ -53,6 +53,7 @@
 #define CHIP_ID_REG                              0x01
 #define INT_STATUS_REG                           0x27
 #define INT_STATUS_POR_BIT                       0x10
+#define NORMAL_MODE                              0x01
 
 #define PRESS_DATA_MSB_REG                       0x22
 #define PRESS_DATA_LSB_REG                       0x21
@@ -133,7 +134,7 @@ void BMP581::bmp581_configure(void)
     _read(bmp581_dev_handle, odr_config_reg, curr_config, sizeof(curr_config));
 
     // We now enable the bit for continous mode
-    curr_config[0] = curr_config[0] || ODR_CONTINUOUS_MODE_BITS;
+    curr_config[0] = curr_config[0] || NORMAL_MODE;
     uint8_t enable_continuous_data[2];
     enable_continuous_data[0] = ODR_CONFIG_REG;
     enable_continuous_data[1] = curr_config[0];
@@ -154,23 +155,25 @@ bmp581_data BMP581::bmp581_get_sample(void)
 {
     uint8_t data[6] = {0};
     uint8_t data_reg = TEMP_DATA_XLSB_REG; //pressure data register
-    _write(bmp581_dev_handle, data, sizeof(data));
+    _write(bmp581_dev_handle, &data_reg, sizeof(data_reg));
     _read(bmp581_dev_handle, data_reg, data, sizeof(data));
 
-    // Convert raw pressure data (24-bit unsigned integer)
-    uint32_t raw_temperature = (data[0]) | (data[1] << 8) | data[2] << 16;
-    float temperature = raw_temperature / (pow(2,16));  // Scale as per datasheet
-    raw_temperature &= 0xFFFFF;
+    // Convert raw pressure data
+    int32_t raw_temperature = (int32_t) ((int32_t) ((uint32_t)(((uint32_t)data[2] << 16) | ((uint16_t)data[1] << 8) | data[0]) << 8) >> 8);
+    float temperature = (float)(raw_temperature / 65536.0);  // Scale as per datasheet
 
-    // Convert raw temperature data (24-bit unsigned integer)
-    uint32_t raw_pressure = (data[3]) | (data[4] << 8) | data[5] << 16;
-    float pressure = raw_pressure / (pow(2,6));  // Scale as per datasheet
+    // Convert raw temperature data 
+    uint32_t raw_pressure = (uint32_t) (((uint32_t) data[5] << 16) | ((uint16_t)data[4] << 8) | ((data[3]) << 8));
+
+    // raw_pressure -= SEA_LEVEL_PRESSURE; COME BACK TO ME
+    float pressure = (float)(raw_pressure / 64.0);
     
     //Let's extract the sample
     bmp581_data sample;
     sample.pressure = pressure;
     sample.temperature = temperature;
     sample.altitude = convert_to_altitude(pressure);
+    sample.raw_pressure = raw_pressure;
 
     return sample;
 }

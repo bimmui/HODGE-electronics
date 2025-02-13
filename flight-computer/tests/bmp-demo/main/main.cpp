@@ -57,9 +57,15 @@ extern "C" void app_main(void)
     bmp581.bmp581_configure();
 
     /* Let's start grabbing samples */
-    bmp581_data sample = bmp581.bmp581_get_sample();
+    bmp581_data sample;
 
-    printf("%ld\n", sample.pressure);
-    printf("%ld\n", sample.temperature);
-    printf("Estimated Altitude: %.2f meters\n", sample.altitude);
+    for (int i = 0; i < 20; i++){
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        sample = bmp581.bmp581_get_sample();
+        // printf("%lu\n", sample.raw_pressure);
+        printf("%" PRIu32 "\n",sample.raw_pressure);
+        // printf("%ld\n", sample.pressure);
+        // printf("%ld\n", sample.temperature);
+        // printf("Estimated Altitude: %.2f meters\n", sample.altitude);
+    }
 }
