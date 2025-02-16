@@ -13,8 +13,8 @@
 *.o
 *.exe
 *.env
-/ground-station/parsing-and-shared-memory/dash_errorbox.py
-/ground-station/parsing-and-shared-memory/dash_gauges.py
-/ground-station/parsing-and-shared-memory/dash_gmaps.py
-/ground-station/parsing-and-shared-memory/dash_state_and_toggles.py
-/ground-station/parsing-and-shared-memory/dash_test.py
+#/ground-station/parsing-and-shared-memory/dash_errorbox.py
+#/ground-station/parsing-and-shared-memory/dash_gauges.py
+#/ground-station/parsing-and-shared-memory/dash_gmaps.py
+#/ground-station/parsing-and-shared-memory/dash_state_and_toggles.py
+#/ground-station/parsing-and-shared-memory/dash_test.py
