@@ -141,7 +141,7 @@ class ProcessHandler():
 			self._process_1.start()
 
 		if not self._process_2.is_alive():
-			self._process_1.start()
+			self._process_2.start()
 
 		if not self._process_3.is_alive():
 			self._process_3.start()
