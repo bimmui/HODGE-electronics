@@ -63,13 +63,7 @@ class ProcessHandler():
 	#table_name (string): the name of the DB table which the SerialReader should write to (influxDB calls this table a "measurement")
 	#field_names (array: string): An array containing names of the DB fields which the SerialReader should write to
 	def _log_shared_memory_to_database(self, shared_memory_reference, token, org, url, bucket, table_name, field_names):
-		'''profiler = cProfile.Profile()
-		print("CProfile Online!")
-		while True:
-			profiler.enable()
-			time.sleep(10)
-			profiler.create_stats()
-			profiler.print_stats()'''
+		pass
 	#This process reads data from the serial input and logs it to the shared memory class
 	#When processing data from the serial connection, a comma (",") delineates a separation of values, while a newline ("\n") delineates a separation of entries
 	#shared_memory_reference (Manager): a reference to the shared memory where daata can be pulled from.  The Manager should have registered a SharedMemory class
@@ -193,6 +187,9 @@ if __name__ == "__main__":
 	my_serial_reader = ProcessHandler(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
 	my_serial_reader.start()
 	profiler = cProfile.Profile()
+
+	#CProfiler SUCKS for multiprocessing (used py-spy instead)
+	'''
 	print("CProfile Online!")
 	while True:
 		profiler.enable()
@@ -200,3 +197,4 @@ if __name__ == "__main__":
 		profiler.create_stats()
 		profiler.print_stats()
 	my_serial_reader.join_processes()
+	'''
