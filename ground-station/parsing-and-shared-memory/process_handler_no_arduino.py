@@ -65,7 +65,7 @@ class ProcessHandler():
 	def _log_shared_memory_to_database(self, shared_memory_reference, token, org, url, bucket, table_name, field_names):
 		while True:
 			cProfile.run('re.compile("foo|bar")')
-			time.sleep(self.FRAME_SLEEP)
+			time.sleep(10)
 	#This process reads data from the serial input and logs it to the shared memory class
 	#When processing data from the serial connection, a comma (",") delineates a separation of values, while a newline ("\n") delineates a separation of entries
 	#shared_memory_reference (Manager): a reference to the shared memory where daata can be pulled from.  The Manager should have registered a SharedMemory class
