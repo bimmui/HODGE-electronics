@@ -70,7 +70,7 @@ class ProcessHandler():
 		altitude = 0
 		velocity = 20
 		flight_time = 0
-		for i in range(200):
+		for i in range(10000):
 			shared_memory_reference.write([flight_time, altitude, velocity])
 			altitude += 1
 			velocity -= 1
