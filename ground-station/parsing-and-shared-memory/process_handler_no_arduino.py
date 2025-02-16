@@ -87,7 +87,7 @@ class ProcessHandler():
 					dcc.Graph(id="live-update-graph"),
 					dcc.Interval(
 						id="interval-component",
-						interval=1 * 1000,  # in milliseconds
+						interval= 0.1 * 1000,  # in milliseconds
 						n_intervals=0,
 					),
 				]
