@@ -68,9 +68,7 @@ class SharedMemory:
 		currentNode = self.get_last().get_next()
 
 		while currentNode != None:
-			print("loop ran")
 			returnArray.append(currentNode.get_data()[category_number])
 			currentNode = currentNode.get_next()
-		
-		print(returnArray)
+			
 		return returnArray

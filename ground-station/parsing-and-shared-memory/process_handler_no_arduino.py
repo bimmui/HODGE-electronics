@@ -68,12 +68,12 @@ class ProcessHandler():
 		altitude = 0
 		velocity = 20
 		flight_time = 0
-		for i in range(20):
+		for i in range(200):
 			shared_memory_reference.write([flight_time, altitude, velocity])
 			altitude += 1
 			velocity -= 1
 			flight_time += 1
-			time.sleep(1)
+			time.sleep(0.1)
 	
 	def dashboard(self, shared_memory_reference):
 		external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
