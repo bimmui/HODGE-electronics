@@ -73,8 +73,6 @@ class ProcessHandler():
 			altitude += 1
 			velocity -= 1
 			flight_time += 1
-			print(f"Memory List: {shared_memory_reference.convert_to_array(1)}")
-			print(f"Memory List Length: {len(shared_memory_reference.convert_to_array(1))}")
 			time.sleep(1)
 	
 	def dashboard(self, shared_memory_reference):

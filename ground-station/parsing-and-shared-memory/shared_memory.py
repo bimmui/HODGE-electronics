@@ -71,4 +71,5 @@ class SharedMemory:
 			returnArray.append(currentNode.get_data()[category_number])
 			currentNode = currentNode.get_next()
 		
+		print(returnArray)
 		return returnArray
