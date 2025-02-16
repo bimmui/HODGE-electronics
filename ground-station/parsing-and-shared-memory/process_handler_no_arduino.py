@@ -9,6 +9,9 @@ import dash
 from dash import dcc, html, Input, Output, callback
 import plotly.graph_objs as go
 
+import cProfile
+import re
+
 #Class imports
 import shared_memory
 import db_handler
@@ -57,8 +60,7 @@ class ProcessHandler():
 	#table_name (string): the name of the DB table which the SerialReader should write to (influxDB calls this table a "measurement")
 	#field_names (array: string): An array containing names of the DB fields which the SerialReader should write to
 	def _log_shared_memory_to_database(self, shared_memory_reference, token, org, url, bucket, table_name, field_names):
-		while True:
-			continue
+		cProfile.run('re.compile("foo|bar")')
 	#This process reads data from the serial input and logs it to the shared memory class
 	#When processing data from the serial connection, a comma (",") delineates a separation of values, while a newline ("\n") delineates a separation of entries
 	#shared_memory_reference (Manager): a reference to the shared memory where daata can be pulled from.  The Manager should have registered a SharedMemory class
