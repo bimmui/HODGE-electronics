@@ -1,0 +1,20 @@
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+liveUpdates = dcc.Interval(id = 'interval_component', interval = 1*1000)
+
+app.layout = dbc.Container([
+    dcc.Graph(figure={}, id='my-first-graph-final'),
+    liveUpdates
+])
+
+# Add controls to build the interaction
+@callback(
+    Output(component_id='graph', component_property='figure'),
+    Input(component_id='interval_component', component_property='n_interval')
+)
+
+def update_graph(n):
+    df = util.df('AAPL')
+    fig = px.line(data_frame=df,x='time',y='close')
+    fig.update_layout(title={'title':"AAPL Live"})
+    return fig
