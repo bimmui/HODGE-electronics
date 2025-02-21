@@ -46,9 +46,6 @@ class ProcessHandler():
 		self._process_1 = multiprocessing.Process(target=self._log_shared_memory_to_database, args=(self._shared_memory_object, token, org, url, bucket, table_name, field_names))
 		self._process_2 = multiprocessing.Process(target=self._read_serial, args=(self._shared_memory_object, serial_connection_path, baud_rate))
 		self._process_3 = multiprocessing.Process(target=self.dashboard, args=(self._shared_memory_object,))
-
-		#DEBUGGING VALUE FOR NO ARDUINO
-		self.FRAME_SLEEP = 0.01
 		
 	#Destructor: kills processes when object is garbage collected
 	#Makes sure processes are killed on dereference
@@ -63,9 +60,7 @@ class ProcessHandler():
 	#table_name (string): the name of the DB table which the SerialReader should write to (influxDB calls this table a "measurement")
 	#field_names (array: string): An array containing names of the DB fields which the SerialReader should write to
 	def _log_shared_memory_to_database(self, shared_memory_reference, token, org, url, bucket, table_name, field_names):
-		while True:
-			cProfile.run('re.compile("foo|bar")')
-			time.sleep(self.FRAME_SLEEP)
+		cProfile.run('re.compile("foo|bar")')
 	#This process reads data from the serial input and logs it to the shared memory class
 	#When processing data from the serial connection, a comma (",") delineates a separation of values, while a newline ("\n") delineates a separation of entries
 	#shared_memory_reference (Manager): a reference to the shared memory where daata can be pulled from.  The Manager should have registered a SharedMemory class
@@ -80,7 +75,7 @@ class ProcessHandler():
 			altitude += 1
 			velocity -= 1
 			flight_time += 1
-			time.sleep(self.FRAME_SLEEP)
+			time.sleep(0.1)
 	
 	def dashboard(self, shared_memory_reference):
 		external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
