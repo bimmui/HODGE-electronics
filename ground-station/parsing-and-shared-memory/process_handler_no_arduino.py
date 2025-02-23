@@ -134,7 +134,7 @@ class ProcessHandler():
 
 			return fig
 
-		app.run_server(debug=True, port=8060)
+		app.run(debug=True, port=8060, host="0.0.0.0")
 	#Starts the both processes in the SerialReader class
 	def start(self):
 
