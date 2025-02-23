@@ -75,7 +75,7 @@ class ProcessHandler():
 			altitude += 1
 			velocity -= 1
 			flight_time += 1
-			time.sleep(0.1)
+			time.sleep(0.01)
 	
 	def dashboard(self, shared_memory_reference):
 		external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
@@ -89,7 +89,7 @@ class ProcessHandler():
 					dcc.Graph(id="live-update-graph"),
 					dcc.Interval(
 						id="interval-component",
-						interval= 0.01 * 1000,  # in milliseconds
+						interval= 0.1 * 1000,  # in milliseconds
 						n_intervals=0,
 					),
 				]
