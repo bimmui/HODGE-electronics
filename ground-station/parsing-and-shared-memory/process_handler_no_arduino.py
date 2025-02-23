@@ -183,6 +183,6 @@ shared_memory_length = 1000
 
 if __name__ == "__main__":
 	my_serial_reader = ProcessHandler(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
+	print(f"PID: {os.getpid()}")
 	my_serial_reader.start()
 	my_serial_reader.join_processes()
-	print(f"PID: {os.getpid()}")
