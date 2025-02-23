@@ -16,6 +16,7 @@ dependencies:
   - ipympl
   - cython 
   - h5py 
+  - rocketpy
   ## Serial parsing
   - pyserial
   ## Dashboard
