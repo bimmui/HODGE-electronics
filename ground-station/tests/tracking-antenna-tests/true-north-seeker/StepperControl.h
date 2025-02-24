@@ -12,11 +12,11 @@ float distance_to_north = 0;
 long radiansToSteps(double radians, int stepsPerRev)
 {
     return static_cast<int>((radians / (2.0 * pi)) * stepsPerRev);
-    
 }
 
-// long degreesToRadians(double degrees){
-//   return degrees * (pi/180);
-// }
+long degreesToRadians(double degrees)
+{
+    return degrees * (pi / 180);
+}
 
 AccelStepper myStepper(AccelStepper::DRIVER, stepPin, dirPin);

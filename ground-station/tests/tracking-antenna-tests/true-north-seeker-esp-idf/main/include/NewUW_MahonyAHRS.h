@@ -28,39 +28,43 @@
 */
 // The SFE_LSM9DS1 library requires both Wire and SPI be
 // included BEFORE including the 9DS1 library.
-#include <Adafruit_Sensor.h>
-#include <Adafruit_LSM9DS1.h>
+#include <math.h>
 
-//////////////////////////
-// LSM9DS1 Library Init //
-//////////////////////////
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+typedef struct
+{
+    float yaw;
+    float pitch;
+    float roll;
+} euler_angles;
+
 // default settings gyro  245 d/s, accel = 2g, mag = 4G
-Adafruit_LSM9DS1 lsm = Adafruit_LSM9DS1();
 
 // VERY IMPORTANT!
 // magnetometers really do need to be calibrated inside their final operating environment
 // These are the previously determined offsets and scale factors for accelerometer and magnetometer, using MPU9250_cal and Magneto
-float Gscale = (M_PI / 180.0) * 0.00875; // 245 dps scale sensitivity = 8.75 mdps/LSB
-float G_offset[3] = {0.0603, 0.0349, -0.0783};
+const float Gscale = (M_PI / 180.0) * 0.00875; // 245 dps scale sensitivity = 8.75 mdps/LSB
+const float G_offset[3] = {0.0603, 0.0349, -0.0783};
 
 // Accel scale 16457.0 to normalize
-float A_B[3] = { -0.347,   -0.1033, -0.0303};
+const float A_B[3] = {-0.347, -0.1033, -0.0303};
 
-float A_Ainv[3][3]
-{ {  0.001025,  -0.00001,  0.000004},
-  {  -0.00001,  0.001009,  0.000006},
-  {  0.000004,  0.000006,  0.001009}
-};
+const float A_Ainv[3][3]{{0.001025, -0.00001, 0.000004},
+                         {-0.00001, 0.001009, 0.000006},
+                         {0.000004, 0.000006, 0.001009}};
 
 // Mag scale 3746.0 to normalize
-float M_B[3] = {40.991, -24.653, -1.26};
+const float M_B[3] = {40.991, -24.653, -1.26};
 
-float M_Ainv[3][3] = {{0.580428, 0.030876, -0.007},
-                   {0.030876, 0.573477, -0.016433},
-                   {-0.007437, -0.016433, 0.633181}};
+const float M_Ainv[3][3] = {{0.580428, 0.030876, -0.007},
+                            {0.030876, 0.573477, -0.016433},
+                            {-0.007437, -0.016433, 0.633181}};
 
 // local magnetic declination in degrees converted from degree minute seconds
-float declination = 0;
+const float declination = 0;
 
 // These are the free parameters in the Mahony filter and fusion scheme,
 // Kp for proportional feedback, Ki for integral
@@ -68,15 +72,8 @@ float declination = 0;
 #define Kp 50.0
 #define Ki 0.0
 
-unsigned long now = 0, last = 0; // micros() timers for AHRS loop
-float deltat = 0;                // loop time in seconds
-
-#define PRINT_SPEED 300      // ms between angle prints
-unsigned long lastPrint = 0; // Keep track of print time
-
 // Vector to hold quaternion
 static float q[4] = {1.0, 0.0, 0.0, 0.0};
-static float yaw, pitch, roll; // Euler angle output
 
 float vector_dot(float a[3], float b[3])
 {
@@ -91,13 +88,9 @@ void vector_normalize(float a[3])
     a[2] /= mag;
 }
 
-void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3])
+void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3],
+                    sensors_event_t a, sensors_event_t m, sensors_event_t g)
 {
-
-    lsm.read();
-    sensors_event_t a, m, g, garbo;
-    lsm.getEvent(&a, &m, &g, &garbo);
-    byte i;
     float temp[3];
     Gxyz[0] = Gscale * (g.gyro.x - G_offset[0]);
     Gxyz[1] = Gscale * (g.gyro.y - G_offset[1]);
@@ -135,7 +128,7 @@ void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3])
 // input vectors ax, ay, az and mx, my, mz MUST be normalized!
 // gx, gy, gz must be in units of radians/second
 //
-void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat)
+void MahonyQuaternionUpdate(euler_angles result, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat)
 {
     // Vector to hold integral error for Mahony method
     static float eInt[3] = {0.0, 0.0, 0.0};
@@ -145,7 +138,6 @@ void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, fl
     float hx, hy, hz;             // observed West horizon vector W = AxM
     float ux, uy, uz, wx, wy, wz; // calculated A (Up) and W in body frame
     float ex, ey, ez;
-    float pa, pb, pc;
 
     // Auxiliary variables to avoid repeated arithmetic
     float q1q1 = q1 * q1;
@@ -226,4 +218,17 @@ void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, fl
     q[1] = q2 * norm;
     q[2] = q3 * norm;
     q[3] = q4 * norm;
+
+    float temp_roll = atan2((q[0] * q[1] + q[2] * q[3]), 0.5 - (q[1] * q[1] + q[2] * q[2]));
+    float temp_pitch = asin(2.0 * (q[0] * q[2] - q[1] * q[3]));
+    float temp_yaw = atan2((q[1] * q[2] + q[0] * q[3]), 0.5 - (q[2] * q[2] + q[3] * q[3]));
+    result.pitch = temp_pitch * (180.0 / M_PI);
+    result.roll = temp_roll * (180.0 / M_PI);
+    temp_yaw *= (180.0 / M_PI);
+
+    result.yaw = 180 + temp_yaw;
+    if (temp_yaw < 0)
+        result.yaw += 360.0;
+    if (temp_yaw >= 360.0)
+        result.yaw -= 360.0;
 }
