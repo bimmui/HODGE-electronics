@@ -14,6 +14,9 @@
 #define I2C_MASTER_FREQ 400000 // 400 kHz
 #define SPR 1600
 
+#define DELAY(ms) vTaskDelay(pdMS_TO_TICKS(ms))
+#define DELAY_1S DELAY(1000)
+
 static const char *MAIN_TAG = "LSM9DS1_main";
 static const char *AVG_YAW = "average_yaw_calc";
 
@@ -57,6 +60,8 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
                                Mxyz[0], Mxyz[1], Mxyz[2], deltat);
 
         yaw_sum += temp.yaw;
+
+        DELAY_1S;
     }
     yaw_avg = yaw_sum / 1000;
 
