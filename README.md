@@ -11,7 +11,7 @@ Before doing anything, install the following:
 ### ESP-IDF Setup
 Follow the instructions here: [https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html)
 
-For the IDE, it's recommended that you use the VSCode extension, instrctions for setting them up are on the getting started page or you could click here: [https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md](https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md)
+Highly recommended that you install via the VSCode extension. Instrctions for getting set up are on the getting started page or you could click here: [https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md](https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md)
 
 We used ESP-IDF version 5.4 for our build. 
 
