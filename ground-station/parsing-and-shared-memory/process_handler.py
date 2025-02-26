@@ -4,6 +4,8 @@ import serial
 import multiprocessing
 import os
 import dotenv
+from dash import dcc, html, Input, Output, callback
+import plotly.graph_objs as go
 
 #Class imports
 import shared_memory
@@ -37,6 +39,7 @@ class ProcessHandler():
 		#create both processes
 		self._process_1 = multiprocessing.Process(target=self._log_shared_memory_to_database, args=(self._shared_memory_object, token, org, url, bucket, table_name, field_names))
 		self._process_2 = multiprocessing.Process(target=self._read_serial, args=(self._shared_memory_object, serial_connection_path, baud_rate))
+		self._process_3 = multiprocessing.Process(target=self._dashboard, args=(self._shared_memory_object,))
 		
 	#Destructor: kills processes when object is garbage collected
 	#Makes sure processes are killed on dereference
@@ -80,21 +83,84 @@ class ProcessHandler():
 		if not self._process_2.is_alive():
 			self._process_2.start()
 
+		if not self._process_3.is_alive():
+			self._process_3.start()
+
 	#Wait for processes to terminate (never happens currently: processes run until keyboard interrupt)
 	def join_processes(self):
 		self._process_1.join()
 		self._process_2.join()
+		self._process_3.join()
 	
 	#kill both processes in SerialReader
 	def kill(self):
 		self._process_1.kill()
 		self._process_2.kill()
+		self._process_3.kill()
 
 	#Returns the SharedMemory linked list 
 	#Return: (SharedMemory)
 	def get_shared_memory(self):
 		return self._shared_memory_object
 
+	def _dashboard(self, shared_memory_reference):
+		external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+
+		app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+		app.layout = html.Div(
+			html.Div(
+				[
+					html.H4("Rocket Launch Simulation"),
+					dcc.Graph(id="live-update-graph"),
+					dcc.Interval(
+						id="interval-component",
+						interval= 0.1 * 1000,  # in milliseconds
+						n_intervals=0,
+					),
+				]
+			)
+		)
+
+		@app.callback(
+			Output("live-update-graph", "figure"),
+			Input("interval-component", "n_intervals"),
+		)
+		def update_graph_live(n):
+
+			fig = go.Figure()
+			fig.add_trace(
+				go.Scatter(
+					x=shared_memory_reference.convert_to_array(0),
+					y=shared_memory_reference.convert_to_array(1),
+					mode="lines+markers",
+					name="Altitude",
+					hoverinfo="none",
+				)
+			)
+			fig.add_trace(
+				go.Scatter(
+					x=shared_memory_reference.convert_to_array(0),
+					y=shared_memory_reference.convert_to_array(2),
+					mode="lines+markers",
+					name="Velocity",
+					hoverinfo="none",
+				)
+			)
+
+			fig.update_layout(
+				title_text="Rocket Altitude and Velocity",
+				xaxis_title="Time",
+				yaxis_title="Value",
+				title_x=0.5,
+				height=600,
+				showlegend=True,
+				hovermode="closest",
+			)
+
+			return fig
+
+		app.run(debug=True, port=8060, host="0.0.0.0")
 #Load environment variables
 dotenv.load_dotenv()
 token = os.environ["DB_TOKEN"]
@@ -103,9 +169,9 @@ org = os.environ["DB_ORG"]
 #Not sensitive info
 url = "http://localhost:8086" #uncomment this value for local testing
 #url = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
-bucket = "Test"
-table_name = "Fruit Test With Serial 2"
-field_names = ["Favorite", "Least Favorite", "Mid"]
+bucket = "Test With Dash"
+table_name = "Dummy alt and velocity"
+field_names = ["Time", "Altitude", "Velocity"]
 serial_connection_path = "/dev/ttyACM0"
 baud_rate = 115200
 shared_memory_length = 1000
