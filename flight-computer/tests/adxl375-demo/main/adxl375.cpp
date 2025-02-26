@@ -13,13 +13,18 @@
 
 /* ICM20948 registers */
 #define ADXL375_POWER_CTL (0X2D)
-#define ADXL375_ACCEL_XOUT_H (0x32)
+#define ADXL375_ACCEL_X (0x32)
+#define ADXL375_ACCEL_Y (0x34)
+#define ADXL375_ACCEL_Z (0x36)
 #define ADXL375_ACTIVITY_INACTIVITY_CTL (0x27)
 #define ADXL375_SHOCK_DETECTION_AXES_ENABLE (0x2A)
 #define ADXL375_BW_RATE (0x2C)
 #define ADXL375_ENABLE_INTERRUPTS (0x2E)
 #define ADXL375_DATA_FORMAT (0x31)
 #define ADXL375_FIFO_CTL (0x38)
+
+#define ADXL375_WRITE_ADDR (0xA6)
+#define ADXL375_READ_ADDR (0xA7)
 
 void _write(i2c_master_dev_handle_t sensor,
             uint8_t const *data_buf, const uint8_t data_len)
@@ -102,7 +107,7 @@ void ADXL375::configureADXL375()
 void ADXL375::getAccel(adxl375_accel_value_t *accel_vals)
 {
     uint8_t data_rd[6] = {0};
-    _read(adxl375_dev_handle, ADXL375_ACCEL_XOUT_H, data_rd, sizeof(data_rd));
+    _read(adxl375_dev_handle, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
 
     accel_vals->accel_x = (int16_t)((data_rd[1] << 8) + (data_rd[0]));
     accel_vals->accel_y = (int16_t)((data_rd[3] << 8) + (data_rd[2]));

@@ -108,7 +108,7 @@ ICM20948::~ICM20948()
 
 void ICM20948::initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed)
 {
-    activateBypassMode();
+    activateI2CBypass();
     // add a check to ensure that the BYPASS_EN bit is 0
     // maybe add a delay
     ak09916_addr_len = addr_len;
@@ -153,14 +153,14 @@ void ICM20948::configureICM20948(icm20948_accel_fs_t acce_fs, icm20948_gyro_fs_t
     setAccelSensitivity();
 }
 
-void ICM20948::configureAK09916(ak09916_sample_rate_t sample_rate)
+void ICM20948::configureAK09916()
 {
     // reset the mag
     const uint8_t reg_and_data[] = {AK09916_CNTL3, 0x01};
     icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
 
     vTaskDelay(10 / portTICK_PERIOD_MS);
-    setMagSampleRate(sample_rate);
+    // setMagSampleRate(sample_rate);
 }
 
 uint8_t
@@ -367,7 +367,7 @@ void ICM20948::getAccel(icm20948_accel_value_t *accel_vals)
     accel_vals->accel_z = curr_raw_accel_vals.raw_accel_z / accel_sensitivity;
 }
 
-void ICM20948::activateBypassMode()
+void ICM20948::activateI2CBypass()
 {
     setBank(0);
 
@@ -380,15 +380,15 @@ void ICM20948::activateBypassMode()
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
-void ICM20948::setMagSampleRate(ak09916_sample_rate_t rate)
-{
-    // after resetting, cntl2 register should be clear with 0
-    // so no need to read whats already there
+// void ICM20948::setMagSampleRate(ak09916_sample_rate_t rate)
+// {
+//     // after resetting, cntl2 register should be clear with 0
+//     // so no need to read whats already there
 
-    uint8_t sample_rate_setting = (rate << 1);
-    const uint8_t reg_and_data[] = {AK09916_CNTL2, sample_rate_setting};
-    icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
-}
+//     uint8_t sample_rate_setting = (rate << 1);
+//     const uint8_t reg_and_data[] = {AK09916_CNTL2, sample_rate_setting};
+//     icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
+// }
 
 void ICM20948::getMag(ak09916_mag_value_t *mag_vals)
 {

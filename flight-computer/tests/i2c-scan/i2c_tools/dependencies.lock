@@ -2,25 +2,25 @@ dependencies:
   cmd_nvs:
     dependencies: []
     source:
-      path: C:\Users\Daniel\esp\v5.3.1\esp-idf\examples\system\console\advanced\components\cmd_nvs
+      path: C:\Users\danie\esp\v5.4\esp-idf\examples\system\console\advanced\components\cmd_nvs
       type: local
     version: '*'
   cmd_system:
     dependencies: []
     source:
-      path: C:\Users\Daniel\esp\v5.3.1\esp-idf\examples\system\console\advanced\components\cmd_system
+      path: C:\Users\danie\esp\v5.4\esp-idf\examples\system\console\advanced\components\cmd_system
       type: local
     version: '*'
   cmd_wifi:
     dependencies: []
     source:
-      path: C:\Users\Daniel\esp\v5.3.1\esp-idf\examples\system\console\advanced\components\cmd_wifi
+      path: C:\Users\danie\esp\v5.4\esp-idf\examples\system\console\advanced\components\cmd_wifi
       type: local
     version: '*'
   idf:
     source:
       type: idf
-    version: 5.3.1
+    version: 5.4.0
 direct_dependencies:
 - cmd_nvs
 - cmd_system

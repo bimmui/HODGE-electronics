@@ -31,10 +31,10 @@ static void initialize_filesystem(void)
     static wl_handle_t wl_handle;
     const esp_vfs_fat_mount_config_t mount_config = {
         .max_files = 4,
-        .format_if_mount_failed = true
-    };
+        .format_if_mount_failed = true};
     esp_err_t err = esp_vfs_fat_spiflash_mount_rw_wl(MOUNT_PATH, "storage", &mount_config, &wl_handle);
-    if (err != ESP_OK) {
+    if (err != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
         return;
     }
@@ -70,7 +70,7 @@ void app_main(void)
         .scl_io_num = i2c_gpio_scl,
         .sda_io_num = i2c_gpio_sda,
         .glitch_ignore_cnt = 7,
-        .flags.enable_internal_pullup = true,
+        .flags.enable_internal_pullup = false,
     };
 
     ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_bus_config, &tool_bus_handle));

@@ -46,7 +46,7 @@ extern "C" void app_main()
     ESP_LOGI(TAG, "Starting ICM test");
     i2c_bus_init();
     ESP_LOGI(TAG, "I2C bus initialization: good hopefully");
-    static TMP1075 tmp(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x69, CONFIG_I2C_MASTER_FREQUENCY);
+    static TMP1075 tmp(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x47, CONFIG_I2C_MASTER_FREQUENCY);
     ESP_LOGI(TAG, "TMP1075 object initialized");
     tmp.configureTMP1075();
 

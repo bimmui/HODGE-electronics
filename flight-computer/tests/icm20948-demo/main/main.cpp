@@ -52,7 +52,7 @@ extern "C" void app_main()
     ESP_LOGI(TAG, "Starting ICM test");
     i2c_bus_init();
     ESP_LOGI(TAG, "I2C bus initialization: good hopefully");
-    static ICM20948 icm(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x69, CONFIG_I2C_MASTER_FREQUENCY);
+    static ICM20948 icm(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x68, CONFIG_I2C_MASTER_FREQUENCY);
     ESP_LOGI(TAG, "ICM20948 object initialized");
     icm.configureICM20948(ICM20948::ACCEL_FS_2G, ICM20948::GYRO_FS_1000DPS);
 
