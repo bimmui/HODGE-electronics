@@ -1,6 +1,9 @@
 
-/.vscode
-/flight-computer/src/.devcontainer
-/flight-computer/src/.vscode
-/flight-computer/src/build
-/flight-computer/src/sdkconfig
+*.devcontainer
+*build/
+*sdkconfig
+*sdkconfig.old
+*sdkconfig.defaults
+*.vscode
+*.o
+*.exe
