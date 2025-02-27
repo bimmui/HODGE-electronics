@@ -7,18 +7,24 @@
 #include "LSM9DS1_ESP_IDF.h"
 #include "NewUW_MahonyAHRS.h"
 #include "AccelStepper.h"
+#include <iostream>
 
 #define I2C_MASTER_NUM I2C_NUM_0
 #define I2C_MASTER_SDA GPIO_NUM_21
 #define I2C_MASTER_SCL GPIO_NUM_22
 #define I2C_MASTER_FREQ 400000 // 400 kHz
 #define SPR 1600
+#define SAMPLE_COUNT 10
 
 #define DELAY(ms) vTaskDelay(pdMS_TO_TICKS(ms))
 #define DELAY_1S DELAY(1000)
+#define DELAY_1MS DELAY(1)
 
 static const char *MAIN_TAG = "LSM9DS1_main";
 static const char *AVG_YAW = "average_yaw_calc";
+static const char *CURRENT_YAW = "current_yaw_reading";
+static const char *CURRENT_OUTPUTS = "current_mahoney_reading";
+static const char *IMU_BEFORE_MAHONEY = "IMU READINGS";
 
 long radians_to_steps(double radians)
 {
@@ -30,6 +36,52 @@ long degrees_to_radians(float degrees)
     return degrees * (M_PI / 180);
 }
 
+
+uint64_t last = 0;
+float get_ypr(LSM9DS1_ESP_IDF lsm)
+{
+    uint64_t now = 0;
+
+    sensors_event_t aevt, megt, gevt, tevt;
+    lsm.getEvent(&aevt, &megt, &gevt, &tevt);
+
+    float Gxyz[3], Axyz[3], Mxyz[3];
+    get_scaled_IMU(Gxyz, Axyz, Mxyz, aevt, megt, gevt);
+
+    Axyz[0] = -Axyz[0];
+    Gxyz[0] = -Gxyz[0];
+
+    now = esp_timer_get_time();
+    double deltat = (now - last) * 1.0e-6;
+    last = now;
+
+    ESP_LOGI(IMU_BEFORE_MAHONEY, "Accel: %f, %f, %f | Gyro: %f, %f, %f | Mag: %f, %f, %f\n",
+                  Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2], Mxyz[0], Mxyz[1], Mxyz[2]);
+
+
+    euler_angles current;
+
+    current.yaw = 0;
+    current.pitch = 0;
+    current.roll = 0;
+
+    MahonyQuaternionUpdate(current, Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2],
+                               Mxyz[0], Mxyz[1], Mxyz[2], deltat);
+
+    // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees", 
+    //                 current.yaw);
+
+
+    ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees", 
+                current.yaw, current.pitch, current.roll);
+
+
+    DELAY_1MS;
+
+    return current.yaw;
+}
+
+
 float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
 {
     uint64_t now = 0;
@@ -37,8 +89,9 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
     float yaw_sum = 0;
     float yaw_avg = 0;
 
-    ESP_LOGE(AVG_YAW, "Beginning average yaw calculation...");
-    for (int i = 0; i < 1000; i++)
+    ESP_LOGI(AVG_YAW, "Beginning average yaw calculation...");
+
+    for (int i = 0; i < SAMPLE_COUNT; i++)
     {
         sensors_event_t aevt, megt, gevt, tevt;
         lsm.getEvent(&aevt, &megt, &gevt, &tevt);
@@ -53,6 +106,8 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
         double deltat = (now - last) * 1.0e-6; // seconds since last update
         last = now;
 
+        
+
         euler_angles temp;
         temp.yaw = 0; // doing this stupid fix to egt rid of the uninitialized errors
 
@@ -63,9 +118,9 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
 
         DELAY_1S;
     }
-    yaw_avg = yaw_sum / 1000;
+    yaw_avg = yaw_sum / SAMPLE_COUNT;
 
-    ESP_LOGE(AVG_YAW, "Average yaw: %lf", yaw_avg);
+    ESP_LOGI(AVG_YAW, "Average yaw: %lf", yaw_avg);
 
     return yaw_avg;
 }
@@ -137,15 +192,24 @@ extern "C" void app_main(void)
 
         // Option B: get "unified" style events
 
+
         sensors_event_t aevt, megt, gevt, tevt;
         lsm.getEvent(&aevt, &megt, &gevt, &tevt);
-        ESP_LOGI(MAIN_TAG, "Accel: %.2f,%.2f,%.2f m/s^2   Gyro: %.2f,%.2f,%.2f rad/s   "
-                           "Mag: %.2f,%.2f,%.2f gauss   Temp: %.2f C",
-                 aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z,
-                 gevt.gyro.x, gevt.gyro.y, gevt.gyro.z,
-                 megt.magnetic.x, megt.magnetic.y, megt.magnetic.z,
-                 tevt.temperature);
+
+        get_ypr(lsm);
+
+        // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees", 
+        //             get_yaw(lsm));
+        
+
+        // ESP_LOGI(MAIN_TAG, "Accel: %.2f,%.2f,%.2f m/s^2   Gyro: %.2f,%.2f,%.2f rad/s   "
+        //                    "Mag: %.2f,%.2f,%.2f gauss   Temp: %.2f C",
+        //          aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z,
+        //          gevt.gyro.x, gevt.gyro.y, gevt.gyro.z,
+        //          megt.magnetic.x, megt.magnetic.y, megt.magnetic.z,
+        //          tevt.temperature);
 
         vTaskDelay(pdMS_TO_TICKS(500));
+        
     }
 }

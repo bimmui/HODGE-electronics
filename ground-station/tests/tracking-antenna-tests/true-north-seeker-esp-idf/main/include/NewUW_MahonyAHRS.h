@@ -128,7 +128,7 @@ void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3],
 // input vectors ax, ay, az and mx, my, mz MUST be normalized!
 // gx, gy, gz must be in units of radians/second
 //
-void MahonyQuaternionUpdate(euler_angles result, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat)
+void MahonyQuaternionUpdate(euler_angles &result, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat)
 {
     // Vector to hold integral error for Mahony method
     static float eInt[3] = {0.0, 0.0, 0.0};
