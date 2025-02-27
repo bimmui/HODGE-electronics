@@ -36,7 +36,6 @@ long degrees_to_radians(float degrees)
     return degrees * (M_PI / 180);
 }
 
-
 uint64_t last = 0;
 float get_ypr(LSM9DS1_ESP_IDF lsm)
 {
@@ -56,8 +55,8 @@ float get_ypr(LSM9DS1_ESP_IDF lsm)
     last = now;
 
     ESP_LOGI(IMU_BEFORE_MAHONEY, "Accel: %f, %f, %f | Gyro: %f, %f, %f | Mag: %f, %f, %f\n",
-                  Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2], Mxyz[0], Mxyz[1], Mxyz[2]);
-
+             aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z, gevt.gyro.x, gevt.gyro.y,
+             gevt.gyro.z, megt.magnetic.x, megt.magnetic.y, megt.magnetic.z);
 
     euler_angles current;
 
@@ -66,21 +65,18 @@ float get_ypr(LSM9DS1_ESP_IDF lsm)
     current.roll = 0;
 
     MahonyQuaternionUpdate(current, Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2],
-                               Mxyz[0], Mxyz[1], Mxyz[2], deltat);
+                           Mxyz[0], Mxyz[1], Mxyz[2], deltat);
 
-    // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees", 
+    // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
     //                 current.yaw);
 
-
-    ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees", 
-                current.yaw, current.pitch, current.roll);
-
+    ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
+             current.yaw, current.pitch, current.roll);
 
     DELAY_1MS;
 
     return current.yaw;
 }
-
 
 float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
 {
@@ -105,8 +101,6 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
         now = esp_timer_get_time();
         double deltat = (now - last) * 1.0e-6; // seconds since last update
         last = now;
-
-        
 
         euler_angles temp;
         temp.yaw = 0; // doing this stupid fix to egt rid of the uninitialized errors
@@ -192,15 +186,13 @@ extern "C" void app_main(void)
 
         // Option B: get "unified" style events
 
-
         sensors_event_t aevt, megt, gevt, tevt;
         lsm.getEvent(&aevt, &megt, &gevt, &tevt);
 
         get_ypr(lsm);
 
-        // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees", 
+        // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
         //             get_yaw(lsm));
-        
 
         // ESP_LOGI(MAIN_TAG, "Accel: %.2f,%.2f,%.2f m/s^2   Gyro: %.2f,%.2f,%.2f rad/s   "
         //                    "Mag: %.2f,%.2f,%.2f gauss   Temp: %.2f C",
@@ -210,6 +202,5 @@ extern "C" void app_main(void)
         //          tevt.temperature);
 
         vTaskDelay(pdMS_TO_TICKS(500));
-        
     }
 }

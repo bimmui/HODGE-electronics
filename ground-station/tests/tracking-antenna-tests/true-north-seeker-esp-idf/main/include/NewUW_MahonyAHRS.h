@@ -33,6 +33,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+static const char *FUNC_TEST = "Mahony";
 
 typedef struct
 {
@@ -222,13 +223,22 @@ void MahonyQuaternionUpdate(euler_angles &result, float ax, float ay, float az, 
     float temp_roll = atan2((q[0] * q[1] + q[2] * q[3]), 0.5 - (q[1] * q[1] + q[2] * q[2]));
     float temp_pitch = asin(2.0 * (q[0] * q[2] - q[1] * q[3]));
     float temp_yaw = atan2((q[1] * q[2] + q[0] * q[3]), 0.5 - (q[2] * q[2] + q[3] * q[3]));
-    result.pitch = temp_pitch * (180.0 / M_PI);
-    result.roll = temp_roll * (180.0 / M_PI);
-    temp_yaw *= (180.0 / M_PI);
 
-    result.yaw = 180 + temp_yaw;
+    // to degrees
+    temp_roll *= 180.0 / M_PI;
+    temp_pitch *= 180.0 / M_PI;
+    temp_yaw *= 180.0 / M_PI;
+
+    temp_yaw = 180 + temp_yaw;
     if (temp_yaw < 0)
-        result.yaw += 360.0;
+        temp_yaw += 360.0;
     if (temp_yaw >= 360.0)
-        result.yaw -= 360.0;
+        temp_yaw -= 360.0;
+
+    result.yaw = temp_yaw;
+    result.pitch = temp_pitch;
+    result.roll = temp_roll;
+
+    ESP_LOGI(FUNC_TEST, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
+             result.yaw, result.pitch, result.roll);
 }
