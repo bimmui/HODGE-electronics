@@ -225,6 +225,10 @@ void LSM9DS1_ESP_IDF::readMag()
     magData.x = x;
     magData.y = y;
     magData.z = z;
+
+    // magData.x = x;
+    // magData.y = y;
+    // magData.z = z;
 }
 
 //----------------------------------------------------------------------
@@ -358,9 +362,9 @@ void LSM9DS1_ESP_IDF::getMagEvent(sensors_event_t *event, uint32_t timestamp)
     // approximate sensitivity for +/-4 gauss:
     float magSensitivity = 0.14f;
 
-    event->magnetic.x = magData.x * magSensitivity / 1000.0f;
-    event->magnetic.y = magData.y * magSensitivity / 1000.0f;
-    event->magnetic.z = magData.z * magSensitivity / 1000.0f;
+    event->magnetic.x = magData.x * magSensitivity / 10.0f;
+    event->magnetic.y = magData.y * magSensitivity / 10.0f;
+    event->magnetic.z = magData.z * magSensitivity / 10.0f;
 }
 
 void LSM9DS1_ESP_IDF::getGyroEvent(sensors_event_t *event, uint32_t timestamp)

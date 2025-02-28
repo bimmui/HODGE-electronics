@@ -170,7 +170,7 @@ public:
     esp_err_t initI2C(i2c_master_bus_handle_t bus_handle,
                       uint16_t addrAG = LSM9DS1_ADDRESS_ACCELGYRO,
                       uint16_t addrM = LSM9DS1_ADDRESS_MAG,
-                      uint32_t scl_speed_hz = 400000);
+                      uint32_t scl_speed_hz = 100000);
 
     /**
      * @brief  Initialize sensor on SPI

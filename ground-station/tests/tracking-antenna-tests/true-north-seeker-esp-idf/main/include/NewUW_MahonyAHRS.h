@@ -1,39 +1,11 @@
-
-// New UW Mahony AHRS for the LSM9DS1  S.J. Remington 3/2021
-// Requires the Sparkfun LSM9DS1 library
-// Standard sensor orientation X North (yaw=0), Y West, Z up
-// NOTE: Sensor X axis is remapped to the opposite direction of the "X arrow" on the Adafruit sensor breakout!
-
-// New Mahony filter error scheme uses Up (accel Z axis) and West (= Acc X Mag) as the orientation reference vectors
-// heavily modified from http://www.x-io.co.uk/open-source-imu-and-ahrs-algorithms/
-// Both the accelerometer and magnetometer MUST be properly calibrated for this program to work.
-// Follow the procedure described in http://sailboatinstruments.blogspot.com/2011/08/improved-magnetometer-calibration.html
-// or in more detail, the tutorial https://thecavepearlproject.org/2015/05/22/calibrating-any-compass-or-accelerometer-for-arduino/
-//
-// To collect data for calibration, use the companion program LSM9DS1_cal_data
-//
-/*
-  Adafruit 3V or 5V board
-  Hardware setup: This library supports communicating with the
-  LSM9DS1 over either I2C or SPI. This example demonstrates how
-  to use I2C. The pin-out is as follows:
-  LSM9DS1 --------- Arduino
-   SCL ---------- SCL (A5 on older 'Duinos')
-   SDA ---------- SDA (A4 on older 'Duinos')
-   VIN ------------- 5V
-   GND ------------- GND
-
-   CSG, CSXM, SDOG, and SDOXM should all be pulled high.
-   pullups on the ADAFRUIT breakout board do this.
-*/
-// The SFE_LSM9DS1 library requires both Wire and SPI be
-// included BEFORE including the 9DS1 library.
-#include <math.h>
+#include <cmath>
+#include <cstdio>
+#include "esp_log.h"
+#include "LSM9DS1_ESP_IDF.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-static const char *FUNC_TEST = "Mahony";
 
 typedef struct
 {
@@ -42,203 +14,330 @@ typedef struct
     float roll;
 } euler_angles;
 
-// default settings gyro  245 d/s, accel = 2g, mag = 4G
-
-// VERY IMPORTANT!
-// magnetometers really do need to be calibrated inside their final operating environment
-// These are the previously determined offsets and scale factors for accelerometer and magnetometer, using MPU9250_cal and Magneto
-const float Gscale = (M_PI / 180.0) * 0.00875; // 245 dps scale sensitivity = 8.75 mdps/LSB
-const float G_offset[3] = {0.0603, 0.0349, -0.0783};
-
-// Accel scale 16457.0 to normalize
-const float A_B[3] = {-0.347, -0.1033, -0.0303};
-
-const float A_Ainv[3][3]{{0.001025, -0.00001, 0.000004},
-                         {-0.00001, 0.001009, 0.000006},
-                         {0.000004, 0.000006, 0.001009}};
-
-// Mag scale 3746.0 to normalize
-const float M_B[3] = {40.991, -24.653, -1.26};
-
-const float M_Ainv[3][3] = {{0.580428, 0.030876, -0.007},
-                            {0.030876, 0.573477, -0.016433},
-                            {-0.007437, -0.016433, 0.633181}};
-
-// local magnetic declination in degrees converted from degree minute seconds
-const float declination = 0;
-
-// These are the free parameters in the Mahony filter and fusion scheme,
-// Kp for proportional feedback, Ki for integral
-// Kp is not yet optimized. Ki is not used.
-#define Kp 50.0
-#define Ki 0.0
-
-// Vector to hold quaternion
-static float q[4] = {1.0, 0.0, 0.0, 0.0};
-
-float vector_dot(float a[3], float b[3])
+class MahonyAHRS
 {
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-
-void vector_normalize(float a[3])
-{
-    float mag = sqrt(vector_dot(a, a));
-    a[0] /= mag;
-    a[1] /= mag;
-    a[2] /= mag;
-}
-
-void get_scaled_IMU(float Gxyz[3], float Axyz[3], float Mxyz[3],
-                    sensors_event_t a, sensors_event_t m, sensors_event_t g)
-{
-    float temp[3];
-    Gxyz[0] = Gscale * (g.gyro.x - G_offset[0]);
-    Gxyz[1] = Gscale * (g.gyro.y - G_offset[1]);
-    Gxyz[2] = Gscale * (g.gyro.z - G_offset[2]);
-
-    Axyz[0] = a.acceleration.x;
-    Axyz[1] = a.acceleration.y;
-    Axyz[2] = a.acceleration.z;
-    Mxyz[0] = m.magnetic.x;
-    Mxyz[1] = m.magnetic.y;
-    Mxyz[2] = m.magnetic.z;
-
-    // apply accel offsets (bias) and scale factors from Magneto
-
-    // for (i = 0; i < 3; i++) temp[i] = (Axyz[i] - A_B[i]);
-    // Axyz[0] = A_Ainv[0][0] * temp[0] + A_Ainv[0][1] * temp[1] + A_Ainv[0][2] * temp[2];
-    // Axyz[1] = A_Ainv[1][0] * temp[0] + A_Ainv[1][1] * temp[1] + A_Ainv[1][2] * temp[2];
-    // Axyz[2] = A_Ainv[2][0] * temp[0] + A_Ainv[2][1] * temp[1] + A_Ainv[2][2] * temp[2];
-    vector_normalize(Axyz);
-
-    // apply mag offsets (bias) and scale factors from Magneto
-
-    for (int i = 0; i < 3; i++)
-        temp[i] = (Mxyz[i] - M_B[i]);
-    Mxyz[0] = M_Ainv[0][0] * temp[0] + M_Ainv[0][1] * temp[1] + M_Ainv[0][2] * temp[2];
-    Mxyz[1] = M_Ainv[1][0] * temp[0] + M_Ainv[1][1] * temp[1] + M_Ainv[1][2] * temp[2];
-    Mxyz[2] = M_Ainv[2][0] * temp[0] + M_Ainv[2][1] * temp[1] + M_Ainv[2][2] * temp[2];
-    vector_normalize(Mxyz);
-}
-
-// Mahony orientation filter, assumed World Frame NWU (xNorth, yWest, zUp)
-// Modified from Madgwick version to remove Z component of magnetometer:
-// The two reference vectors are now Up (Z, Acc) and West (Acc cross Mag)
-// sjr 3/2021
-// input vectors ax, ay, az and mx, my, mz MUST be normalized!
-// gx, gy, gz must be in units of radians/second
-//
-void MahonyQuaternionUpdate(euler_angles &result, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float deltat)
-{
-    // Vector to hold integral error for Mahony method
-    static float eInt[3] = {0.0, 0.0, 0.0};
-    // short name local variable for readability
-    float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];
-    float norm;
-    float hx, hy, hz;             // observed West horizon vector W = AxM
-    float ux, uy, uz, wx, wy, wz; // calculated A (Up) and W in body frame
-    float ex, ey, ez;
-
-    // Auxiliary variables to avoid repeated arithmetic
-    float q1q1 = q1 * q1;
-    float q1q2 = q1 * q2;
-    float q1q3 = q1 * q3;
-    float q1q4 = q1 * q4;
-    float q2q2 = q2 * q2;
-    float q2q3 = q2 * q3;
-    float q2q4 = q2 * q4;
-    float q3q3 = q3 * q3;
-    float q3q4 = q3 * q4;
-    float q4q4 = q4 * q4;
-
-    // Measured horizon vector = a x m (in body frame)
-    hx = ay * mz - az * my;
-    hy = az * mx - ax * mz;
-    hz = ax * my - ay * mx;
-    // Normalise horizon vector
-    norm = sqrt(hx * hx + hy * hy + hz * hz);
-    if (norm == 0.0f)
-        return; // Handle div by zero
-
-    norm = 1.0f / norm;
-    hx *= norm;
-    hy *= norm;
-    hz *= norm;
-
-    // Estimated direction of Up reference vector
-    ux = 2.0f * (q2q4 - q1q3);
-    uy = 2.0f * (q1q2 + q3q4);
-    uz = q1q1 - q2q2 - q3q3 + q4q4;
-
-    // estimated direction of horizon (West) reference vector
-    wx = 2.0f * (q2q3 + q1q4);
-    wy = q1q1 - q2q2 + q3q3 - q4q4;
-    wz = 2.0f * (q3q4 - q1q2);
-
-    // Error is the summed cross products of estimated and measured directions of the reference vectors
-    // It is assumed small, so sin(theta) ~ theta IS the angle required to correct the orientation error.
-
-    ex = (ay * uz - az * uy) + (hy * wz - hz * wy);
-    ey = (az * ux - ax * uz) + (hz * wx - hx * wz);
-    ez = (ax * uy - ay * ux) + (hx * wy - hy * wx);
-
-    if (Ki > 0.0f)
+public:
+    /**
+     * @brief Class to initialize calibration parameters and filter constants to perform Mahony AHRS algo
+     *
+     * @param Gscale    Gyroscope scale factor (rad/s per LSB)
+     * @param G_offset  Gyroscope offsets [gx_off, gy_off, gz_off]
+     * @param A_B       Accelerometer bias [ax_off, ay_off, az_off]
+     * @param A_Ainv    Inverse correction matrix for accelerometer
+     * @param M_B       Magnetometer bias [mx_off, my_off, mz_off]
+     * @param M_Ainv    Inverse correction matrix for magnetometer
+     * @param declination   Local magnetic declination in degrees
+     * @param Kp        Mahony proportional gain
+     * @param Ki        Mahony integral gain (could prob keep this 0)
+     */
+    MahonyAHRS(float Gscale,
+               const float G_offset[3],
+               const float A_B[3],
+               const float A_Ainv[3][3],
+               const float M_B[3],
+               const float M_Ainv[3][3],
+               float declination,
+               float Kp,
+               float Ki)
+        : Gscale_(Gscale),
+          declination_(declination),
+          Kp_(Kp),
+          Ki_(Ki)
     {
-        eInt[0] += ex; // accumulate integral error
-        eInt[1] += ey;
-        eInt[2] += ez;
-        // Apply I feedback
-        gx += Ki * eInt[0];
-        gy += Ki * eInt[1];
-        gz += Ki * eInt[2];
+        // store gyro offset
+        for (int i = 0; i < 3; i++)
+        {
+            G_offset_[i] = G_offset[i];
+            A_B_[i] = A_B[i];
+            M_B_[i] = M_B[i];
+        }
+
+        // store scale matrices
+        for (int r = 0; r < 3; r++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                A_Ainv_[r][c] = A_Ainv[r][c];
+                M_Ainv_[r][c] = M_Ainv[r][c];
+            }
+        }
+
+        // init quaternion to identity
+        q_[0] = 1.0f;
+        q_[1] = 0.0f;
+        q_[2] = 0.0f;
+        q_[3] = 0.0f;
     }
 
-    // Apply P feedback
-    gx = gx + Kp * ex;
-    gy = gy + Kp * ey;
-    gz = gz + Kp * ez;
+    /**
+     * @brief Retrieve and process sensors_event_t data, then
+     *        run Mahony filter to update internal quaternion.
+     *
+     * @param accel  Accelerometer event
+     * @param mag    Magnetometer event
+     * @param gyro   Gyroscope event
+     * @param deltat Time step in seconds
+     * @return euler_angles (yaw, pitch, roll in degrees)
+     */
+    euler_angles updateIMU(const sensors_event_t &accel,
+                           const sensors_event_t &mag,
+                           const sensors_event_t &gyro,
+                           float deltat)
+    {
+        float Gxyz[3], Axyz[3], Mxyz[3];
 
-    // update quaternion with integrated contribution
-    //  small correction 1/11/2022, see https://github.com/kriswiner/MPU9250/issues/447
-    gx = gx * (0.5 * deltat); // pre-multiply common factors
-    gy = gy * (0.5 * deltat);
-    gz = gz * (0.5 * deltat);
-    float qa = q1;
-    float qb = q2;
-    float qc = q3;
-    q1 += (-qb * gx - qc * gy - q4 * gz);
-    q2 += (qa * gx + qc * gz - q4 * gy);
-    q3 += (qa * gy - qb * gz + q4 * gx);
-    q4 += (qa * gz + qb * gy - qc * gx);
+        // scale and calibrate the raw data
+        getScaledIMU(Gxyz, Axyz, Mxyz, accel, mag, gyro);
 
-    // Normalise quaternion
-    norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
-    norm = 1.0f / norm;
-    q[0] = q1 * norm;
-    q[1] = q2 * norm;
-    q[2] = q3 * norm;
-    q[3] = q4 * norm;
+        // run the Mahony filter update
+        euler_angles result;
+        MahonyQuaternionUpdate(result,
+                               Axyz[0], Axyz[1], Axyz[2],
+                               Gxyz[0], Gxyz[1], Gxyz[2],
+                               Mxyz[0], Mxyz[1], Mxyz[2],
+                               deltat);
 
-    float temp_roll = atan2((q[0] * q[1] + q[2] * q[3]), 0.5 - (q[1] * q[1] + q[2] * q[2]));
-    float temp_pitch = asin(2.0 * (q[0] * q[2] - q[1] * q[3]));
-    float temp_yaw = atan2((q[1] * q[2] + q[0] * q[3]), 0.5 - (q[2] * q[2] + q[3] * q[3]));
+        return result;
+    }
 
-    // to degrees
-    temp_roll *= 180.0 / M_PI;
-    temp_pitch *= 180.0 / M_PI;
-    temp_yaw *= 180.0 / M_PI;
+private:
+    // Calibration parameters
+    float Gscale_; // e.g. (M_PI/180.0)*0.00875
+    float G_offset_[3];
+    float A_B_[3];
+    float A_Ainv_[3][3];
+    float M_B_[3];
+    float M_Ainv_[3][3];
+    float declination_;
 
-    temp_yaw = 180 + temp_yaw;
-    if (temp_yaw < 0)
-        temp_yaw += 360.0;
-    if (temp_yaw >= 360.0)
-        temp_yaw -= 360.0;
+    // Mahony filter constants
+    float Kp_;
+    float Ki_;
 
-    result.yaw = temp_yaw;
-    result.pitch = temp_pitch;
-    result.roll = temp_roll;
+    // Quaternion (q0, q1, q2, q3)
+    float q_[4];
 
-    ESP_LOGI(FUNC_TEST, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
-             result.yaw, result.pitch, result.roll);
-}
+    // Integral error
+    // float eInt_[3];
+
+    // Logging TAG
+    static constexpr const char *TAG_ = "MahonyAHRS";
+
+private:
+    /**
+     * @brief Helper func to normalize 3-element vector
+     */
+    void vector_normalize(float v[3])
+    {
+        // dot product
+        float mag = std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+
+        if (mag > 0.000001f) // Avoid division by zero
+        {
+            v[0] /= mag;
+            v[1] /= mag;
+            v[2] /= mag;
+        }
+    }
+
+    /**
+     * @brief Applies calibration to raw sensor data and normalizes readings
+     */
+    void getScaledIMU(float Gxyz[3], float Axyz[3], float Mxyz[3],
+                      const sensors_event_t &a,
+                      const sensors_event_t &m,
+                      const sensors_event_t &g)
+    {
+        float temp[3];
+
+        // Gyroscope (convert to rad/s)
+        Gxyz[0] = Gscale_ * (g.gyro.x - G_offset_[0]);
+        Gxyz[1] = Gscale_ * (g.gyro.y - G_offset_[1]);
+        Gxyz[2] = Gscale_ * (g.gyro.z - G_offset_[2]);
+
+        // Accelerometer (raw)
+        Axyz[0] = a.acceleration.x;
+        Axyz[1] = a.acceleration.y;
+        Axyz[2] = a.acceleration.z;
+
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     temp[i] = Axyz[i] - A_B_[i];
+        // }
+        // Axyz[0] = A_Ainv_[0][0] * temp[0] + A_Ainv_[0][1] * temp[1] + A_Ainv_[0][2] * temp[2];
+        // Axyz[1] = A_Ainv_[1][0] * temp[0] + A_Ainv_[1][1] * temp[1] + A_Ainv_[1][2] * temp[2];
+        // Axyz[2] = A_Ainv_[2][0] * temp[0] + A_Ainv_[2][1] * temp[1] + A_Ainv_[2][2] * temp[2];
+
+        vector_normalize(Axyz);
+
+        // Magnetometer (raw)
+        Mxyz[0] = m.magnetic.x;
+        Mxyz[1] = m.magnetic.y;
+        Mxyz[2] = m.magnetic.z;
+
+        // Apply magnetometer calibration
+        for (int i = 0; i < 3; i++)
+            temp[i] = (Mxyz[i] - M_B_[i]);
+
+        Mxyz[0] = M_Ainv_[0][0] * temp[0] + M_Ainv_[0][1] * temp[1] + M_Ainv_[0][2] * temp[2];
+        Mxyz[1] = M_Ainv_[1][0] * temp[0] + M_Ainv_[1][1] * temp[1] + M_Ainv_[1][2] * temp[2];
+        Mxyz[2] = M_Ainv_[2][0] * temp[0] + M_Ainv_[2][1] * temp[1] + M_Ainv_[2][2] * temp[2];
+
+        vector_normalize(Mxyz);
+
+        Axyz[0] = -Axyz[0]; // fix accel/gyro handedness
+        Gxyz[0] = -Gxyz[0]; // must be done after offsets & scales applied to raw data
+        // ESP_LOGI(TAG_, "Accel: %f, %f, %f | Gyro: %f, %f, %f | Mag: %f, %f, %f\n",
+        //          a.acceleration.x, a.acceleration.y, a.acceleration.z, g.gyro.x, g.gyro.y,
+        //          g.gyro.z, m.magnetic.x, m.magnetic.y, m.magnetic.z);
+    }
+
+    /**
+     * @brief Mahony orientation filter, World Frame NWU (xNorth, yWest, zUp).
+     *        Updates the internal quaternion and calculates Euler angles.
+     */
+    void MahonyQuaternionUpdate(euler_angles &result,
+                                float ax, float ay, float az,
+                                float gx, float gy, float gz,
+                                float mx, float my, float mz,
+                                float deltat)
+    {
+        static float eInt_[3] = {0.0, 0.0, 0.0};
+        // Local variable copies
+        float q1 = q_[0],
+              q2 = q_[1], q3 = q_[2], q4 = q_[3];
+
+        // Auxiliary variables to avoid repeated arithmetic
+        float q1q1 = q1 * q1;
+        float q1q2 = q1 * q2;
+        float q1q3 = q1 * q3;
+        float q1q4 = q1 * q4;
+        float q2q2 = q2 * q2;
+        float q2q3 = q2 * q3;
+        float q2q4 = q2 * q4;
+        float q3q3 = q3 * q3;
+        float q3q4 = q3 * q4;
+        float q4q4 = q4 * q4;
+
+        // Measured horizon vector = A x M  (in body frame)
+        float hx = ay * mz - az * my;
+        float hy = az * mx - ax * mz;
+        float hz = ax * my - ay * mx;
+
+        // Normalize horizon vector
+        float norm = std::sqrt(hx * hx + hy * hy + hz * hz);
+        if (norm < 1e-9f)
+        {
+            // avoiding division by zero
+            ESP_LOGW(TAG_, "Horizon vector is zero length; skipping update.");
+            return;
+        }
+        norm = 1.0f / norm;
+        hx *= norm;
+        hy *= norm;
+        hz *= norm;
+
+        // estimated direction of Up reference vector (in body frame)
+        float ux = 2.0f * (q2q4 - q1q3);
+        float uy = 2.0f * (q1q2 + q3q4);
+        float uz = q1q1 - q2q2 - q3q3 + q4q4;
+
+        // estimated direction of horizon (West) reference vector
+        float wx = 2.0f * (q2q3 + q1q4);
+        float wy = q1q1 - q2q2 + q3q3 - q4q4;
+        float wz = 2.0f * (q3q4 - q1q2);
+
+        // sum of cross products between measured & estimated Up and West = err
+        // It is assumed small, so sin(theta) ~ theta IS the angle required to correct the orientation error.
+
+        float ex = (ay * uz - az * uy) + (hy * wz - hz * wy);
+        float ey = (az * ux - ax * uz) + (hz * wx - hx * wz);
+        float ez = (ax * uy - ay * ux) + (hx * wy - hy * wx);
+
+        // Apply integral feedback if Ki > 0
+        if (Ki_ > 0.0f)
+        {
+            eInt_[0] += ex;
+            eInt_[1] += ey;
+            eInt_[2] += ez;
+
+            gx += Ki_ * eInt_[0];
+            gy += Ki_ * eInt_[1];
+            gz += Ki_ * eInt_[2];
+        }
+
+        // Apply proportional feedback
+        gx += Kp_ * ex;
+        gy += Kp_ * ey;
+        gz += Kp_ * ez;
+
+        // Integrate rate of change of quaternion
+        gx *= (0.5f * deltat);
+        gy *= (0.5f * deltat);
+        gz *= (0.5f * deltat);
+
+        float qa = q1;
+        float qb = q2;
+        float qc = q3;
+        q1 += (-qb * gx - qc * gy - q4 * gz);
+        q2 += (qa * gx + qc * gz - q4 * gy);
+        q3 += (qa * gy - qb * gz + q4 * gx);
+        q4 += (qa * gz + qb * gy - qc * gx);
+
+        // Normalize quaternion
+        norm = std::sqrt(q1q1 + q2q2 + q3q3 + q4q4);
+        if (norm > 1e-9f)
+        {
+            norm = 1.0f / norm;
+            q_[0] = q1 * norm;
+            q_[1] = q2 * norm;
+            q_[2] = q3 * norm;
+            q_[3] = q4 * norm;
+        }
+        else
+        {
+            // gotta avoid numerical blow-up
+            ESP_LOGW(TAG_, "Quaternion norm too small, resetting to identity!");
+            q_[0] = 1.0f;
+            q_[1] = q_[2] = q_[3] = 0.0f;
+        }
+
+        // Convert updated quaternion to Euler angles (in degrees)
+        float q0 = q_[0];
+        float q1n = q_[1];
+        float q2n = q_[2];
+        float q3n = q_[3];
+
+        float roll = std::atan2((q0 * q1n + q2n * q3n),
+                                0.5f - (q1n * q1n + q2n * q2n));
+        float pitch = std::asin(2.0f * (q0 * q2n - q1n * q3n));
+        float yaw = std::atan2((q1n * q2n + q0 * q3n),
+                               0.5f - (q2n * q2n + q3n * q3n));
+
+        // Convert to degrees
+        roll *= 180.0f / M_PI;
+        pitch *= 180.0f / M_PI;
+        yaw *= 180.0f / M_PI;
+
+        // Adjust yaw to 0-360 range
+        yaw = 180.0f + yaw;
+        if (yaw < 0)
+            yaw += 360.0f;
+        if (yaw >= 360.0f)
+            yaw -= 360.0f;
+
+        // Apply (optional) local declination if you want heading relative to True North
+        yaw += declination_;
+        if (yaw >= 360.0f)
+            yaw -= 360.0f;
+        if (yaw < 0.0f)
+            yaw += 360.0f;
+
+        result.yaw = yaw;
+        result.pitch = pitch;
+        result.roll = roll;
+
+        // ESP_LOGI(TAG_, "Yaw: %.2f, Pitch: %.2f, Roll: %.2f",
+        //          result.yaw, result.pitch, result.roll);
+    }
+};

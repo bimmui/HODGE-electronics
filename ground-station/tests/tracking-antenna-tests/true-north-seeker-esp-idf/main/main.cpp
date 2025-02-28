@@ -12,9 +12,27 @@
 #define I2C_MASTER_NUM I2C_NUM_0
 #define I2C_MASTER_SDA GPIO_NUM_21
 #define I2C_MASTER_SCL GPIO_NUM_22
-#define I2C_MASTER_FREQ 400000 // 400 kHz
+#define I2C_MASTER_FREQ 100000 // 400 kHz
 #define SPR 1600
-#define SAMPLE_COUNT 10
+#define SAMPLE_COUNT 10000
+const float Gscale = (M_PI / 180.0f) * 0.00875f;
+const float G_offset[3] = {0.0603f, 0.0349f, -0.0783f};
+
+const float A_B[3] = {-0.347f, -0.1033f, -0.0303f};
+const float A_Ainv[3][3] = {
+    {0.001025f, -0.00001f, 0.000004f},
+    {-0.00001f, 0.001009f, 0.000006f},
+    {0.000004f, 0.000006f, 0.001009f}};
+
+const float M_B[3] = {40.991f, -24.653f, -1.26f};
+const float M_Ainv[3][3] = {
+    {0.580428f, 0.030876f, -0.007f},
+    {0.030876f, 0.573477f, -0.016433f},
+    {-0.007437f, -0.016433f, 0.633181f}};
+
+float declination = 14.0f; // degrees
+float Kp = 50.0f;
+float Ki = 0.0f;
 
 #define DELAY(ms) vTaskDelay(pdMS_TO_TICKS(ms))
 #define DELAY_1S DELAY(1000)
@@ -22,8 +40,8 @@
 
 static const char *MAIN_TAG = "LSM9DS1_main";
 static const char *AVG_YAW = "average_yaw_calc";
-static const char *CURRENT_YAW = "current_yaw_reading";
-static const char *CURRENT_OUTPUTS = "current_mahoney_reading";
+static const char *TIME = "time";
+static const char *CURRENT_OUTPUTS = "CurrMahonyAHRS";
 static const char *IMU_BEFORE_MAHONEY = "IMU READINGS";
 
 long radians_to_steps(double radians)
@@ -36,52 +54,52 @@ long degrees_to_radians(float degrees)
     return degrees * (M_PI / 180);
 }
 
-uint64_t last = 0;
-float get_ypr(LSM9DS1_ESP_IDF lsm)
+// uint64_t last = 0;
+// float get_ypr(LSM9DS1_ESP_IDF &lsm)
+// {
+//     uint64_t now = 0;
+
+//     sensors_event_t aevt, megt, gevt, tevt;
+//     lsm.getEvent(&aevt, &megt, &gevt, &tevt);
+
+//     float Gxyz[3], Axyz[3], Mxyz[3];
+//     get_scaled_IMU(Gxyz, Axyz, Mxyz, aevt, megt, gevt);
+
+//     Axyz[0] = -Axyz[0];
+//     Gxyz[0] = -Gxyz[0];
+
+//     now = esp_timer_get_time();
+//     double deltat = (now - last) * 1.0e-6;
+//     last = now;
+
+//     ESP_LOGI(IMU_BEFORE_MAHONEY, "Accel: %f, %f, %f | Gyro: %f, %f, %f | Mag: %f, %f, %f\n",
+//              aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z, gevt.gyro.x, gevt.gyro.y,
+//              gevt.gyro.z, megt.magnetic.x, megt.magnetic.y, megt.magnetic.z);
+
+//     euler_angles current;
+
+//     current.yaw = 0;
+//     current.pitch = 0;
+//     current.roll = 0;
+
+//     MahonyQuaternionUpdate(current, Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2],
+//                            Mxyz[0], Mxyz[1], Mxyz[2], deltat);
+
+//     // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
+//     //                 current.yaw);
+
+//     // ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
+//     //          current.yaw, current.pitch, current.roll);
+
+//     DELAY_1MS;
+
+//     return current.yaw;
+// }
+
+float calc_average_yaw(LSM9DS1_ESP_IDF &lsm, MahonyAHRS &ahrs)
 {
-    uint64_t now = 0;
-
-    sensors_event_t aevt, megt, gevt, tevt;
-    lsm.getEvent(&aevt, &megt, &gevt, &tevt);
-
-    float Gxyz[3], Axyz[3], Mxyz[3];
-    get_scaled_IMU(Gxyz, Axyz, Mxyz, aevt, megt, gevt);
-
-    Axyz[0] = -Axyz[0];
-    Gxyz[0] = -Gxyz[0];
-
-    now = esp_timer_get_time();
-    double deltat = (now - last) * 1.0e-6;
-    last = now;
-
-    ESP_LOGI(IMU_BEFORE_MAHONEY, "Accel: %f, %f, %f | Gyro: %f, %f, %f | Mag: %f, %f, %f\n",
-             aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z, gevt.gyro.x, gevt.gyro.y,
-             gevt.gyro.z, megt.magnetic.x, megt.magnetic.y, megt.magnetic.z);
-
-    euler_angles current;
-
-    current.yaw = 0;
-    current.pitch = 0;
-    current.roll = 0;
-
-    MahonyQuaternionUpdate(current, Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2],
-                           Mxyz[0], Mxyz[1], Mxyz[2], deltat);
-
-    // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
-    //                 current.yaw);
-
-    ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
-             current.yaw, current.pitch, current.roll);
-
-    DELAY_1MS;
-
-    return current.yaw;
-}
-
-float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
-{
-    uint64_t now = 0;
-    uint64_t last = 0;
+    double now = 0;
+    double last = 0;
     float yaw_sum = 0;
     float yaw_avg = 0;
 
@@ -92,25 +110,17 @@ float calc_average_yaw(LSM9DS1_ESP_IDF lsm)
         sensors_event_t aevt, megt, gevt, tevt;
         lsm.getEvent(&aevt, &megt, &gevt, &tevt);
 
-        float Gxyz[3], Axyz[3], Mxyz[3];
-        get_scaled_IMU(Gxyz, Axyz, Mxyz, aevt, megt, gevt);
-
-        Axyz[0] = -Axyz[0]; // fix accel/gyro handedness
-        Gxyz[0] = -Gxyz[0]; // must be done after offsets & scales applied to raw data
-
         now = esp_timer_get_time();
         double deltat = (now - last) * 1.0e-6; // seconds since last update
         last = now;
+        // ESP_LOGI(TIME, "now: %.2lf    last: %.2lf    delta: %.2lf",
+        //          now, last, deltat);
 
-        euler_angles temp;
-        temp.yaw = 0; // doing this stupid fix to egt rid of the uninitialized errors
+        euler_angles angles = ahrs.updateIMU(aevt, megt, gevt, deltat);
+        ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
+                 angles.yaw, angles.pitch, angles.roll);
 
-        MahonyQuaternionUpdate(temp, Axyz[0], Axyz[1], Axyz[2], Gxyz[0], Gxyz[1], Gxyz[2],
-                               Mxyz[0], Mxyz[1], Mxyz[2], deltat);
-
-        yaw_sum += temp.yaw;
-
-        DELAY_1S;
+        yaw_sum += angles.yaw;
     }
     yaw_avg = yaw_sum / SAMPLE_COUNT;
 
@@ -140,6 +150,11 @@ extern "C" void app_main(void)
     // 2) Instantiate LSM9DS1 object and AccelStepper object
     LSM9DS1_ESP_IDF lsm;
     AccelStepper stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_STEP_PIN), static_cast<gpio_num_t>(CONFIG_DIRECTION_PIN));
+    MahonyAHRS ahrs(Gscale, G_offset,
+                    A_B, A_Ainv,
+                    M_B, M_Ainv,
+                    declination,
+                    Kp, Ki);
 
     // 3) Init I2C with 7-bit addresses for both subchips in the LSM9DS1
     err = lsm.initI2C(bus_handle,
@@ -165,7 +180,7 @@ extern "C" void app_main(void)
     stepper.setAcceleration(1500);
 
     // 6) Getting average angular distance from true north and pointing there
-    float distance_to_north = calc_average_yaw(lsm);
+    float distance_to_north = calc_average_yaw(lsm, ahrs);
     stepper.move(-radians_to_steps(degrees_to_radians(distance_to_north)));
     if (stepper.distanceToGo() != 0)
     {
@@ -186,10 +201,10 @@ extern "C" void app_main(void)
 
         // Option B: get "unified" style events
 
-        sensors_event_t aevt, megt, gevt, tevt;
-        lsm.getEvent(&aevt, &megt, &gevt, &tevt);
+        // sensors_event_t aevt, megt, gevt, tevt;
+        // lsm.getEvent(&aevt, &megt, &gevt, &tevt);
 
-        get_ypr(lsm);
+        // get_ypr(lsm);
 
         // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
         //             get_yaw(lsm));
