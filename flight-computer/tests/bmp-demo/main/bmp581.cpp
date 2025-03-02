@@ -17,7 +17,7 @@
 #define I2C_MASTER_SDA_IO                        21
 #define BMP5_I2C_ADDR_PRIM                       0x46
 #define BMP5_I2C_ADDR_SEC                        0x47
-#define SEA_LEVEL_PRESSURE                       103460.0
+#define SEA_LEVEL_PRESSURE                       99500.0
 
 /* Timeout Defines*/
 #define MASTER_TRANSMIT_TIMEOUT                  500
@@ -119,7 +119,7 @@ void BMP581::bmp581_configure(void)
     _read(bmp581_dev_handle, osr_config_reg, curr_config, sizeof(curr_config));
 
     //Next lets update it with the 6th bit enabled for pressure
-    curr_config[0] = curr_config[0] || OSR_ENABLE_PRESSURE_BIT;
+    curr_config[0] |= OSR_ENABLE_PRESSURE_BIT;
     uint8_t enable_press_data[2] = {0};
     enable_press_data[0] = OSR_CONFIG_REG;
     enable_press_data[1] = curr_config[0];
@@ -134,7 +134,7 @@ void BMP581::bmp581_configure(void)
     _read(bmp581_dev_handle, odr_config_reg, curr_config, sizeof(curr_config));
 
     // We now enable the bit for continous mode
-    curr_config[0] = curr_config[0] || NORMAL_MODE;
+    curr_config[0] |= ODR_CONTINUOUS_MODE_BITS;
     uint8_t enable_continuous_data[2];
     enable_continuous_data[0] = ODR_CONFIG_REG;
     enable_continuous_data[1] = curr_config[0];
@@ -148,30 +148,41 @@ void BMP581::bmp581_configure(void)
 
 float convert_to_altitude(uint32_t raw_press)
 {
-    return 44330.0 * (1.0 - pow(raw_press / SEA_LEVEL_PRESSURE, 0.1903));
+    return 44330.0 * (1.0 - pow((double)raw_press / (double)SEA_LEVEL_PRESSURE, 0.1903));
+}
+
+float convert_raw_to_celsius(uint32_t raw_temperature)
+{
+    return raw_temperature / 65536.0; //Scaling factor called out in sheet
+}
+
+float convert_raw_to_fahrenheit(uint32_t raw_temperature) {
+    float celsius = convert_raw_to_celsius(raw_temperature);
+    return (celsius * 9.0 / 5.0) + 32.0;
 }
 
 bmp581_data BMP581::bmp581_get_sample(void)
 {
     uint8_t data[6] = {0};
-    uint8_t data_reg = TEMP_DATA_XLSB_REG; //pressure data register
-    _write(bmp581_dev_handle, &data_reg, sizeof(data_reg));
+    uint8_t data_reg = TEMP_DATA_XLSB_REG;  // Start register for temperature
     _read(bmp581_dev_handle, data_reg, data, sizeof(data));
 
-    // Convert raw pressure data
-    int32_t raw_temperature = (int32_t) ((int32_t) ((uint32_t)(((uint32_t)data[2] << 16) | ((uint16_t)data[1] << 8) | data[0]) << 8) >> 8);
-    float temperature = (float)(raw_temperature / 65536.0);  // Scale as per datasheet
+    // Extract raw temperature
+    int32_t raw_temperature = (int32_t)((((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0]) << 8) >> 8;
 
-    // Convert raw temperature data 
-    uint32_t raw_pressure = (uint32_t) (((uint32_t) data[5] << 16) | ((uint16_t)data[4] << 8) | ((data[3]) << 8));
+    // Convert raw temperature to Celsius & Fahrenheit
+    float temperature_c = convert_raw_to_celsius(raw_temperature);
+    float temperature_f = convert_raw_to_fahrenheit(raw_temperature);
 
-    // raw_pressure -= SEA_LEVEL_PRESSURE; COME BACK TO ME
-    float pressure = (float)(raw_pressure / 64.0);
-    
-    //Let's extract the sample
+    // Extract raw pressure
+    uint32_t raw_pressure = ((uint32_t)data[5] << 16) | ((uint32_t)data[4] << 8) | data[3];
+    float pressure = raw_pressure / 64.0;
+
+    // Extract sample data
     bmp581_data sample;
     sample.pressure = pressure;
-    sample.temperature = temperature;
+    sample.temperature_c = temperature_c;
+    sample.temperature_f = temperature_f;
     sample.altitude = convert_to_altitude(pressure);
     sample.raw_pressure = raw_pressure;
 

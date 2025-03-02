@@ -19,7 +19,8 @@
 typedef struct
 {       
     uint32_t pressure;
-    int32_t temperature;
+    float temperature_c;
+    float temperature_f;
     uint32_t raw_pressure;
     float altitude;
 } bmp581_data;
