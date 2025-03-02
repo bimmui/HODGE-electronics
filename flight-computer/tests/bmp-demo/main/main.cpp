@@ -46,26 +46,29 @@ static void i2c_controller_init(void)
 
 extern "C" void app_main(void)
 {
-    
-    /* Let's first reset and then wait */
+    /* Print test start message for pytest */
+    printf("BMP581 Test Ready\n");
+
+    /* Initialize I2C */
     i2c_controller_init();
 
-    /* We initalize the peripheral reset and then reinit */
+    /* Initialize BMP581 sensor */
     static BMP581 bmp581(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x46, 10000);
 
-    /* We are ready to configure*/
+    /* Configure BMP581 */
     bmp581.bmp581_configure();
 
-    /* Let's start grabbing samples */
+    /* Start reading samples */
     bmp581_data sample;
 
-    for (int i = 0; i < 20; i++){
-        vTaskDelay(pdMS_TO_TICKS(2));
+    for (int i = 0; i < 20; i++) {
+        vTaskDelay(pdMS_TO_TICKS(2000));  // 2-second delay
         sample = bmp581.bmp581_get_sample();
-        printf("Raw pressure: %" PRIu32 "\n",sample.raw_pressure);
-        printf("Pa: %ld\n", sample.pressure);
-        printf("Celcius: %f\n", sample.temperature_c);
-        printf("Faranheit: %f\n", sample.temperature_f);
-        printf("Estimated Altitude: %.2f meters\n", sample.altitude);
+
+        printf("Pressure: %.2f Pa\n", (double)sample.pressure);
+        printf("Temperature: %.2f C\n", sample.temperature_c);
+        printf("Altitude: %.2f m\n", sample.altitude);
     }
+
+    printf("BMP581 Test Complete\n");
 }
