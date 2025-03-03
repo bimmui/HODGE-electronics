@@ -124,7 +124,7 @@ extern "C" void app_main(void)
     // TODO: add the spi clock, miso, and mosi pins to the kconfig file
     // TODO: use some random ass pin we arent using for the interrupt pins
     EspHal *hal = new EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
-    RFM96 radio = new Module(hal, CONFIG_RFM69_CHIP_SELECT, 18, CONFIG_RFM69_HARDWARE_RESET, 19);
+    RFM96 radio = new Module(hal, CONFIG_RFM96_CHIP_SELECT, 18, CONFIG_RFM96_HARDWARE_RESET, 19);
 
     // setting up the radio module
     ESP_LOGI(MAIN_TAG, "[RFM96] Initializing ... ");
