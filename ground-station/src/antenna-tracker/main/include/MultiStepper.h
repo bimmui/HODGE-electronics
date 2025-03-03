@@ -25,6 +25,8 @@ class AccelStepper;
 /// Caution: only constant speed stepper motion is supported: acceleration and deceleration is not supported
 /// All the steppers managed by MultiStepper will step at a constant speed to their
 /// target (albeit perhaps different speeds for each stepper).
+
+// Modded by DO to make all the class vars public for ReactiveMultiStepper
 class MultiStepper
 {
 public:
@@ -56,7 +58,6 @@ public:
     /// want blocking consider using run() instead.
     void runSpeedToPosition();
 
-private:
     /// Array of pointers to the steppers we are controlling.
     /// Fills from 0 onwards
     AccelStepper *_steppers[MULTISTEPPER_MAX_STEPPERS];

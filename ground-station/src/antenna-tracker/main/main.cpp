@@ -1,14 +1,19 @@
+#include <RadioLib.h>
+#include <iostream>
+
 #include "sdkconfig.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/i2c_master.h"
+
 #include "LSM9DS1_ESP_IDF.h"
 #include "NewUW_MahonyAHRS.h"
 #include "AccelStepper.h"
 #include "ReactiveMultiStepper.h"
-#include <iostream>
+#include "EspHal.h" // including the hardware abstraction layer for radiolib
+#include "cppmap3d.hh"
 
 // bring some of these defines to the Kconfig file
 #define I2C_MASTER_NUM I2C_NUM_0
@@ -40,8 +45,7 @@ float Ki = 0.0f;
 #define DELAY_1S DELAY(1000)
 #define DELAY_1MS DELAY(1)
 
-static const char *MAIN_TAG = "LSM9DS1_main";
-static const char *AVG_YAW = "average_yaw_calc";
+static const char *MAIN_TAG = "main";
 static const char *CURRENT_OUTPUTS = "CurrMahonyAHRS";
 
 int radians_to_steps(double radians)
@@ -61,7 +65,7 @@ float calc_average_yaw(LSM9DS1_ESP_IDF &lsm, MahonyAHRS &ahrs)
     float yaw_sum = 0;
     float yaw_avg = 0;
 
-    ESP_LOGI(AVG_YAW, "Beginning average yaw calculation...");
+    ESP_LOGI(MAIN_TAG, "Beginning average yaw calculation...");
 
     for (int i = 0; i < SAMPLE_COUNT; i++)
     {
@@ -75,14 +79,14 @@ float calc_average_yaw(LSM9DS1_ESP_IDF &lsm, MahonyAHRS &ahrs)
         //          now, last, deltat);
 
         euler_angles angles = ahrs.updateIMU(aevt, megt, gevt, deltat);
-        ESP_LOGI(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
+        ESP_LOGD(CURRENT_OUTPUTS, "Yaw: %.2f degrees Pitch: %.2f degrees Roll %.2f degrees",
                  angles.yaw, angles.pitch, angles.roll);
 
         yaw_sum += angles.yaw;
     }
     yaw_avg = yaw_sum / SAMPLE_COUNT;
 
-    ESP_LOGI(AVG_YAW, "Average yaw: %lf", yaw_avg);
+    ESP_LOGD(MAIN_TAG, "Average yaw: %lf", yaw_avg);
 
     return yaw_avg;
 }
@@ -105,7 +109,7 @@ extern "C" void app_main(void)
 {
     i2c_bus_init();
 
-    // instantiate LSM9DS1 object, AccelStepper objects, and the ReactiveMultistepper
+    // instantiate LSM9DS1 object, AccelStepper objects, the ReactiveMultistepper, and radio transiever obj
     LSM9DS1_ESP_IDF lsm;
     AccelStepper azi_stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_AZI_STEP_PIN), static_cast<gpio_num_t>(CONFIG_AZI_DIRECTION_PIN));
     AccelStepper ele_stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_ELEV_STEP_PIN), static_cast<gpio_num_t>(CONFIG_ELEV_DIRECTION_PIN));
@@ -115,6 +119,31 @@ extern "C" void app_main(void)
                     M_B, M_Ainv,
                     declination,
                     Kp, Ki);
+
+    // creating a new instance of the HAL class so we can then interface with the radio module
+    // TODO: add the spi clock, miso, and mosi pins to the kconfig file
+    // TODO: use some random ass pin we arent using for the interrupt pins
+    EspHal *hal = new EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
+    RFM96 radio = new Module(hal, CONFIG_RFM69_CHIP_SELECT, 18, CONFIG_RFM69_HARDWARE_RESET, 19);
+
+    // setting up the radio module
+    ESP_LOGI(MAIN_TAG, "[RFM96] Initializing ... ");
+    int state = radio.begin(433); // TODO: change this to the frequency of the gps tracker
+    if (state != RADIOLIB_ERR_NONE)
+    {
+        ESP_LOGI(MAIN_TAG, "failed, code %d\n", state);
+        while (true)
+        {
+            hal->delay(1000);
+        }
+    }
+    ESP_LOGI(MAIN_TAG, "success!\n");
+
+    radio.setOutputPower(20);
+    // Set FSK parameters (defaults for RFM69 not sure about RFM96)
+    radio.setFrequencyDeviation(50.0); // 50 kHz deviation
+    radio.setBitRate(100.0);           // 100 kbps bitrate
+    radio.setRxBandwidth(250.0);       // 250 kHz RX bandwidth
 
     // setting up the imu
     esp_err_t err = lsm.initI2C(I2C_MASTER_NUM,
@@ -161,6 +190,40 @@ extern "C" void app_main(void)
     {
         // somehow get the gps coordinates here using radiolib and our transeiver
         // hurr durr get gps shit
+        uint8_t buffer[8];
+        int state = radio.receive(buffer, 8);
+
+        // literally stripped this from the rfm69 receive example from radiolib example and modded print statements
+        // TODO: FUCKING TEST THIS SHIT FUCK
+        if (state == RADIOLIB_ERR_NONE)
+        {
+            // packet was successfully received
+            ESP_LOGI(MAIN_TAG, "success!");
+
+            // print the data of the packet
+            ESP_LOGD(MAIN_TAG, "[RFM96] Data:\t\t%.*s", sizeof(buffer), (char *)buffer);
+
+            // print RSSI (Received Signal Strength Indicator)
+            // of the last received packet
+            ESP_LOGD(MAIN_TAG, "[RFM96] RSSI:\t\t%f dBm", radio.getRSSI());
+        }
+        else if (state == RADIOLIB_ERR_RX_TIMEOUT)
+        {
+            // timeout occurred while waiting for a packet
+            ESP_LOGW(MAIN_TAG, "timeout!");
+        }
+        else if (state == RADIOLIB_ERR_CRC_MISMATCH)
+        {
+            // packet was received, but is malformed
+            ESP_LOGW(MAIN_TAG, "CRC error!");
+        }
+        else
+        {
+            // some other error occurred
+            ESP_LOGW(MAIN_TAG, "failed, code %d", state);
+        }
+
+        // TODO: write some code to parse this fucking shit and get the gps stuff we need
 
         double target_lat = 0, target_long = 0, target_alt = 0;
 
