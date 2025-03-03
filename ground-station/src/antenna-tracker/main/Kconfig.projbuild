@@ -22,16 +22,28 @@ menu "Example Configuration"
         help
             I2C Speed of Master device.
     
-    config STEP_PIN
+    config AZI_STEP_PIN
         int "A4988 STEP GPIO Num"
         default 18
         help
-            GPIO pin connected to the STEP pin on the A4988 stepper driver.
+            GPIO pin connected to the STEP pin on the A4988 stepper driver for the azimuthal stepper motor
 
-    config DIRECTION_PIN
+    config AZI_DIRECTION_PIN
         int "A4988 DIR GPIO Num"
         default 19
         help
-            GPIO pin connected to the DIR pin on the A4988 stepper driver.
+            GPIO pin connected to the DIR pin on the A4988 stepper driver for the azimuthal stepper motor
+
+    config ELEV_STEP_PIN
+        int "A4988 STEP GPIO Num"
+        default 18
+        help
+            GPIO pin connected to the STEP pin on the A4988 stepper driver for the elevation stepper motor
+
+    config ELEV_DIRECTION_PIN
+        int "A4988 DIR GPIO Num"
+        default 19
+        help
+            GPIO pin connected to the DIR pin on the A4988 stepper driver for the elevation stepper motor
 
 endmenu

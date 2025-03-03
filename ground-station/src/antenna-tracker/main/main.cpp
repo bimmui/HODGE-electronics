@@ -7,6 +7,7 @@
 #include "LSM9DS1_ESP_IDF.h"
 #include "NewUW_MahonyAHRS.h"
 #include "AccelStepper.h"
+#include "ReactiveMultiStepper.h"
 #include <iostream>
 
 // bring some of these defines to the Kconfig file
@@ -14,7 +15,7 @@
 #define I2C_MASTER_SDA GPIO_NUM_21
 #define I2C_MASTER_SCL GPIO_NUM_22
 #define I2C_MASTER_FREQ 100000
-#define SPR 1600
+#define SPR 1600 // TODO: wtf is this even supposed to be for it to work properly
 #define SAMPLE_COUNT 100
 const float Gscale = (M_PI / 180.0f) * 0.00875f;
 const float G_offset[3] = {0.0603f, 0.0349f, -0.0783f};
@@ -86,7 +87,7 @@ float calc_average_yaw(LSM9DS1_ESP_IDF &lsm, MahonyAHRS &ahrs)
     return yaw_avg;
 }
 
-extern "C" void app_main(void)
+void i2c_bus_init(void)
 {
     i2c_master_bus_config_t i2c_mst_config = {};
     i2c_mst_config.i2c_port = I2C_MASTER_NUM;
@@ -96,38 +97,35 @@ extern "C" void app_main(void)
     i2c_mst_config.glitch_ignore_cnt = 7;
     i2c_mst_config.flags.enable_internal_pullup = true;
 
-    i2c_master_bus_handle_t bus_handle = NULL;
-    esp_err_t err = i2c_new_master_bus(&i2c_mst_config, &bus_handle);
-    if (err != ESP_OK)
-    {
-        ESP_LOGE(MAIN_TAG, "Failed to create I2C bus: %s", esp_err_to_name(err));
-        return;
-    }
+    i2c_master_bus_handle_t bus_handle;
+    ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_mst_config, &bus_handle));
+}
 
-    // 2) Instantiate LSM9DS1 object and AccelStepper object
+extern "C" void app_main(void)
+{
+    i2c_bus_init();
+
+    // instantiate LSM9DS1 object, AccelStepper objects, and the ReactiveMultistepper
     LSM9DS1_ESP_IDF lsm;
-    AccelStepper stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_STEP_PIN), static_cast<gpio_num_t>(CONFIG_DIRECTION_PIN));
+    AccelStepper azi_stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_AZI_STEP_PIN), static_cast<gpio_num_t>(CONFIG_AZI_DIRECTION_PIN));
+    AccelStepper ele_stepper(AccelStepper::DRIVER, static_cast<gpio_num_t>(CONFIG_ELEV_STEP_PIN), static_cast<gpio_num_t>(CONFIG_ELEV_DIRECTION_PIN));
+    ReactiveMultiStepper controller;
     MahonyAHRS ahrs(Gscale, G_offset,
                     A_B, A_Ainv,
                     M_B, M_Ainv,
                     declination,
                     Kp, Ki);
 
-    stepper.setMaxSpeed(2000);
-    stepper.setAcceleration(1500);
-
-    // 3) Init I2C with 7-bit addresses for both subchips in the LSM9DS1
-    err = lsm.initI2C(bus_handle,
-                      LSM9DS1_ADDRESS_ACCELGYRO,
-                      LSM9DS1_ADDRESS_MAG,
-                      I2C_MASTER_FREQ);
+    // setting up the imu
+    esp_err_t err = lsm.initI2C(I2C_MASTER_NUM,
+                                LSM9DS1_ADDRESS_ACCELGYRO,
+                                LSM9DS1_ADDRESS_MAG,
+                                I2C_MASTER_FREQ);
     if (err != ESP_OK)
     {
         ESP_LOGE(MAIN_TAG, "LSM9DS1 initI2C failed: %s", esp_err_to_name(err));
         return;
     }
-
-    // 4) Begin (check IDs, do resets, etc.)
     if (!lsm.begin())
     {
         ESP_LOGE(MAIN_TAG, "LSM9DS1 not detected or config error!");
@@ -135,44 +133,52 @@ extern "C" void app_main(void)
     }
     ESP_LOGI(MAIN_TAG, "LSM9DS1 found and initialized.");
 
-    // 5) Setting up the stepper
-    stepper.setMaxSpeed(2000);
-    stepper.setAcceleration(1500);
+    // setting up the steppers, idk if these should be the speeds we want
+    // TODO: test the speed
+    azi_stepper.setMaxSpeed(2000);
+    azi_stepper.setAcceleration(1500);
+    ele_stepper.setMaxSpeed(2000);
+    ele_stepper.setAcceleration(1500);
 
-    // 6) Getting average angular distance from true north and pointing there
+    // getting average angular distance from true north and pointing azimuthal stepper there
     float distance_to_north = calc_average_yaw(lsm, ahrs);
-    // stepper.moveTo(-radians_to_steps(degrees_to_radians(distance_to_north)));
-    stepper.runToNewPosition(-radians_to_steps(degrees_to_radians(distance_to_north)));
+    azi_stepper.runToNewPosition(-radians_to_steps(degrees_to_radians(distance_to_north)));
+    azi_stepper.setCurrentPosition(0);
 
-    // 7) loop where we point towards the rocket ideally
+    // do some stuff here with a limit switch or some shit that makes sure the ele_stepper is level with the ground
+    // TODO: talk to jake about that
+    // ele_stepper ele_stepper ele_stepper ele_stepper ele_stepper then its zero
+    ele_stepper.setCurrentPosition(0);
+
+    // we got our steppers set up so now we add them to the controller
+    controller.addStepper(azi_stepper);
+    controller.addStepper(ele_stepper);
+
+    // loop where we point towards the rocket ideally
+    double az, el, range;
+    double ref_lat = 0, ref_long = 0, ref_alt = 0; // replace with our curr coordinates in radians + elevation in meters
     while (1)
     {
-        // Option A: read raw data directly
-        // lsm.read();
+        // somehow get the gps coordinates here using radiolib and our transeiver
+        // hurr durr get gps shit
 
-        // ESP_LOGI(TAG, "Accel: X:%d Y:%d Z:%d   Gyro: X:%d Y:%d Z:%d   Mag: X:%d Y:%d Z:%d   Temp: %d",
-        //          lsm.accelData.x, lsm.accelData.y, lsm.accelData.z,
-        //          lsm.gyroData.x, lsm.gyroData.y, lsm.gyroData.z,
-        //          lsm.magData.x, lsm.magData.y, lsm.magData.z,
-        //          lsm.temperature);
+        double target_lat = 0, target_long = 0, target_alt = 0;
 
-        // Option B: get "unified" style events
+        cppmap3d::geodetic2aer(target_lat, target_long, target_alt, ref_lat, ref_long, ref_alt, az, el, range);
 
-        // sensors_event_t aevt, megt, gevt, tevt;
-        // lsm.getEvent(&aevt, &megt, &gevt, &tevt);
+        // TODO: idk if i should be using the negative output of these, test and make sure the signs are correct
+        long targets[2] = {-radians_to_steps(az), -radians_to_steps(el)};
+        controller.setNewTargets(targets);
 
-        // get_ypr(lsm);
-
-        // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
-        //             get_yaw(lsm));
-
-        // ESP_LOGI(MAIN_TAG, "Accel: %.2f,%.2f,%.2f m/s^2   Gyro: %.2f,%.2f,%.2f rad/s   "
-        //                    "Mag: %.2f,%.2f,%.2f gauss   Temp: %.2f C",
-        //          aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z,
-        //          gevt.gyro.x, gevt.gyro.y, gevt.gyro.z,
-        //          megt.magnetic.x, megt.magnetic.y, megt.magnetic.z,
-        //          tevt.temperature);
-
+        controller.runAsync(); // non-blocking motion
+        // idk which of these to keep delete one of them based on which is longer ig
+        vTaskDelay(1 / portTICK_PERIOD_MS);
         vTaskDelay(pdMS_TO_TICKS(500));
+
+        // not completely sure if i should replace our current latitude and longitude coordinates
+        // with the ones we just received but it seems about right
+        // TODO: someone pls pls test the antenna pointing from one target to another
+        ref_lat = target_lat;
+        ref_long = target_long;
     }
 }
