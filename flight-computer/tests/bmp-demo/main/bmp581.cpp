@@ -73,6 +73,7 @@
 #define OSR_ENABLE_PRESSURE_BIT                  0x40
 #define RECONFIG_DELAY_MS                        3
 
+
 void _write(i2c_master_dev_handle_t sensor,
             uint8_t const *data_buf, const uint8_t data_len)
 {
@@ -156,7 +157,8 @@ float convert_raw_to_celsius(uint32_t raw_temperature)
     return raw_temperature / 65536.0; //Scaling factor called out in sheet
 }
 
-float convert_raw_to_fahrenheit(uint32_t raw_temperature) {
+float convert_raw_to_fahrenheit(uint32_t raw_temperature)
+{
     float celsius = convert_raw_to_celsius(raw_temperature);
     return (celsius * 9.0 / 5.0) + 32.0;
 }
@@ -189,7 +191,8 @@ bmp581_data BMP581::bmp581_get_sample(void)
     return sample;
 }
 
-int BMP581::soft_reset(void){
+int BMP581::soft_reset(void)
+{
 
     /* We organize the data in a container that we will write to reg */
     uint8_t reset_data[2];
@@ -206,7 +209,8 @@ int BMP581::soft_reset(void){
     return EXIT_SUCCESS;
 }
 
-int BMP581::power_up_check(void){
+int BMP581::power_up_check(void)
+{
         
     /* We perform a dummy read to initalize the sensor's interface */
     uint8_t dummy_reg[1] = {0};  // A valid register address
@@ -256,4 +260,12 @@ int BMP581::power_up_check(void){
     
     ESP_ERROR_CHECK(int_status[0] != INT_STATUS_POR_BIT);
     return EXIT_SUCCESS;
+}
+
+uint32_t BMP581::whoami(void)
+{
+    uint8_t chip_id[1] = {0};
+    uint8_t chipid_reg_address = CHIP_ID_REG;
+    _read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
+    return chip_id[0];
 }

@@ -35,11 +35,10 @@ public:
     int soft_reset(void);
     void bmp581_configure(void); 
     bmp581_data bmp581_get_sample(void);
-
-private:
-
+    uint32_t whoami(void);
     int power_up_check(void);
 
+private:
     i2c_addr_bit_len_t bmp581_addr_len;
     uint16_t bmp581_addr;
     i2c_master_dev_handle_t bmp581_dev_handle;

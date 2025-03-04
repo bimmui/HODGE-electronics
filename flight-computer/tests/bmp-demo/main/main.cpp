@@ -61,6 +61,8 @@ extern "C" void app_main(void)
     /* Start reading samples */
     bmp581_data sample;
 
+    printf("Chip ID: 0x%02lX\n", bmp581.whoami());
+
     for (int i = 0; i < 20; i++) {
         vTaskDelay(pdMS_TO_TICKS(2000));  // 2-second delay
         sample = bmp581.bmp581_get_sample();
