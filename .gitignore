@@ -7,3 +7,4 @@
 *.o
 *.exe
 *.lock
+*managed_components/
