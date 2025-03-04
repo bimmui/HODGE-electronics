@@ -122,6 +122,7 @@ public:
 
     void initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed);
     void configureAK09916();
+    uint8_t whoami();
     // void setMagSampleRate(ak09916_sample_rate_t rate);
     void getMag(ak09916_mag_value_t *mag_vals);
 

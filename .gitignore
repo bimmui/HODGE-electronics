@@ -6,5 +6,6 @@
 *.vscode
 *.o
 *.exe
+*.DS_Store
 *.lock
 *managed_components/

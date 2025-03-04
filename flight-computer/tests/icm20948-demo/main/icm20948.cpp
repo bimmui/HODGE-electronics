@@ -454,3 +454,11 @@ void ICM20948::enableDLPF(bool enable)
     const uint8_t reg_and_data2[] = {ICM20948_GYRO_CONFIG_1, tmp2[0]};
     icm20948_write(icm20948_dev_handle, reg_and_data2, sizeof(reg_and_data2));
 }
+
+uint8_t BMP581::whoami(void)
+{
+    uint8_t chip_id[1] = {0};
+    uint8_t chipid_reg_address = ICM20948_WHO_AM_I;
+    _read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
+    return chip_id[0];
+}
