@@ -17,6 +17,7 @@ dependencies:
   - mplcursors
   - cython 
   - h5py 
+  - rocketpy
   ## Serial parsing
   - pyserial
   ## Data processing
