@@ -14,7 +14,7 @@
 #define I2C_MASTER_SDA GPIO_NUM_21
 #define I2C_MASTER_SCL GPIO_NUM_22
 #define I2C_MASTER_FREQ 100000
-#define SPR 1600
+#define SPR 200
 #define SAMPLE_COUNT 100
 const float Gscale = (M_PI / 180.0f) * 0.00875f;
 const float G_offset[3] = {0.0603f, 0.0349f, -0.0783f};
@@ -113,8 +113,8 @@ extern "C" void app_main(void)
                     declination,
                     Kp, Ki);
 
-    stepper.setMaxSpeed(2000);
-    stepper.setAcceleration(1500);
+    // stepper.setMaxSpeed(2000);
+    // stepper.setAcceleration(1500);
 
     // 3) Init I2C with 7-bit addresses for both subchips in the LSM9DS1
     err = lsm.initI2C(bus_handle,
@@ -141,38 +141,7 @@ extern "C" void app_main(void)
 
     // 6) Getting average angular distance from true north and pointing there
     float distance_to_north = calc_average_yaw(lsm, ahrs);
+    distance_to_north = 45.0f;
     // stepper.moveTo(-radians_to_steps(degrees_to_radians(distance_to_north)));
-    stepper.runToNewPosition(-radians_to_steps(degrees_to_radians(distance_to_north)));
-
-    // 7) loop where we point towards the rocket ideally
-    while (1)
-    {
-        // Option A: read raw data directly
-        // lsm.read();
-
-        // ESP_LOGI(TAG, "Accel: X:%d Y:%d Z:%d   Gyro: X:%d Y:%d Z:%d   Mag: X:%d Y:%d Z:%d   Temp: %d",
-        //          lsm.accelData.x, lsm.accelData.y, lsm.accelData.z,
-        //          lsm.gyroData.x, lsm.gyroData.y, lsm.gyroData.z,
-        //          lsm.magData.x, lsm.magData.y, lsm.magData.z,
-        //          lsm.temperature);
-
-        // Option B: get "unified" style events
-
-        // sensors_event_t aevt, megt, gevt, tevt;
-        // lsm.getEvent(&aevt, &megt, &gevt, &tevt);
-
-        // get_ypr(lsm);
-
-        // ESP_LOGI(CURRENT_YAW, "Yaw: %.2f degrees",
-        //             get_yaw(lsm));
-
-        // ESP_LOGI(MAIN_TAG, "Accel: %.2f,%.2f,%.2f m/s^2   Gyro: %.2f,%.2f,%.2f rad/s   "
-        //                    "Mag: %.2f,%.2f,%.2f gauss   Temp: %.2f C",
-        //          aevt.acceleration.x, aevt.acceleration.y, aevt.acceleration.z,
-        //          gevt.gyro.x, gevt.gyro.y, gevt.gyro.z,
-        //          megt.magnetic.x, megt.magnetic.y, megt.magnetic.z,
-        //          tevt.temperature);
-
-        vTaskDelay(pdMS_TO_TICKS(500));
-    }
+    stepper.runToNewPosition(radians_to_steps(degrees_to_radians(distance_to_north)));
 }
