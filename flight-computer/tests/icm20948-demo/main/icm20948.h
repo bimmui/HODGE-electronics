@@ -115,6 +115,7 @@ public:
 
     void initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed);
     void configureAK09916();
+    uint8_t whoami();
 
 private:
     typedef struct
