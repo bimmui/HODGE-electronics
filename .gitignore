@@ -6,4 +6,6 @@
 *.vscode
 *.o
 *.exe
-flight-computer/tests/.DS_Store
+*.DS_Store
+*.lock
+*managed_components/
