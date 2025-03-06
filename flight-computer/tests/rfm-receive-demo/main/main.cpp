@@ -38,7 +38,7 @@ extern "C" void app_main(void)
 {
   // initialize just like with Arduino
   ESP_LOGI(TAG, "[RFM69] Initializing ... ");
-  int state = radio.begin(433);
+  int state = radio.begin(434.550);
   if (state != RADIOLIB_ERR_NONE)
   {
     ESP_LOGI(TAG, "failed, code %d\n", state);
@@ -58,17 +58,37 @@ extern "C" void app_main(void)
   // loop forever
   for (;;)
   {
-    // send a packet
-    ESP_LOGI(TAG, "[RFM69] Transmitting packet ... ");
-    state = radio.transmit("Hello World!");
+    uint8_t buffer[8];
+    int state = radio.receive(buffer, 8);
+
+    // literally stripped this from the rfm69 receive example from radiolib example and modded print statements
+    // TODO: FUCKING TEST THIS SHIT FUCK
     if (state == RADIOLIB_ERR_NONE)
     {
-      // the packet was successfully transmitted
+      // packet was successfully received
       ESP_LOGI(TAG, "success!");
+
+      // print the data of the packet
+      ESP_LOGD(TAG, "[RFM96] Data:\t\t%.*s", sizeof(buffer), (char *)buffer);
+
+      // print RSSI (Received Signal Strength Indicator)
+      // of the last received packet
+      ESP_LOGD(TAG, "[RFM96] RSSI:\t\t%f dBm", radio.getRSSI());
+    }
+    else if (state == RADIOLIB_ERR_RX_TIMEOUT)
+    {
+      // timeout occurred while waiting for a packet
+      ESP_LOGW(TAG, "timeout!");
+    }
+    else if (state == RADIOLIB_ERR_CRC_MISMATCH)
+    {
+      // packet was received, but is malformed
+      ESP_LOGW(TAG, "CRC error!");
     }
     else
     {
-      ESP_LOGI(TAG, "failed, code %d\n", state);
+      // some other error occurred
+      ESP_LOGW(TAG, "failed, code %d", state);
     }
 
     // wait for a second before transmitting again
