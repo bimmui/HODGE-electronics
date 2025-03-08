@@ -55,7 +55,7 @@ clean:
 #    executable.
 #
 compress: compress.o array.o
-	$(CC) $(LDFLAGS) -o compress.o array.c $(LDLIBS)
+	$(CC) -o compress compress.o array.o
 
 #
 # Other Shortcuts worth nothing
