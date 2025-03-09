@@ -5,6 +5,7 @@ import multiprocessing
 import os
 import dotenv
 import dash
+import sys
 from dash import dcc, html, Input, Output, callback
 import plotly.graph_objs as go
 
@@ -178,9 +179,10 @@ table_name = "Dummy alt and velocity integers"
 field_names = ["Time", "Altitude", "Velocity"]
 serial_connection_path = "/dev/ttyACM0"
 baud_rate = 88600
-shared_memory_length = 1000 #
+shared_memory_length = 1000
 
 if __name__ == "__main__":
+	sys.setrecursionlimit(100000) #Because the Sharedmemory class contains classes inaccessible by top level, and they reference each other, pickling the manager will hit the recursion limit
 	my_serial_reader = ProcessHandler(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
 	my_serial_reader.start()
 	my_serial_reader.join_processes()
