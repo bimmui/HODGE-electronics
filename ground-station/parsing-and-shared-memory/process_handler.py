@@ -71,10 +71,10 @@ class ProcessHandler():
 			serial_controller.flush() #whien initializing a serial connection, flush the buffer to get rid of unwanted input
 			while True:
 				add_input = serial_controller.readline().decode("utf-8").strip()
-				add_input = add_input.split(",")
-				for i in range(len(add_input)):
+				add_input = add_input.split(",") #turn add_input into a list
+				for i in range(len(add_input)): #cast values to an integer
 					add_input[i] = int(add_input[i])
-				shared_memory_reference.write(add_input.split(",")) #the split function formates the add_input into an array which we can log in the database
+				shared_memory_reference.write(add_input) #the split function formates the add_input into an array which we can log in the database
 				print(shared_memory_reference.get_first().get_data())
 
 	#Starts the both processes in the SerialReader class
@@ -174,7 +174,7 @@ org = os.environ["DB_ORG"]
 url = "http://localhost:8086" #uncomment this value for local testing
 #url = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
 bucket = "Test With Dash"
-table_name = "Dummy alt and velocity"
+table_name = "Dummy alt and velocity integers"
 field_names = ["Time", "Altitude", "Velocity"]
 serial_connection_path = "/dev/ttyACM0"
 baud_rate = 88600
