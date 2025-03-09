@@ -72,7 +72,7 @@ class ProcessHandler():
 			while True:
 				add_input = serial_controller.readline().decode("utf-8").strip()
 				add_input = add_input.split(",")
-				for i in range(add_input):
+				for i in range(len(add_input)):
 					add_input[i] = int(add_input[i])
 				shared_memory_reference.write(add_input.split(",")) #the split function formates the add_input into an array which we can log in the database
 				print(shared_memory_reference.get_first().get_data())
