@@ -71,7 +71,9 @@ class ProcessHandler():
 			serial_controller.flush() #whien initializing a serial connection, flush the buffer to get rid of unwanted input
 			while True:
 				add_input = serial_controller.readline().decode("utf-8").strip()
-				print(add_input.split(","))
+				add_input = add_input.split(",")
+				for i in range(add_input):
+					add_input[i] = int(add_input[i])
 				shared_memory_reference.write(add_input.split(",")) #the split function formates the add_input into an array which we can log in the database
 				print(shared_memory_reference.get_first().get_data())
 
