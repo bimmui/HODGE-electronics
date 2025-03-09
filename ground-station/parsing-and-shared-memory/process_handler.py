@@ -178,7 +178,7 @@ table_name = "Dummy alt and velocity integers"
 field_names = ["Time", "Altitude", "Velocity"]
 serial_connection_path = "/dev/ttyACM0"
 baud_rate = 88600
-shared_memory_length = 1000
+shared_memory_length = 1000 #
 
 if __name__ == "__main__":
 	my_serial_reader = ProcessHandler(token, org, url, bucket, table_name, field_names, serial_connection_path, baud_rate, shared_memory_length)
