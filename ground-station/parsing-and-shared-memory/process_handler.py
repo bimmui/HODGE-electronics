@@ -107,7 +107,7 @@ bucket = "Test"
 table_name = "Fruit Test With Serial 2"
 field_names = ["Favorite", "Least Favorite", "Mid"]
 serial_connection_path = "/dev/ttyACM0"
-baud_rate = 115200
+baud_rate = 88600
 shared_memory_length = 1000
 
 if __name__ == "__main__":
