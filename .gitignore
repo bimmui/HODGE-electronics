@@ -4,3 +4,9 @@
 *.vscode
 *.o
 *.exe
+**/CMakeFiles
+**/corrosion
+**/corrosion_generated
+*.a
+**/CMakeCache.txt
+**/target
