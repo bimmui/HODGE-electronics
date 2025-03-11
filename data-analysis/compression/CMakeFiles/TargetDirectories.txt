@@ -1,0 +1,4 @@
+/home/may/rockets/HODGE-electronics/data-analysis/compression/CMakeFiles/huffman.dir
+/home/may/rockets/HODGE-electronics/data-analysis/compression/CMakeFiles/compress.dir
+/home/may/rockets/HODGE-electronics/data-analysis/compression/CMakeFiles/edit_cache.dir
+/home/may/rockets/HODGE-electronics/data-analysis/compression/CMakeFiles/rebuild_cache.dir

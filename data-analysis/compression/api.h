@@ -1,20 +1,13 @@
-#ifndef API_H
-#define API_H
+#pragma once
 
-#include <stddef.h>
+#include <cstdint>
+#include <vector>
 
-#include "array.h"
-
-typedef void *(*create_func)(Array*, size_t);
-typedef void *(*create_with_bits)(Array*, size_t, size_t);
-typedef void *(*create_with_rms)(Array*, size_t, float);
-typedef Array (*compress_func)(Array, size_t);
-
-typedef struct {
-    create_func create;
-    create_with_bits create_with_bits;
-    create_with_rms create_with_rms;
-    compress_func compress;
-} API;
-
-#endif
+template <typename T, typename U = float, typename V = uint8_t>
+class Compressor {
+public:
+    static T* create(std::vector<std::vector<U>>) = 0;
+    static T* create_max_bits(std::vector<std::vector<U>>) = 0;
+    static T* create_max_rmse(std::vector<std::vector<U>>) = 0;
+    vector<>* compress(vector) = 0;
+};
