@@ -1,2 +1,0 @@
-/usr/bin/ar qc libhuffman.a CMakeFiles/huffman.dir/huffman.cpp.o
-/usr/bin/ranlib libhuffman.a
