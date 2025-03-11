@@ -1,3 +1,6 @@
+*
+!*.*
+!*/
 *.devcontainer
 *build/
 *sdkconfig
@@ -10,3 +13,4 @@
 *.a
 **/CMakeCache.txt
 **/target
+**/_deps
