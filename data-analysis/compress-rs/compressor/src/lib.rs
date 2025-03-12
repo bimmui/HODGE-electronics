@@ -10,8 +10,6 @@ mod ffi {
     }
 }
 
-type Compressor = Thinger;
-
 #[make_answer]
 pub trait DoThing: Sync {
     fn return_value(&self) -> u32;
