@@ -8,6 +8,7 @@ crate-type = ["staticlib"]
 [dependencies]
 cxx = "1.0"
 lazy_static = "1.5"
+paste = "1.0.15"
 macros = { path = "../macros" }
 
 [build-dependencies]
