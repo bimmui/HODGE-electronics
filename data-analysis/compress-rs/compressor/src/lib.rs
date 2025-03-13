@@ -1,5 +1,8 @@
 use macros::export_concrete;
 
+mod efloat;
+mod huffman;
+
 #[cxx::bridge] 
 mod ffi {
 

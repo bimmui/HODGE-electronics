@@ -6,7 +6,9 @@ edition = "2021"
 crate-type = ["staticlib"]
 
 [dependencies]
-cxx = "1.0"
+bitstream-io = "2.6.0"
+cxx = "1.0.144"
+itertools = "0.14.0"
 lazy_static = "1.5"
 paste = "1.0.15"
 macros = { path = "../macros" }
