@@ -109,7 +109,7 @@ void ADXL375::getAccel(adxl375_accel_value_t *accel_vals)
     uint8_t data_rd[6] = {0};
     adxl375_read(adxl375_dev_handle, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
 
-    accel_vals->accel_x = (int16_t)((data_rd[1] << 8) + (data_rd[0]));
-    accel_vals->accel_y = (int16_t)((data_rd[3] << 8) + (data_rd[2]));
-    accel_vals->accel_z = (int16_t)((data_rd[5] << 8) + (data_rd[4]));
+    accel_vals->accel_x = ((int16_t)((data_rd[1] << 8) + (data_rd[0]))) * ADXL375_MG2G_MULTIPLIER;
+    accel_vals->accel_y = ((int16_t)((data_rd[3] << 8) + (data_rd[2]))) * ADXL375_MG2G_MULTIPLIER;
+    accel_vals->accel_z = ((int16_t)((data_rd[5] << 8) + (data_rd[4]))) * ADXL375_MG2G_MULTIPLIER;
 }

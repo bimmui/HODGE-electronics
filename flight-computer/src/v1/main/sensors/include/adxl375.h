@@ -5,8 +5,9 @@
 #include "driver/i2c_master.h"
 
 // change address
-#define ADXL375_I2C_ADDRESS 0x69
-#define ADXL375_WHO_AM_I_VAL 0xE5
+#define ADXL375_I2C_ADDRESS (0x69)
+#define ADXL375_WHO_AM_I_VAL (0xE5)
+#define ADXL375_MG2G_MULTIPLIER (0.049) /**< 49mg per lsb */
 
 typedef struct
 {
