@@ -25,7 +25,7 @@ StateDeterminer::~StateDeterminer()
 }
 
 // TODO: Complete this func, takes in bbman and modifies its curr_state attribute
-kf_vals StateDeterminer::determineState(float accel_data[3], float gyro_data[3], float altitude, unsigned long dt)
+kf_vals StateDeterminer::determineState(float accel_data[3], float gyro_data[3], float altitude, unsigned long curr_time)
 {
   if (first_step == false)
   {
@@ -33,7 +33,7 @@ kf_vals StateDeterminer::determineState(float accel_data[3], float gyro_data[3],
     first_step = true;
   }
 
-  estimator.estimate(accel_data, gyro_data, altitude, manager.curr_launch_time);
+  estimator.estimate(accel_data, gyro_data, altitude, curr_time);
 
   kf_vals ret;
 
@@ -161,21 +161,21 @@ kf_vals StateDeterminer::determineState(float accel_data[3], float gyro_data[3],
   // }
 }
 
-void StateDeterminer::switchGroundState(BBManager &manager, uint64_t packet)
-{
-  // 0x53504F = SPO in ASCII = 5460047 in decimal = Switch Power On
-  // 0x534C52 = SLR in ASCII = 5459026 in decimal = Switch Launch Ready
-  if (packet == 5460047)
-  {
-    manager.curr_state = state::POWER_ON;
-    return;
-  }
-  if (packet == 5459026)
-  {
-    manager.curr_state = state::LAUNCH_READY;
-    return;
-  }
-}
+// void StateDeterminer::switchGroundState(BBManager &manager, uint64_t packet)
+// {
+//   // 0x53504F = SPO in ASCII = 5460047 in decimal = Switch Power On
+//   // 0x534C52 = SLR in ASCII = 5459026 in decimal = Switch Launch Ready
+//   if (packet == 5460047)
+//   {
+//     manager.curr_state = state::POWER_ON;
+//     return;
+//   }
+//   if (packet == 5459026)
+//   {
+//     manager.curr_state = state::LAUNCH_READY;
+//     return;
+//   }
+// }
 
 void StateDeterminer::updatePrevEstimates(float altitude, float acceleration, float velocity)
 {

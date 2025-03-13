@@ -55,7 +55,7 @@ class StateDeterminer
 public:
     StateDeterminer();
     ~StateDeterminer();
-    kf_vals determineState(float accel_data[3], float gyro_data[3], float altitude);
+    kf_vals determineState(float accel_data[3], float gyro_data[3], float altitude, unsigned long curr_time);
     // void switchGroundState(BBManager &manager, uint64_t packet);
 
 private:

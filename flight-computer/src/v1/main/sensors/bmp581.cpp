@@ -5,7 +5,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_chip_info.h"
-#include "esp_flash.h"
 #include "esp_system.h"
 #include "driver/i2c_master.h"
 #include "esp_log.h"
@@ -72,13 +71,13 @@
 #define OSR_ENABLE_PRESSURE_BIT 0x40
 #define RECONFIG_DELAY_MS 3
 
-void _write(i2c_master_dev_handle_t sensor,
-            uint8_t const *data_buf, const uint8_t data_len)
+void bmp581_write(i2c_master_dev_handle_t sensor,
+                  uint8_t const *data_buf, const uint8_t data_len)
 {
     ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, MASTER_TRANSMIT_TIMEOUT));
 }
 
-void _read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
+void bmp581_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
@@ -115,7 +114,7 @@ void BMP581::bmp581_configure(void)
     // Let's first grab what is currently there
     uint8_t curr_config[1] = {0};
     uint8_t osr_config_reg = OSR_CONFIG_REG;
-    _read(bmp581_dev_handle, osr_config_reg, curr_config, sizeof(curr_config));
+    bmp581_read(bmp581_dev_handle, osr_config_reg, curr_config, sizeof(curr_config));
 
     // Next lets update it with the 6th bit enabled for pressure
     curr_config[0] |= OSR_ENABLE_PRESSURE_BIT;
@@ -124,13 +123,13 @@ void BMP581::bmp581_configure(void)
     enable_press_data[1] = curr_config[0];
 
     // Let's now send it over to the peripheral
-    _write(bmp581_dev_handle, enable_press_data, sizeof(enable_press_data));
+    bmp581_write(bmp581_dev_handle, enable_press_data, sizeof(enable_press_data));
 
     /* Now we put the device in continuous mode */
     // We first grab what is currently there
     curr_config[0] = 0;
     uint8_t odr_config_reg = ODR_CONFIG_REG;
-    _read(bmp581_dev_handle, odr_config_reg, curr_config, sizeof(curr_config));
+    bmp581_read(bmp581_dev_handle, odr_config_reg, curr_config, sizeof(curr_config));
 
     // We now enable the bit for continous mode
     curr_config[0] |= ODR_CONTINUOUS_MODE_BITS;
@@ -139,7 +138,7 @@ void BMP581::bmp581_configure(void)
     enable_continuous_data[1] = curr_config[0];
 
     // Let's now send it over to the peripheral
-    _write(bmp581_dev_handle, enable_continuous_data, sizeof(enable_continuous_data));
+    bmp581_write(bmp581_dev_handle, enable_continuous_data, sizeof(enable_continuous_data));
 
     /* We set delay called for in datasheet*/
     vTaskDelay(pdMS_TO_TICKS(RECONFIG_DELAY_MS));
@@ -165,7 +164,7 @@ bmp581_data BMP581::bmp581_get_sample(void)
 {
     uint8_t data[6] = {0};
     uint8_t data_reg = TEMP_DATA_XLSB_REG; // Start register for temperature
-    _read(bmp581_dev_handle, data_reg, data, sizeof(data));
+    bmp581_read(bmp581_dev_handle, data_reg, data, sizeof(data));
 
     // Extract raw temperature
     int32_t raw_temperature = (int32_t)((((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0]) << 8) >> 8;
@@ -198,7 +197,7 @@ int BMP581::soft_reset(void)
     reset_data[1] = SOFT_RESET_CMD;
 
     /* We perform the soft reset */
-    _write(bmp581_dev_handle, reset_data, sizeof(reset_data));
+    bmp581_write(bmp581_dev_handle, reset_data, sizeof(reset_data));
 
     /* Lastly, let's enforce a 2 ms timeout which is the time needed for the
         reboot to happen but we will add a buffer */
@@ -212,13 +211,13 @@ int BMP581::power_up_check(void)
 
     /* We perform a dummy read to initalize the sensor's interface */
     uint8_t dummy_reg[1] = {0}; // A valid register address
-    _write(bmp581_dev_handle, dummy_reg, sizeof(dummy_reg));
+    bmp581_write(bmp581_dev_handle, dummy_reg, sizeof(dummy_reg));
 
     /* We first check chip status to make sure we successfully init */
     uint8_t chip_id[1] = {0};
     uint8_t chipid_reg_address = CHIP_ID_REG;
-    _write(bmp581_dev_handle, chip_id, sizeof(chip_id));
-    _read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
+    bmp581_write(bmp581_dev_handle, chip_id, sizeof(chip_id));
+    bmp581_read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
     ESP_ERROR_CHECK(chip_id[0] != 0x50);
 
     /* Next we check STATUS: status_nvm_rdy==1 (bit offset: 1), status_nvm_err == 0 (bit offset: 2)*/
@@ -226,8 +225,8 @@ int BMP581::power_up_check(void)
        how we got it. The bits were revered which caused confusion */
     uint8_t status[1] = {0};
     uint8_t status_reg_address = STATUS_REG;
-    _write(bmp581_dev_handle, status, sizeof(status));
-    _read(bmp581_dev_handle, status_reg_address, status, sizeof(status));
+    bmp581_write(bmp581_dev_handle, status, sizeof(status));
+    bmp581_read(bmp581_dev_handle, status_reg_address, status, sizeof(status));
 
     /* Check status_nvm_rdy (bit offset 1)*/
     bool nvm_ready = (status[0] & STATUS_NVM_RDY_BIT) >> STATUS_NVM_RDY_SHIFT;
@@ -250,13 +249,13 @@ int BMP581::power_up_check(void)
     uint8_t int_status_reg_address = INT_STATUS_REG;
 
     /* We first read to clear register */
-    _read(bmp581_dev_handle, int_status_reg_address, int_status,
-          sizeof(int_status));
+    bmp581_read(bmp581_dev_handle, int_status_reg_address, int_status,
+                sizeof(int_status));
 
     /* We next ask for clean sample */
-    _write(bmp581_dev_handle, int_status, sizeof(int_status));
-    _read(bmp581_dev_handle, int_status_reg_address, int_status,
-          sizeof(int_status));
+    bmp581_write(bmp581_dev_handle, int_status, sizeof(int_status));
+    bmp581_read(bmp581_dev_handle, int_status_reg_address, int_status,
+                sizeof(int_status));
 
     ESP_ERROR_CHECK(int_status[0] != INT_STATUS_POR_BIT);
     return EXIT_SUCCESS;
@@ -266,6 +265,6 @@ uint32_t BMP581::whoami(void)
 {
     uint8_t chip_id[1] = {0};
     uint8_t chipid_reg_address = CHIP_ID_REG;
-    _read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
+    bmp581_read(bmp581_dev_handle, chipid_reg_address, chip_id, sizeof(chip_id));
     return chip_id[0];
 }

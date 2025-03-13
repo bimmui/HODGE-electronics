@@ -1,0 +1,209 @@
+menu "Pita Plate Pin Configuration"
+
+    config I2C_MASTER_SCL
+        int "SCL GPIO Num"
+        default 25
+        help
+            GPIO number for I2C Master clock line.
+
+    config I2C_MASTER_SDA
+        int "SDA GPIO Num"
+        default 33
+        help
+            GPIO number for I2C Master data line.
+
+    config I2C_MASTER_FREQUENCY
+        int "Master Frequency"
+        default 100000
+        help
+            I2C Speed of Master device.
+
+    menu "SD SPI Example Configuration"
+
+        config FORMAT_IF_MOUNT_FAILED
+            bool "Format the card if mount failed"
+            default n
+            help
+                If this config item is set, format_if_mount_failed will be set to true and the card will be formatted if
+                the mount has failed.
+    
+        config FORMAT_SD_CARD
+            bool "Format the card as a part of the example"
+            default n
+            help
+                If this config item is set, the card will be formatted as a part of the example.
+    
+        config PIN_MOSI
+            int "MOSI GPIO number"
+            default 13 
+    
+        config PIN_MISO
+            int "MISO GPIO number"
+            default 12
+    
+        config PIN_CLK
+            int "CLK GPIO number"
+            default 14
+    
+        config PIN_CS
+            int "CS GPIO number"
+            default 5
+    
+        config DEBUG_PIN_CONNECTIONS
+            bool "Debug sd pin connections and pullup strength"
+            default n
+    
+        config ENABLE_ADC_FEATURE
+            bool "Enable ADC feature"
+            depends on DEBUG_PIN_CONNECTIONS
+            default y if IDF_TARGET_ESP32
+            default n
+    
+        config ADC_UNIT
+            int "ADC Unit"
+            depends on DEBUG_PIN_CONNECTIONS
+            default 1 if IDF_TARGET_ESP32
+            default 0 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_MOSI
+            int "MOSI mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 3 if IDF_TARGET_ESP32
+            default 7 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_MISO
+            int "MISO mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 2 if IDF_TARGET_ESP32
+            default 1 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_CLK
+            int "CLK mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 6 if IDF_TARGET_ESP32
+            default 0 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_CS
+            int "CS mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 4 if IDF_TARGET_ESP32
+            default 6 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config SD_PWR_CTRL_LDO_INTERNAL_IO
+            depends on SOC_SDMMC_IO_POWER_EXTERNAL
+            bool "SD power supply comes from internal LDO IO (READ HELP!)"
+            default n
+            help
+                Only needed when the SD card is connected to specific IO pins which can be used for high-speed SDMMC.
+                Please read the schematic first and check if the SD VDD is connected to any internal LDO output.
+                Unselect this option if the SD card is powered by an external power supply.
+    
+        config SD_PWR_CTRL_LDO_IO_ID
+            depends on SOC_SDMMC_IO_POWER_EXTERNAL && EXAMPLE_SD_PWR_CTRL_LDO_INTERNAL_IO
+            int "LDO ID"
+            default 4 if IDF_TARGET_ESP32P4
+            help
+                Please read the schematic first and input your LDO ID.
+    endmenu
+            
+    menu "GPS Configuration"
+
+        orsource "$IDF_PATH/examples/common_components/env_caps/$IDF_TARGET/Kconfig.env_caps"
+
+        config NMEA_PARSER_UART_RXD
+            int "UART RXD pin number"
+            range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
+            default 33
+            help
+                GPIO number for UART RX pin on the ESP32
+
+        config NMEA_PARSER_RING_BUFFER_SIZE
+            int "NMEA Parser Ring Buffer Size"
+            range 0 2048
+            default 1024
+            help
+                Size of the ring buffer used for UART Rx channel
+
+        config NMEA_PARSER_TASK_STACK_SIZE
+            int "NMEA Parser Task Stack Size"
+            range 0 4096
+            default 3072
+            help
+                Stack size of NMEA Parser task
+
+        config NMEA_PARSER_TASK_PRIORITY
+            int "NMEA Parser Task Priority"
+            range 0 24
+            default 2
+            help
+                Priority of NMEA Parser task
+
+        menu "NMEA Statement Support"
+            comment "At least one statement must be selected"
+            config NMEA_STATEMENT_GGA
+                bool "GGA Statement"
+                default y
+                help
+                    Enabling this option will parse the following parameter from GGA statement:
+
+                    - Latitude, Longitude, Altitude;
+                    - Number of satellites in use, fix status (no fix, GPS, DGPS), UTC time;
+
+            config NMEA_STATEMENT_GSA
+                bool "GSA Statement"
+                default n
+                help
+                    Enabling this option will parse the following parameter from GSA statement:
+
+                    - Position/Vertical/Horizontal dilution of precision;
+                    - Fix mode (no fix, 2D, 3D fix);
+                    - IDs of satellites in use;
+
+            config NMEA_STATEMENT_GSV
+                bool "GSV Statement"
+                default n
+                help
+                    Enabling this option will parse the following parameter from GSV statement:
+
+                    - Number of satellites in view;
+                    - Optional details of each satellite in view;
+
+            config NMEA_STATEMENT_RMC
+                bool "RMC Statement"
+                default y
+                help
+                    Enabling this option will parse the following parameter from RMC statement:
+
+                    - Validity of GPS signal;
+                    - Ground speed (knots) and course over ground (degrees);
+                    - Magnetic variation;
+                    - UTC date;
+
+            config NMEA_STATEMENT_GLL
+                bool "GLL Statement"
+                default n
+                help
+                    Enabling this option will parse the following parameter from GLL statement:
+
+                    - Latitude, Longitude;
+                    - UTC time;
+
+            config NMEA_STATEMENT_VTG
+                bool "VTG Statement"
+                default n
+                help
+                    Enabling this option will parse the following parameter from VTG statement:
+
+                    - Ground speed (knots, km/h) and course over ground (degrees);
+                    - Magnetic variation;
+
+        endmenu
+
+    endmenu
+
+endmenu

@@ -4,7 +4,6 @@
 #include "driver/i2c_master.h"
 #include "driver/gpio.h"
 #include "esp_chip_info.h"
-#include "esp_flash.h"
 #include "esp_mac.h"
 #include "esp_system.h"
 #include "esp_log.h"

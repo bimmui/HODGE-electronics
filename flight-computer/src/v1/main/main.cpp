@@ -33,38 +33,38 @@
 #define MAX_CHAR_SIZE 1024
 static const char *TAG = "example";
 #define MOUNT_POINT "/sdcard"
-const char *datalog = MOUNT_POINT "/datalog.csv";
+const char *datalog_path = MOUNT_POINT "/datalog.csv";
 
-#ifdef CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
+#ifdef CONFIG_DEBUG_PIN_CONNECTIONS
 const char *names[] = {"CLK ", "MOSI", "MISO", "CS  "};
-const int pins[] = {CONFIG_EXAMPLE_PIN_CLK,
-                    CONFIG_EXAMPLE_PIN_MOSI,
-                    CONFIG_EXAMPLE_PIN_MISO,
-                    CONFIG_EXAMPLE_PIN_CS};
+const int pins[] = {CONFIG_PIN_CLK,
+                    CONFIG_PIN_MOSI,
+                    CONFIG_PIN_MISO,
+                    CONFIG_PIN_CS};
 
 const int pin_count = sizeof(pins) / sizeof(pins[0]);
-#if CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
-const int adc_channels[] = {CONFIG_EXAMPLE_ADC_PIN_CLK,
-                            CONFIG_EXAMPLE_ADC_PIN_MOSI,
-                            CONFIG_EXAMPLE_ADC_PIN_MISO,
-                            CONFIG_EXAMPLE_ADC_PIN_CS};
-#endif // CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
+#if CONFIG_ENABLE_ADC_FEATURE
+const int adc_channels[] = {CONFIG_ADC_PIN_CLK,
+                            CONFIG_ADC_PIN_MOSI,
+                            CONFIG_ADC_PIN_MISO,
+                            CONFIG_ADC_PIN_CS};
+#endif // CONFIG_ENABLE_ADC_FEATURE
 
 pin_configuration_t config = {
     .names = names,
     .pins = pins,
-#if CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
+#if CONFIG_ENABLE_ADC_FEATURE
     .adc_channels = adc_channels,
 #endif
 };
-#endif // CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
+#endif // CONFIG_DEBUG_PIN_CONNECTIONS
 
 // Pin assignments can be set in menuconfig, see "SD SPI Example Configuration" menu.
 // You can also change the pin assignments here by changing the following 4 lines.
-#define PIN_NUM_MISO CONFIG_EXAMPLE_PIN_MISO
-#define PIN_NUM_MOSI CONFIG_EXAMPLE_PIN_MOSI
-#define PIN_NUM_CLK CONFIG_EXAMPLE_PIN_CLK
-#define PIN_NUM_CS CONFIG_EXAMPLE_PIN_CS
+#define PIN_NUM_MISO CONFIG_PIN_MISO
+#define PIN_NUM_MOSI CONFIG_PIN_MOSI
+#define PIN_NUM_CLK CONFIG_PIN_CLK
+#define PIN_NUM_CS static_cast<gpio_num_t>(CONFIG_PIN_CS)
 
 // gps defines + constant
 #define TIME_ZONE (-5)   // EST Time
@@ -101,7 +101,7 @@ typedef struct
     ////// BMP581
     float pressure;
     float bmp_temp;
-    float altitude;
+    float bmp_altitude;
     ////// TMP1075
     float tmp_temp;
     ////// ICM20948
@@ -118,14 +118,15 @@ typedef struct
     ////// State
 } flight_data;
 
-static void gps_event_handler(void *arg, void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
+static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_base, int32_t event_id, void *event_data)
 {
     gps_t *gps = NULL;
     switch (event_id)
     {
     case GPS_UPDATE:
+    {
         gps = (gps_t *)event_data;
-        flight_data *data = static_cast<flight_data *>(arg);
+        flight_data *data = static_cast<flight_data *>(event_handler_arg);
         /* print information parsed from GPS statements */
         data->day = gps->date.day;
         data->month = gps->date.month;
@@ -141,10 +142,12 @@ static void gps_event_handler(void *arg, void *event_handler_arg, esp_event_base
         data->fix_status = gps->fix;
         data->fix_valid = gps->valid ? true : false;
         data->mag_vari = gps->variation;
+    }
     case GPS_UNKNOWN:
-        /* print unknown statements */
+    { /* print unknown statements */
         ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
+    }
     default:
         break;
     }
@@ -174,11 +177,11 @@ esp_err_t mount_filesystem(sdmmc_card_t *card)
     // If format_if_mount_failed is set to true, SD card will be partitioned and
     // formatted in case when mounting fails.
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-#ifdef CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED
+#ifdef CONFIG_FORMAT_IF_MOUNT_FAILED
         .format_if_mount_failed = true,
 #else
         .format_if_mount_failed = false,
-#endif // EXAMPLE_FORMAT_IF_MOUNT_FAILED
+#endif // FORMAT_IF_MOUNT_FAILED
         .max_files = 5,
         .allocation_unit_size = 16 * 1024};
     const char mount_point[] = MOUNT_POINT;
@@ -198,9 +201,9 @@ esp_err_t mount_filesystem(sdmmc_card_t *card)
     // For SoCs where the SD power can be supplied both via an internal or external (e.g. on-board LDO) power supply.
     // When using specific IO pins (which can be used for ultra high-speed SDMMC) to connect to the SD card
     // and the internal LDO power supply, we need to initialize the power supply first.
-#if CONFIG_EXAMPLE_SD_PWR_CTRL_LDO_INTERNAL_IO
+#if CONFIG_SD_PWR_CTRL_LDO_INTERNAL_IO
     sd_pwr_ctrl_ldo_config_t ldo_config = {
-        .ldo_chan_id = CONFIG_EXAMPLE_SD_PWR_CTRL_LDO_IO_ID,
+        .ldo_chan_id = CONFIG_SD_PWR_CTRL_LDO_IO_ID,
     };
     sd_pwr_ctrl_handle_t pwr_ctrl_handle = NULL;
 
@@ -222,7 +225,7 @@ esp_err_t mount_filesystem(sdmmc_card_t *card)
         .max_transfer_sz = 4000,
     };
 
-    ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+    ret = spi_bus_initialize(static_cast<spi_host_device_t>(host.slot), &bus_cfg, SDSPI_DEFAULT_DMA);
     if (ret != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to initialize bus.");
@@ -233,7 +236,7 @@ esp_err_t mount_filesystem(sdmmc_card_t *card)
     // Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
     sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
     slot_config.gpio_cs = PIN_NUM_CS;
-    slot_config.host_id = host.slot;
+    slot_config.host_id = static_cast<spi_host_device_t>(host.slot);
 
     ESP_LOGI(TAG, "Mounting filesystem");
     ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
@@ -243,14 +246,14 @@ esp_err_t mount_filesystem(sdmmc_card_t *card)
         if (ret == ESP_FAIL)
         {
             ESP_LOGE(TAG, "Failed to mount filesystem. "
-                          "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
+                          "If you want the card to be formatted, set the CONFIG_FORMAT_IF_MOUNT_FAILED menuconfig option.");
         }
         else
         {
             ESP_LOGE(TAG, "Failed to initialize the card (%s). "
                           "Make sure SD card lines have pull-up resistors in place.",
                      esp_err_to_name(ret));
-#ifdef CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
+#ifdef CONFIG_DEBUG_PIN_CONNECTIONS
             check_sd_card_pins(&config, pin_count);
 #endif
         }
@@ -281,25 +284,25 @@ void i2c_bus_init(void)
 extern "C" void app_main()
 {
     i2c_bus_init();
-    sdmmc_card_t *card;
-    esp_err_t ret = mount_filesystem();
+    sdmmc_card_t *card = nullptr;
+    esp_err_t ret;
+    ret = mount_filesystem(card);
     if (ret != ESP_OK)
     {
         ESP_LOGE(TAG, "Failed to mount filesystem");
     }
 
     // settting up the datalog csv file
-    esp_err_t ret;
     char data[MAX_CHAR_SIZE];
-    snprintf(data, MAX_CHAR_SIZE, "state, time (ms), external temperature (C), av bay temperature (C), barometer temp (C), air pressure (kPa), altitude (m), kf vertical velocity (m/s), kf vertical acceleration (m/s^2), kf altitude (m), x acceleration (m/s^2), y acceleration (m/s^2), z acceleration (m/s^2), x magnetic force (gauss), y magnetic force (gauss), z magnetic force (gauss), x gyro (dps), y gyro (dps), z gyro (dps), gps lat, gps long, gps speed, gps angle, gps altitude, gps fix, gps fix quality, gps satellites, gps antenna status, error flags\n");
-    ret = s_example_write_file(datalog, data);
+    snprintf(data, MAX_CHAR_SIZE, "day,month,year,hour,minute,latitude,longitude,gps_altitude,speed,cog,num_sats,fix_status,fix_valid,mag_vari,adxl375_accel_x,adxl375_accel_y,adxl375_accel_z,pressure,bmp_temp,bmp_altitude,tmp_temp,icm20948_accel_x,icm20948_accel_y,icm20948_accel_z,icm20948_gyro_x,icm20948_gyro_y,icm20948_gyro_z,kf_altitude,kf_vert_velo,kf_accel\n");
+    ret = s_example_write_file(datalog_path, data);
     if (ret != ESP_OK)
     {
         ESP_LOGE(TAG, "Couldn't write to SD card");
     }
 
     // this is where data will be populated
-    flight_data data;
+    flight_data flightlog;
 
     // setting up all the sensors
     static ADXL375 adxl(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x53, CONFIG_I2C_MASTER_FREQUENCY);
@@ -323,41 +326,62 @@ extern "C" void app_main()
     /* init NMEA parser library */
     nmea_parser_handle_t nmea_hdl = nmea_parser_init(&config);
     /* register event handler for NMEA parser library */
-    nmea_parser_add_handler(nmea_hdl, gps_event_handler, &data);
+    nmea_parser_add_handler(nmea_hdl, gps_event_handler, &flightlog);
 
     while (true)
     {
         adxl375_accel_value_t accels;
         adxl.getAccel(&accels);
-        data.adxl375_accel_x = accels.accel_x;
-        data.adxl375_accel_y = accels.accel_y;
-        data.adxl375_accel_z = accels.accel_z;
+        flightlog.adxl375_accel_x = accels.accel_x;
+        flightlog.adxl375_accel_y = accels.accel_y;
+        flightlog.adxl375_accel_z = accels.accel_z;
 
         sample = bmp581.bmp581_get_sample();
-        data.pressure = (double)sample.pressure;
-        data.bmp_temp = sample.temperature_c;
-        data.altitude = sample.altitude;
+        flightlog.pressure = (double)sample.pressure;
+        flightlog.bmp_temp = sample.temperature_c;
+        flightlog.altitude = sample.altitude;
 
-        data.tmp_temp = tmp.readTempC();
+        flightlog.tmp_temp = tmp.readTempC();
 
         icm20948_accel_value_t icm_accels;
         icm20948_gyro_value_t gyros;
         icm.getAccel(&icm_accels);
         icm.getGyro(&gyros);
-        data.icm20948_accel_x = icm_accels.accel_x;
-        data.icm20948_accel_y = icm_accels.accel_y;
-        data.icm20948_accel_z = icm_accels.accel_z;
-        data.icm20948_gyro_x = gyros.gyro_x;
-        data.icm20948_gyro_y = gyros.gyro_y;
-        data.icm20948_gyro_z = gyros.gyro_z;
+        flightlog.icm20948_accel_x = icm_accels.accel_x;
+        flightlog.icm20948_accel_y = icm_accels.accel_y;
+        flightlog.icm20948_accel_z = icm_accels.accel_z;
+        flightlog.icm20948_gyro_x = gyros.gyro_x;
+        flightlog.icm20948_gyro_y = gyros.gyro_y;
+        flightlog.icm20948_gyro_z = gyros.gyro_z;
 
         float kf_accels[3] = {icm_accels.accel_x, icm_accels.accel_y, icm_accels.accel_z};
         float kf_gyros[3] = {gyros.gyro_x, gyros.gyro_y, gyros.gyro_z};
 
         StateDeterminer state_determiner = StateDeterminer();
         kf_vals thevals = state_determiner.determineState(kf_accels, kf_gyros, sample.altitude, esp_timer_get_time() / 1000ULL);
-        data.kf_altitude = thevals.kf_altitude;
-        data.kf_vert_velo = thevals.kf_vert_velo;
-        data.kf_accel = thevals.kf_accel;
+        flightlog.kf_altitude = thevals.kf_altitude;
+        flightlog.kf_vert_velo = thevals.kf_vert_velo;
+        flightlog.kf_accel = thevals.kf_accel;
+
+        // now writing to sd card
+        char csv_row[MAX_CHAR_SIZE];
+        sprintf(csv_row, "%d,%d,%d,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",
+                flightlog.day, flightlog.month, flightlog.year,
+                flightlog.hour, flightlog.minute,
+                flightlog.latitude, flightlog.longitude, flightlog.altitude, flightlog.speed, flightlog.cog,
+                flightlog.num_sats, flightlog.fix_status, flightlog.fix_valid, flightlog.mag_vari,
+                flightlog.adxl375_accel_x, flightlog.adxl375_accel_y, flightlog.adxl375_accel_z,
+                flightlog.pressure, flightlog.bmp_temp, flightlog.bmp_altitude,
+                flightlog.tmp_temp,
+                flightlog.icm20948_accel_x, flightlog.icm20948_accel_y, flightlog.icm20948_accel_z,
+                flightlog.icm20948_gyro_x, flightlog.icm20948_gyro_y, flightlog.icm20948_gyro_z,
+                flightlog.kf_altitude, flightlog.kf_vert_velo, flightlog.kf_accel);
+
+        esp_err_t ret;
+        ret = s_example_write_file(datalog_path, csv_row);
+        if (ret != ESP_OK)
+        {
+            ESP_LOGE(TAG, "Couldn't write to SD card");
+        }
     }
 }
