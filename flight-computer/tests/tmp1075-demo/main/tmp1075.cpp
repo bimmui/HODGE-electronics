@@ -101,6 +101,7 @@ float TMP1075::readTempC()
     ESP_LOGI(TAG, "Temperature: %.2f °C", tempC);
     return tempC;
 }
+
 float TMP1075::readTempF()
 {
     return ((readTempC() * 1.8f) + 32);
