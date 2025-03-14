@@ -4,7 +4,6 @@
 #include "compress_rs.h"
 
 int main(void) {
-    auto comp = compress::make();
-    printf("Hello World!\n");
+    printf("Hello World! %d\n", return_five());
     return EXIT_SUCCESS;
 }

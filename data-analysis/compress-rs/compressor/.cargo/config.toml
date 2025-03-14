@@ -1,2 +1,2 @@
-[build]
-target = "riscv32imc-unknown-none"
+#[build]
+#target = "riscv32imc-unknown-none"
