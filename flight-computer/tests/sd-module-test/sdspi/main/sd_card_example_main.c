@@ -18,26 +18,26 @@
 #include "sd_pwr_ctrl_by_on_chip_ldo.h"
 #endif
 
-#define EXAMPLE_MAX_CHAR_SIZE    64
+#define EXAMPLE_MAX_CHAR_SIZE 64
 
 static const char *TAG = "example";
 
 #define MOUNT_POINT "/sdcard"
 
 #ifdef CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
-const char* names[] = {"CLK ", "MOSI", "MISO", "CS  "};
+const char *names[] = {"CLK ", "MOSI", "MISO", "CS  "};
 const int pins[] = {CONFIG_EXAMPLE_PIN_CLK,
                     CONFIG_EXAMPLE_PIN_MOSI,
                     CONFIG_EXAMPLE_PIN_MISO,
                     CONFIG_EXAMPLE_PIN_CS};
 
-const int pin_count = sizeof(pins)/sizeof(pins[0]);
+const int pin_count = sizeof(pins) / sizeof(pins[0]);
 #if CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
 const int adc_channels[] = {CONFIG_EXAMPLE_ADC_PIN_CLK,
                             CONFIG_EXAMPLE_ADC_PIN_MOSI,
                             CONFIG_EXAMPLE_ADC_PIN_MISO,
                             CONFIG_EXAMPLE_ADC_PIN_CS};
-#endif //CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
+#endif // CONFIG_EXAMPLE_ENABLE_ADC_FEATURE
 
 pin_configuration_t config = {
     .names = names,
@@ -46,20 +46,21 @@ pin_configuration_t config = {
     .adc_channels = adc_channels,
 #endif
 };
-#endif //CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
+#endif // CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
 
 // Pin assignments can be set in menuconfig, see "SD SPI Example Configuration" menu.
 // You can also change the pin assignments here by changing the following 4 lines.
-#define PIN_NUM_MISO  CONFIG_EXAMPLE_PIN_MISO
-#define PIN_NUM_MOSI  CONFIG_EXAMPLE_PIN_MOSI
-#define PIN_NUM_CLK   CONFIG_EXAMPLE_PIN_CLK
-#define PIN_NUM_CS    CONFIG_EXAMPLE_PIN_CS
+#define PIN_NUM_MISO CONFIG_EXAMPLE_PIN_MISO
+#define PIN_NUM_MOSI CONFIG_EXAMPLE_PIN_MOSI
+#define PIN_NUM_CLK CONFIG_EXAMPLE_PIN_CLK
+#define PIN_NUM_CS CONFIG_EXAMPLE_PIN_CS
 
 static esp_err_t s_example_write_file(const char *path, char *data)
 {
     ESP_LOGI(TAG, "Opening file %s", path);
     FILE *f = fopen(path, "w");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         ESP_LOGE(TAG, "Failed to open file for writing");
         return ESP_FAIL;
     }
@@ -74,7 +75,8 @@ static esp_err_t s_example_read_file(const char *path)
 {
     ESP_LOGI(TAG, "Reading file %s", path);
     FILE *f = fopen(path, "r");
-    if (f == NULL) {
+    if (f == NULL)
+    {
         ESP_LOGE(TAG, "Failed to open file for reading");
         return ESP_FAIL;
     }
@@ -84,7 +86,8 @@ static esp_err_t s_example_read_file(const char *path)
 
     // strip newline
     char *pos = strchr(line, '\n');
-    if (pos) {
+    if (pos)
+    {
         *pos = '\0';
     }
     ESP_LOGI(TAG, "Read from file: '%s'", line);
@@ -106,8 +109,7 @@ void app_main(void)
         .format_if_mount_failed = false,
 #endif // EXAMPLE_FORMAT_IF_MOUNT_FAILED
         .max_files = 5,
-        .allocation_unit_size = 16 * 1024
-    };
+        .allocation_unit_size = 16 * 1024};
     sdmmc_card_t *card;
     const char mount_point[] = MOUNT_POINT;
     ESP_LOGI(TAG, "Initializing SD card");
@@ -133,7 +135,8 @@ void app_main(void)
     sd_pwr_ctrl_handle_t pwr_ctrl_handle = NULL;
 
     ret = sd_pwr_ctrl_new_on_chip_ldo(&ldo_config, &pwr_ctrl_handle);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to create a new on-chip LDO power control driver");
         return;
     }
@@ -150,7 +153,8 @@ void app_main(void)
     };
 
     ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to initialize bus.");
         return;
     }
@@ -164,13 +168,18 @@ void app_main(void)
     ESP_LOGI(TAG, "Mounting filesystem");
     ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
 
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
+    if (ret != ESP_OK)
+    {
+        if (ret == ESP_FAIL)
+        {
             ESP_LOGE(TAG, "Failed to mount filesystem. "
-                     "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
-        } else {
+                          "If you want the card to be formatted, set the CONFIG_EXAMPLE_FORMAT_IF_MOUNT_FAILED menuconfig option.");
+        }
+        else
+        {
             ESP_LOGE(TAG, "Failed to initialize the card (%s). "
-                     "Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
+                          "Make sure SD card lines have pull-up resistors in place.",
+                     esp_err_to_name(ret));
 #ifdef CONFIG_EXAMPLE_DEBUG_PIN_CONNECTIONS
             check_sd_card_pins(&config, pin_count);
 #endif
@@ -185,62 +194,72 @@ void app_main(void)
     // Use POSIX and C standard library functions to work with files.
 
     // First create a file.
-    const char *file_hello = MOUNT_POINT"/hello.txt";
+    const char *file_hello = MOUNT_POINT "/hello.txt";
     char data[EXAMPLE_MAX_CHAR_SIZE];
     snprintf(data, EXAMPLE_MAX_CHAR_SIZE, "%s %s!\n", "Hello", card->cid.name);
     ret = s_example_write_file(file_hello, data);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         return;
     }
 
-    const char *file_foo = MOUNT_POINT"/foo.txt";
+    const char *file_foo = MOUNT_POINT "/foo.txt";
 
     // Check if destination file exists before renaming
     struct stat st;
-    if (stat(file_foo, &st) == 0) {
+    if (stat(file_foo, &st) == 0)
+    {
         // Delete it if it exists
         unlink(file_foo);
     }
 
     // Rename original file
     ESP_LOGI(TAG, "Renaming file %s to %s", file_hello, file_foo);
-    if (rename(file_hello, file_foo) != 0) {
+    if (rename(file_hello, file_foo) != 0)
+    {
         ESP_LOGE(TAG, "Rename failed");
         return;
     }
 
     ret = s_example_read_file(file_foo);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         return;
     }
 
     // Format FATFS
 #ifdef CONFIG_EXAMPLE_FORMAT_SD_CARD
     ret = esp_vfs_fat_sdcard_format(mount_point, card);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to format FATFS (%s)", esp_err_to_name(ret));
         return;
     }
 
-    if (stat(file_foo, &st) == 0) {
+    if (stat(file_foo, &st) == 0)
+    {
         ESP_LOGI(TAG, "file still exists");
         return;
-    } else {
+    }
+    else
+    {
         ESP_LOGI(TAG, "file doesn't exist, formatting done");
     }
 #endif // CONFIG_EXAMPLE_FORMAT_SD_CARD
 
-    const char *file_nihao = MOUNT_POINT"/nihao.txt";
+    const char *file_nihao = MOUNT_POINT "/nihao.txt";
     memset(data, 0, EXAMPLE_MAX_CHAR_SIZE);
     snprintf(data, EXAMPLE_MAX_CHAR_SIZE, "%s %s!\n", "Nihao", card->cid.name);
     ret = s_example_write_file(file_nihao, data);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         return;
     }
 
-    //Open file for reading
+    // Open file for reading
     ret = s_example_read_file(file_nihao);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         return;
     }
 
@@ -248,13 +267,14 @@ void app_main(void)
     esp_vfs_fat_sdcard_unmount(mount_point, card);
     ESP_LOGI(TAG, "Card unmounted");
 
-    //deinitialize the bus after all devices are removed
+    // deinitialize the bus after all devices are removed
     spi_bus_free(host.slot);
 
     // Deinitialize the power control driver if it was used
 #if CONFIG_EXAMPLE_SD_PWR_CTRL_LDO_INTERNAL_IO
     ret = sd_pwr_ctrl_del_on_chip_ldo(pwr_ctrl_handle);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE(TAG, "Failed to delete the on-chip LDO power control driver");
         return;
     }

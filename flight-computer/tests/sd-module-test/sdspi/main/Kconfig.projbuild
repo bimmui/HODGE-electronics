@@ -15,15 +15,15 @@ menu "SD SPI Example Configuration"
 
     config EXAMPLE_PIN_MOSI
         int "MOSI GPIO number"
-        default 13 
+        default 23 
 
     config EXAMPLE_PIN_MISO
         int "MISO GPIO number"
-        default 12
+        default 19
 
     config EXAMPLE_PIN_CLK
         int "CLK GPIO number"
-        default 14
+        default 18
 
     config EXAMPLE_PIN_CS
         int "CS GPIO number"
