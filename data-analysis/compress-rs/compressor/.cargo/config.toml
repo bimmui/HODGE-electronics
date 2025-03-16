@@ -1,2 +1,2 @@
-#[build]
-#target = "riscv32imc-unknown-none"
+[build]
+target = "xtensa-esp32-espidf"
