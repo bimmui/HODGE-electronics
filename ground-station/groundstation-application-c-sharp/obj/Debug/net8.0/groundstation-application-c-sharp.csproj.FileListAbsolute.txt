@@ -1,0 +1,15 @@
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/bin/Debug/net8.0/groundstation-application-c-sharp
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/bin/Debug/net8.0/groundstation-application-c-sharp.deps.json
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/bin/Debug/net8.0/groundstation-application-c-sharp.runtimeconfig.json
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/bin/Debug/net8.0/groundstation-application-c-sharp.dll
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/bin/Debug/net8.0/groundstation-application-c-sharp.pdb
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.GeneratedMSBuildEditorConfig.editorconfig
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.AssemblyInfoInputs.cache
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.AssemblyInfo.cs
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.csproj.CoreCompileInputs.cache
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.sourcelink.json
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.dll
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/refint/groundstation-application-c-sharp.dll
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.pdb
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/groundstation-application-c-sharp.genruntimeconfig.cache
+/home/kali/Desktop/Rocketry/HODGE-electronics/ground-station/groundstation-application-c-sharp/obj/Debug/net8.0/ref/groundstation-application-c-sharp.dll

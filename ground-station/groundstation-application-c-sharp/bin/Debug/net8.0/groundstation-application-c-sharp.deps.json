@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "groundstation-application-c-sharp/1.0.0": {
+        "runtime": {
+          "groundstation-application-c-sharp.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "groundstation-application-c-sharp/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
