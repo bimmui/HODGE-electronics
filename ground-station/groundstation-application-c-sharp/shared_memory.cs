@@ -2,12 +2,11 @@
 // See: https://stackoverflow.com/questions/42961744/how-to-restrict-access-to-a-nested-class-to-its-container-in-c
 
 /*
-* SharedMemory - Specifies an object that multiple threads can write and read from.  Serves as a "shared memory" between them.
-* The SharedMemory class is formatted as a linked list
-* node_data_type: the type of dat stored in the node List
+* SharedMemory - Specifies an object that multiple threads can access simeltaneously.  Serves as a "shared memory" between them.
+* The SharedMemory class is formatted as a linked list, which can be written and read from
 */
 
-public class SharedMemory<node_data_type>
+public class SharedMemory
 {
 	/*
 	* Node - represents one node in the linked list
@@ -35,8 +34,8 @@ public class SharedMemory<node_data_type>
 
 	public int max_length {get; private set;} //the maximum number of nodes on the linked list
 	public int length {get; private set;} //the current number of nodes on the linked list
-	public Node<node_data_type>? first {get; private set;} //the first node on the linked list
-	public Node<node_data_type>? last {get; private set;} //the last node on the linked list
+	public Node<double>? first {get; private set;} //the first node on the linked list
+	public Node<double>? last {get; private set;} //the last node on the linked list
 	public String[] column_names {get; private set;} //the names of the fields in the InfluxDB measurment
 
 	/*
@@ -64,14 +63,14 @@ public class SharedMemory<node_data_type>
 	* Adds a new node to the shared memory linked list.  If the linked list exceeds max_length, then remove the last node
 	* data (node_data_type): an array with a row to be added to the database
 	*/
-	public void write(node_data_type[] data)
+	public void write(double[] data)
 	{
 		if(data.Length != column_names.Length)
 		{
 			Console.WriteLine("There are more data entries than column names.  Data not added!");
 			return;
 		}
-		Node<node_data_type> node_to_add = new Node<node_data_type>(null, first, data);
+		Node<double> node_to_add = new Node<double>(null, first, data);
 
 		// Ensure that the first node is NOT null before changing its reference.
 		// If the first node is null, then make this node the first and last node.  
@@ -104,16 +103,16 @@ public class SharedMemory<node_data_type>
 	* category_number (int): the index corresponding to the category name (first column is zero)
 	* return: (node_data_type[])
 	*/
-	public List<node_data_type>? convert_to_array(int category_number)
+	public List<double>? convert_to_array(int category_number)
 	{
 		if(category_number > column_names.Length)
 		{
 			return null;
 		}
 
-		List<node_data_type> returnList = new List<node_data_type>();
+		List<double> returnList = new List<double>();
 
-		Node<node_data_type>? currentNode = last;
+		Node<double>? currentNode = last;
 
 		while(currentNode != null)
 		{
@@ -129,7 +128,7 @@ public class SharedMemory<node_data_type>
 	* category_name (String): the name of the target category
 	* return: (node_data_type[])
 	*/
-	public List<node_data_type>? convert_to_array(String category_name)
+	public List<double>? convert_to_array(String category_name)
 	{
 		for (int i = 0; i < column_names.Length; i++)
 		{
