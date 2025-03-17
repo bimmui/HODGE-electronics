@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("groundstation-application-c-sharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+035ea6464353de683b01b9559e10f16ff8ebd051")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e5f3f6f1192429c0529c04c357cafc724b6840c")]
 [assembly: System.Reflection.AssemblyProductAttribute("groundstation-application-c-sharp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("groundstation-application-c-sharp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

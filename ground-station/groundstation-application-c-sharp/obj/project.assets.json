@@ -175,6 +175,1131 @@
           }
         }
       },
+      "runtime.android-arm.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.android-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.android-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.android-x86.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-arm.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-musl-arm.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-musl-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.linux-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/libSystem.IO.Ports.Native.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/libSystem.IO.Ports.Native.dylib": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/libSystem.IO.Ports.Native.dylib": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "dependencies": {
+          "runtime.android-arm.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.android-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.android-x64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.android-x86.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-arm.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-bionic-x64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-musl-arm.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-musl-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-musl-x64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.linux-x64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.maccatalyst-x64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.osx-arm64.runtime.native.System.IO.Ports": "9.0.3",
+          "runtime.osx-x64.runtime.native.System.IO.Ports": "9.0.3"
+        }
+      },
+      "runtime.osx-arm64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/libSystem.IO.Ports.Native.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
+      "runtime.osx-x64.runtime.native.System.IO.Ports/9.0.3": {
+        "type": "package",
+        "runtimeTargets": {
+          "runtimes/android-arm/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm"
+          },
+          "runtimes/android-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "android-arm64"
+          },
+          "runtimes/android-x64/native/_._": {
+            "assetType": "native",
+            "rid": "android-x64"
+          },
+          "runtimes/android-x86/native/_._": {
+            "assetType": "native",
+            "rid": "android-x86"
+          },
+          "runtimes/linux-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm"
+          },
+          "runtimes/linux-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-arm64"
+          },
+          "runtimes/linux-bionic-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-arm64"
+          },
+          "runtimes/linux-bionic-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-bionic-x64"
+          },
+          "runtimes/linux-musl-arm/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm"
+          },
+          "runtimes/linux-musl-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-arm64"
+          },
+          "runtimes/linux-musl-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-musl-x64"
+          },
+          "runtimes/linux-x64/native/_._": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/maccatalyst-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-arm64"
+          },
+          "runtimes/maccatalyst-x64/native/_._": {
+            "assetType": "native",
+            "rid": "maccatalyst-x64"
+          },
+          "runtimes/osx-arm64/native/_._": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/libSystem.IO.Ports.Native.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          }
+        }
+      },
       "System.Buffers/4.5.0": {
         "type": "package",
         "compile": {
@@ -241,6 +1366,35 @@
             "rid": "win"
           },
           "runtimes/win/lib/net8.0/System.Diagnostics.EventLog.dll": {
+            "assetType": "runtime",
+            "rid": "win"
+          }
+        }
+      },
+      "System.IO.Ports/9.0.3": {
+        "type": "package",
+        "dependencies": {
+          "runtime.native.System.IO.Ports": "9.0.3"
+        },
+        "compile": {
+          "lib/net8.0/System.IO.Ports.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/System.IO.Ports.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net8.0/_._": {}
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/net8.0/System.IO.Ports.dll": {
+            "assetType": "runtime",
+            "rid": "unix"
+          },
+          "runtimes/win/lib/net8.0/System.IO.Ports.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
@@ -516,6 +1670,534 @@
         "restsharp.png"
       ]
     },
+    "runtime.android-arm.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "rVnCXT1tcplWcXmmLS6SnRRR5i7/TirmQkHxxDZarT/MfNRJTmHgWvXXpPNCE/UFTtCIcBgdQISooCWLMQQK3A==",
+      "type": "package",
+      "path": "runtime.android-arm.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.android-arm.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.android-arm.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/libSystem.IO.Ports.Native.so",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.android-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "EehIzj4KCf6xC/+yEGRj3e8XgrbXeBREQnYZb+Q4Alxn+hbnlrd4UrHl0ezts4wgZc0SFvUnJ/dHOg7fU200ag==",
+      "type": "package",
+      "path": "runtime.android-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.android-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.android-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.android-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "qX8a/zLbo2UQ4c9qHsxXi2h7SsG/Ewr/vf2kaqvleZuMGmZKfKZGYZ4jPl/uSdPctmNopQpExmHLLOslkWdPUA==",
+      "type": "package",
+      "path": "runtime.android-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.android-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.android-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.android-x86.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "glMfcEbRWC/p3D/3kKXZiBazF3DMR+K0/9SC3/SOXSyZ2UMR5lZ1odEbVUBg2V66lYRl3fOiQqMUgRMGPWTZ+g==",
+      "type": "package",
+      "path": "runtime.android-x86.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.android-x86.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.android-x86.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-arm.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "355m78rFB2OcMb/BEKZKMo9FJnFx818yu8jTNgWq5LFTdGxj3Te1qCV63U2st/aGtdCXv6zlC2QZfYmJicdjrw==",
+      "type": "package",
+      "path": "runtime.linux-arm.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-arm.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-arm.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "hxhstO0/uFEA1p5HQL68gHQc/HWiAWMP/QxldT6U6giA4Wpw4+OC1RYc+CykEchK3opA1ax/h8al0L081vR5aA==",
+      "type": "package",
+      "path": "runtime.linux-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-bionic-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "1Uj4l/sHqNawXK6Ba5Ooqpd1Lutjx6ecrICE4/5GYbRwjd559+SWny6Zj1ptrh/rMIvZVs/ZaTvRRXj0rzV6wQ==",
+      "type": "package",
+      "path": "runtime.linux-bionic-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-bionic-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-bionic-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-bionic-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "iAv3quIqwA14WVHj+XQjzuQQw1TA4Kv9zL3Xn6yLCKxb4Wool43g+yq10S8DrKGGlAHS3kzopBbDlcMtIsJYbw==",
+      "type": "package",
+      "path": "runtime.linux-bionic-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-bionic-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-bionic-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-musl-arm.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "XXepPP0fxzNqVeu63ZyDhGoynvwJdxLjMN/aLZgow1xFCitiUkf2nQVXEEpdKaUGTagmfHWiEeeHKyq5LSFnsg==",
+      "type": "package",
+      "path": "runtime.linux-musl-arm.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-musl-arm.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-musl-arm.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-musl-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "q8s1ft1EMdqmNTlePVQ7TKHZfMdtoBNygzzETo661enxdDnC4mwOX4Mpw/jguE8A3lI2ZKKU0UTdLJI8txPxTQ==",
+      "type": "package",
+      "path": "runtime.linux-musl-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-musl-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-musl-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-musl-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "BExz1oN0AU7Ep/KOZKWy7fbCVt4mvDCXk765gSqYL/cLt2RFUjOaGezHZ18HGW7Y8cEbzK9rX7KzhfXkk8RgzA==",
+      "type": "package",
+      "path": "runtime.linux-musl-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-musl-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-musl-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.linux-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "fPu7SVzdlMxIGVfpnt5z5GZiWBwPekscWKU+apaI8pr+YpDJtVqVc6PIPa8bfEeFLZmaENCr3TKh4++Ir4YoYg==",
+      "type": "package",
+      "path": "runtime.linux-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.linux-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.linux-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/libSystem.IO.Ports.Native.so",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.maccatalyst-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "z1J5iU5KG4JRz0tJIxmmQOJOKWFA+gd+EXmE5yMOoLcKXshRd701+I3zEv8Ih7saGU/kjKlGyEQHida0bOklwQ==",
+      "type": "package",
+      "path": "runtime.maccatalyst-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.maccatalyst-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.maccatalyst-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/libSystem.IO.Ports.Native.dylib",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.maccatalyst-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "H2tw9b2J/PiFprvczQzvUFcagsVG4vLTIxX6zwQKrK3tjorH3HM578Hyby3fScEGp7esRN5837BwUPes5RcWkQ==",
+      "type": "package",
+      "path": "runtime.maccatalyst-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.maccatalyst-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.maccatalyst-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/libSystem.IO.Ports.Native.dylib",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "QHtj01jZiulCmF34DYf1E1dwREdkegZJWZmdQYqA5t6ZDeWAdYJhNo7w0gYczg1D6FE6HzoPWbeIsGG/HXdILg==",
+      "type": "package",
+      "path": "runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.native.system.io.ports.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.osx-arm64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "475lxmcekLu+mLW63DNcgV001QsMcRDvlo275w84yTwAw5uGtHWxwMhP1IN1JGLU5UrW5V4eAVbYtxFX4CbDMg==",
+      "type": "package",
+      "path": "runtime.osx-arm64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.osx-arm64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.osx-arm64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/libSystem.IO.Ports.Native.dylib",
+        "runtimes/osx-x64/native/_._",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "runtime.osx-x64.runtime.native.System.IO.Ports/9.0.3": {
+      "sha512": "Cmkhu63vnhJGHKx9tCb+HgkweCCv9018GTHHnxsky9WbqKG8eRno4gs7U0SHIQJ0VWg7r7zYWVQ5uVT1v07phQ==",
+      "type": "package",
+      "path": "runtime.osx-x64.runtime.native.system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "runtime.osx-x64.runtime.native.system.io.ports.9.0.3.nupkg.sha512",
+        "runtime.osx-x64.runtime.native.system.io.ports.nuspec",
+        "runtimes/android-arm/native/_._",
+        "runtimes/android-arm64/native/_._",
+        "runtimes/android-x64/native/_._",
+        "runtimes/android-x86/native/_._",
+        "runtimes/linux-arm/native/_._",
+        "runtimes/linux-arm64/native/_._",
+        "runtimes/linux-bionic-arm64/native/_._",
+        "runtimes/linux-bionic-x64/native/_._",
+        "runtimes/linux-musl-arm/native/_._",
+        "runtimes/linux-musl-arm64/native/_._",
+        "runtimes/linux-musl-x64/native/_._",
+        "runtimes/linux-x64/native/_._",
+        "runtimes/maccatalyst-arm64/native/_._",
+        "runtimes/maccatalyst-x64/native/_._",
+        "runtimes/osx-arm64/native/_._",
+        "runtimes/osx-x64/native/libSystem.IO.Ports.Native.dylib",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Buffers/4.5.0": {
       "sha512": "pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A==",
       "type": "package",
@@ -644,6 +2326,42 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "System.IO.Ports/9.0.3": {
+      "sha512": "5YB+OH+rbXqjvZneGDbFG2RWMNkYMFaJq9YBu1IWE/pdEcqu/y2dQw32V6OG7Q8Da2HC9zaCqS0ri89cpqSSwg==",
+      "type": "package",
+      "path": "system.io.ports/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.IO.Ports.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.IO.Ports.targets",
+        "lib/net462/System.IO.Ports.dll",
+        "lib/net462/System.IO.Ports.xml",
+        "lib/net8.0/System.IO.Ports.dll",
+        "lib/net8.0/System.IO.Ports.xml",
+        "lib/net9.0/System.IO.Ports.dll",
+        "lib/net9.0/System.IO.Ports.xml",
+        "lib/netstandard2.0/System.IO.Ports.dll",
+        "lib/netstandard2.0/System.IO.Ports.xml",
+        "runtimes/unix/lib/net8.0/System.IO.Ports.dll",
+        "runtimes/unix/lib/net8.0/System.IO.Ports.xml",
+        "runtimes/unix/lib/net9.0/System.IO.Ports.dll",
+        "runtimes/unix/lib/net9.0/System.IO.Ports.xml",
+        "runtimes/win/lib/net8.0/System.IO.Ports.dll",
+        "runtimes/win/lib/net8.0/System.IO.Ports.xml",
+        "runtimes/win/lib/net9.0/System.IO.Ports.dll",
+        "runtimes/win/lib/net9.0/System.IO.Ports.xml",
+        "system.io.ports.9.0.3.nupkg.sha512",
+        "system.io.ports.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Memory/4.5.1": {
       "sha512": "sDJYJpGtTgx+23Ayu5euxG5mAXWdkDb4+b0rD0Cab0M1oQS9H0HXGPriKcqpXuiJDTV7fTp/d+fMDJmnr6sNvA==",
       "type": "package",
@@ -766,7 +2484,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "InfluxDB.Client >= 4.18.0"
+      "InfluxDB.Client >= 4.18.0",
+      "System.IO.Ports >= 9.0.3"
     ]
   },
   "packageFolders": {
@@ -821,6 +2540,10 @@
           "InfluxDB.Client": {
             "target": "Package",
             "version": "[4.18.0, )"
+          },
+          "System.IO.Ports": {
+            "target": "Package",
+            "version": "[9.0.3, )"
           }
         },
         "imports": [
