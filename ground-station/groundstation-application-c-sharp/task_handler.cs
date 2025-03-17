@@ -4,7 +4,6 @@ using System.Threading;
 
 /*
 * TaskRunner - A controls a single thread. This includes starting and stopping the thread
-*
 */
 public abstract class TaskHandler
 {
