@@ -30,7 +30,7 @@ public abstract class TaskHandler
 	}
 
 	/*
-	* Starts the 
+	* Starts the task associated with the derived class
 	*/
 	public void start_task()
 	{
@@ -40,6 +40,9 @@ public abstract class TaskHandler
 		}
 	}
 
+	/*
+	* Sends a cancellation token to end the task associated with the derived class.  Similar to killing the task
+	*/
 	public void stop_task()
 	{
 		if(is_alive)
@@ -48,5 +51,8 @@ public abstract class TaskHandler
 		}
 	}
 
+	/*
+	* Represents the function that will be run by the task
+	*/
 	protected abstract void task_function();
 }
