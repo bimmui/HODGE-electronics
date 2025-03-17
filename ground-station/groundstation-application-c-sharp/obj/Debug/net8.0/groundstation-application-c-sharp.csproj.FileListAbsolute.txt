@@ -28,3 +28,4 @@ C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-a
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\obj\Debug\net8.0\groundstation-application-c-sharp.pdb
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\obj\Debug\net8.0\groundstation-application-c-sharp.genruntimeconfig.cache
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\obj\Debug\net8.0\ref\groundstation-application-c-sharp.dll
+C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\obj\Debug\net8.0\groundstation-application-c-sharp.csproj.AssemblyReference.cache

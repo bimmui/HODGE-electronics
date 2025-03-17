@@ -1,8 +1,28 @@
 {
   "version": 2,
-  "dgSpecHash": "q0ljIWZJQZZsFPe3UBOboNiS6HPb5HAD4rzsW/yE736X7o2MtR2frh4+zxhns7YODr60Eg/XINS/MbW5HaPB5Q==",
+  "dgSpecHash": "YORHAQce16bjpMrVk7Th8gFKVqZ9pcCX6NjAtwnmlBhZzAmO4u/Wfa8BijNag4z5Ohbz4uiQFI4WXP05vfxkDQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\patel\\Desktop\\Rocketry\\HODGE-electronics\\ground-station\\groundstation-application-c-sharp\\groundstation-application-c-sharp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\patel\\.nuget\\packages\\csvhelper\\33.0.1\\csvhelper.33.0.1.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\influxdb.client\\4.18.0\\influxdb.client.4.18.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\influxdb.client.core\\4.18.0\\influxdb.client.core.4.18.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\jsonsubtypes\\2.0.1\\jsonsubtypes.2.0.1.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\microsoft.extensions.objectpool\\8.0.8\\microsoft.extensions.objectpool.8.0.8.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\microsoft.extensions.primitives\\2.2.0\\microsoft.extensions.primitives.2.2.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\microsoft.net.http.headers\\2.2.8\\microsoft.net.http.headers.2.2.8.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\nodatime\\3.1.11\\nodatime.3.1.11.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\nodatime.serialization.jsonnet\\3.1.0\\nodatime.serialization.jsonnet.3.1.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\restsharp\\112.0.0\\restsharp.112.0.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.collections.immutable\\8.0.0\\system.collections.immutable.8.0.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.configuration.configurationmanager\\8.0.0\\system.configuration.configurationmanager.8.0.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.0\\system.diagnostics.eventlog.8.0.0.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.memory\\4.5.1\\system.memory.4.5.1.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.reactive\\6.0.1\\system.reactive.6.0.1.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.7.1\\system.runtime.compilerservices.unsafe.4.7.1.nupkg.sha512",
+    "C:\\Users\\patel\\.nuget\\packages\\system.security.cryptography.protecteddata\\8.0.0\\system.security.cryptography.protecteddata.8.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
