@@ -7,7 +7,7 @@ public class SerialReaderTask : TaskHandler
 {
 	public const String DEFAULT_CONNECTION_LINUX_0 = "/dev/ttyACM0"; //Represents the default connection path for Linux if no USB devices are plugged in
 	public const String DEFAULT_CONNECTION_LINUX_1 = "/dev/ttyACM1"; //Represents the default connection path for Linux if one USB device is plugged in
-	public const String DEFAULT_CONNECTION_WIN_3 = "COM3"; //Represents the default connection path for Windows Arduino boards.  
+	public const String DEFAULT_CONNECTION_WIN_3 = "COM3"; //Represents the default connection path for Windows
 	public int baud_rate {get; private set;} //The baud rate of the serial connection
 	private string serial_connection_path {get; set;} //the access point of he serial connection.
 
@@ -37,17 +37,20 @@ public class SerialReaderTask : TaskHandler
 	*/
 	protected override void task_function()
 	{
+		// Open a serial port
 		SerialPort accessport = new SerialPort(serial_connection_path, baud_rate);
 		accessport.Open();
+
+		//Continually get info from serial connection and add it to the database.  
 		while (true)
 		{
-			//NOTE: I tried doing an implementation that does not use split, but it was not more efficient, for the list containing doubles needed to be copied to an array. 
+			// NOTE: I tried doing an implementation that does not use split, but it was not more efficient, for the list containing doubles needed to be copied to an array. 
 			String serial_data = accessport.ReadLine();
 			String[] serial_data_array = serial_data.Split(",");
 
-			double[] node_data_array = new double[serial_data_array.Length]; //This is the array that will be uploaded to the shared memory
+			double[] node_data_array = new double[serial_data_array.Length]; // This is the array that will be uploaded to the shared memory
 
-			for (int i = 0; i < serial_data_array.Length; i++) //cast each entry in the serial_data_array from a string to a double (stored in node_data_array)
+			for (int i = 0; i < serial_data_array.Length; i++) // Cast each entry in the serial_data_array from a string to a double (stored in node_data_array)
 			{
 				node_data_array[i] = Convert.ToDouble(serial_data_array[i]);
 			}
