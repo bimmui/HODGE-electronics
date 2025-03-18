@@ -76,6 +76,7 @@ public class SharedMemory
 		// If the first node is null, then make this node the first and last node.  
 		if(first != null)
 		{
+			node_to_add.prev = first;
 			first.next = node_to_add;
 			
 		}
