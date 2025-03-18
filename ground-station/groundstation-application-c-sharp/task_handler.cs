@@ -1,6 +1,7 @@
 // Look into using Cancellation tokens, as opposed to aborting the thread.  See: https://medium.com/@mitesh_shah/a-deep-dive-into-c-s-cancellationtoken-44bc7664555f
 
 using System.Threading;
+using System.Threading.Tasks;
 
 /*
 * TaskRunner - A controls a single thread. This includes starting and stopping the thread
@@ -36,6 +37,7 @@ public abstract class TaskHandler
 		if(!is_alive)
 		{
 			wrapped_task.Start();
+			is_alive = true;
 		}
 	}
 
@@ -47,6 +49,17 @@ public abstract class TaskHandler
 		if(is_alive)
 		{
 			task_cancellation_token.Cancel();
+		}
+	}
+
+	/*
+	* Waits for task execution to complete
+	*/
+	public void join_task()
+	{
+		if(is_alive)
+		{
+			wrapped_task.Wait();
 		}
 	}
 
