@@ -1,5 +1,5 @@
 using InfluxDB.Client.Api.Domain;
-
+using DiagnosticApp;
 public class SharedMemoryTester
 {
 	public static void Main(String[] args)

@@ -2,3 +2,4 @@
 
 dotnet add package InfluxDB.Client
 dotnet add package System.IO.Ports
+dotnet add package pythonnet --version 3.0.5

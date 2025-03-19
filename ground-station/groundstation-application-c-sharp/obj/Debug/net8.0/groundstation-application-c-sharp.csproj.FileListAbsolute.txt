@@ -66,3 +66,4 @@ C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-a
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Debug\net8.0\runtimes\unix\lib\net8.0\System.IO.Ports.dll
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.IO.Ports.dll
 C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\obj\Debug\net8.0\groundst.AF64A46D.Up2Date
+C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Debug\net8.0\Python.Runtime.dll

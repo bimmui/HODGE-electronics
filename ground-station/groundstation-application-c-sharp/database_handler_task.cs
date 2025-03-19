@@ -4,7 +4,9 @@ using InfluxDB.Client.Writes;
 /*
 * DatabaseHandlerTask - Opens a connection to an influxDB database and contains a thread that can be run to continually log data to the database.
 */
-public class DatabaseHandlerTask : TaskHandler
+namespace DiagnosticApp
+{
+	public class DatabaseHandlerTask : TaskHandler
 {
 	private String org {get; set;} //the organization name of the InfluxDB
 	private String bucket {get; set;} //the bucket to log the data to
@@ -63,4 +65,5 @@ public class DatabaseHandlerTask : TaskHandler
 			}
 		}
 	}
+}
 }

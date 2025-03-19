@@ -56,6 +56,10 @@
             "System.IO.Ports": {
               "target": "Package",
               "version": "[9.0.3, )"
+            },
+            "pythonnet": {
+              "target": "Package",
+              "version": "[3.0.5, )"
             }
           },
           "imports": [

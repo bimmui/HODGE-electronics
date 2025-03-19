@@ -1,6 +1,8 @@
 using System.IO.Ports;
 
-/*
+namespace DiagnosticApp
+{
+	/*
 * SerialReaderTask - This class represents a task that continually reads data incoming from a serial port and writes it to the shared memory. 
 */
 public class SerialReaderTask : TaskHandler
@@ -60,4 +62,5 @@ public class SerialReaderTask : TaskHandler
 
 		}
 	}
+}
 }

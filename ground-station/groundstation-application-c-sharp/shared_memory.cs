@@ -1,11 +1,14 @@
 ﻿// NOTE: I want to make the next and previous nodes only set by nested classes.
 // See: https://stackoverflow.com/questions/42961744/how-to-restrict-access-to-a-nested-class-to-its-container-in-c
 
-/*
+
+
+namespace DiagnosticApp
+{
+	/*
 * SharedMemory - Specifies an object that multiple threads can access simeltaneously.  Serves as a "shared memory" between them.
 * The SharedMemory class is formatted as a linked list, which can be written and read from
 */
-
 public class SharedMemory
 {
 	/*
@@ -141,5 +144,7 @@ public class SharedMemory
 
 		return null;
 	}
+
+}
 
 }

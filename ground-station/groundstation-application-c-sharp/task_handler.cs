@@ -3,10 +3,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-/*
-* TaskRunner - A class controls a single thread. This includes starting and stopping the thread
-*/
-public abstract class TaskHandler
+namespace DiagnosticApp
+{
+	/*
+	* TaskRunner - A class controls a single thread. This includes starting and stopping the thread
+	*/
+	public abstract class TaskHandler
 {
 	public SharedMemory memory_manager {get; private set;} //The memory manager associated with the task
 	public bool is_alive {get; private set;} //records the thread status
@@ -68,3 +70,5 @@ public abstract class TaskHandler
 	*/
 	protected abstract void task_function();
 }
+}
+
