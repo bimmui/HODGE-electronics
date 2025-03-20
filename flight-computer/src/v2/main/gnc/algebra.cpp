@@ -22,7 +22,7 @@
 #include "algebra.h"
 
 // Copy 3D vector
-void copyVector(float b[3], float a[3])
+void copy_vector(float b[3], float a[3])
 {
    b[0] = a[0];
    b[1] = a[1];
@@ -30,7 +30,7 @@ void copyVector(float b[3], float a[3])
 }
 
 // Vector difference
-void subtractVectors(float v21[3], float v2[3], float v1[3])
+void subtract_vectors(float v21[3], float v2[3], float v1[3])
 {
    v21[0] = v2[0] - v1[0];
    v21[1] = v2[1] - v1[1];
@@ -38,7 +38,7 @@ void subtractVectors(float v21[3], float v2[3], float v1[3])
 }
 
 // Vector sum
-void sumVectors(float v21[3], float v2[3], float v1[3])
+void sum_vectors(float v21[3], float v2[3], float v1[3])
 {
    v21[0] = v2[0] + v1[0];
    v21[1] = v2[1] + v1[1];
@@ -46,7 +46,7 @@ void sumVectors(float v21[3], float v2[3], float v1[3])
 }
 
 // scalar times vector
-void scaleVector(float c[3], float a, float b[3])
+void scale_vector(float c[3], float a, float b[3])
 {
    (c)[0] = a * b[0];
    (c)[1] = a * b[1];
@@ -54,7 +54,7 @@ void scaleVector(float c[3], float a, float b[3])
 }
 
 // accumulate scaled vector
-void accumulateScaledVector(float c[3], float a, float b[3])
+void accumulate_scaledvector(float c[3], float a, float b[3])
 {
    (c)[0] += a * b[0];
    (c)[1] += a * b[1];
@@ -62,13 +62,13 @@ void accumulateScaledVector(float c[3], float a, float b[3])
 }
 
 // Vector dot product
-void dotProductVectors(float *c, float a[3], float b[3])
+void dotproduct_vectors(float *c, float a[3], float b[3])
 {
    *c = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
 // Vector length
-void vectorLength(float *len, float a[3])
+void vector_length(float *len, float a[3])
 {
    float tmp;
    tmp = a[0] * a[0] + a[1] * a[1] + a[2] * a[2];
@@ -76,10 +76,10 @@ void vectorLength(float *len, float a[3])
 }
 
 // Normalize vector
-void normalizeVector(float a[3])
+void normalize_vector(float a[3])
 {
    float len;
-   vectorLength(&len, a);
+   vector_length(&len, a);
    if (len != 0.0)
    {
       len = 1.0 / len;
@@ -90,7 +90,7 @@ void normalizeVector(float a[3])
 }
 
 // 3D Vector cross product yeilding vector
-void crossProductVectors(float c[3], float a[3], float b[3])
+void crossproduct_vectors(float c[3], float a[3], float b[3])
 {
    c[0] = a[1] * b[2] - a[2] * b[1];
    c[1] = a[2] * b[0] - a[0] * b[2];
@@ -98,7 +98,7 @@ void crossProductVectors(float c[3], float a[3], float b[3])
 }
 
 // initialize matrix
-void identityMatrix3x3(float m[3][3])
+void identity_matrix3x3(float m[3][3])
 {
    m[0][0] = 1.0;
    m[0][1] = 0.0;
@@ -114,7 +114,7 @@ void identityMatrix3x3(float m[3][3])
 }
 
 // matrix copy
-void copyMatrix3x3(float b[3][3], float a[3][3])
+void copy_matrix3x3(float b[3][3], float a[3][3])
 {
    b[0][0] = a[0][0];
    b[0][1] = a[0][1];
@@ -130,7 +130,7 @@ void copyMatrix3x3(float b[3][3], float a[3][3])
 }
 
 // matrix transpose
-void transposeMatrix3x3(float b[3][3], float a[3][3])
+void transpose_matrix3x3(float b[3][3], float a[3][3])
 {
    b[0][0] = a[0][0];
    b[0][1] = a[1][0];
@@ -146,7 +146,7 @@ void transposeMatrix3x3(float b[3][3], float a[3][3])
 }
 
 // multiply matrix by scalar
-void scaleMatrix3x3(float b[3][3], float s, float a[3][3])
+void scale_matrix3x3(float b[3][3], float s, float a[3][3])
 {
    b[0][0] = (s)*a[0][0];
    b[0][1] = (s)*a[0][1];
@@ -162,7 +162,7 @@ void scaleMatrix3x3(float b[3][3], float s, float a[3][3])
 }
 
 // multiply matrix by scalar and add result to another matrix
-void scaleAndAccumulateMatrix3x3(float b[3][3], float s, float a[3][3])
+void scaleaccumulate_matrix3x3(float b[3][3], float s, float a[3][3])
 {
    b[0][0] += s * a[0][0];
    b[0][1] += s * a[0][1];
@@ -179,7 +179,7 @@ void scaleAndAccumulateMatrix3x3(float b[3][3], float s, float a[3][3])
 
 // matrix product
 // c[x][y] = a[x][0]*b[0][y]+a[x][1]*b[1][y]+a[x][2]*b[2][y]+a[x][3]*b[3][y]
-void matrixProduct3x3(float c[3][3], float a[3][3], float b[3][3])
+void matrix_product3x3(float c[3][3], float a[3][3], float b[3][3])
 {
    c[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0];
    c[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1];
@@ -195,7 +195,7 @@ void matrixProduct3x3(float c[3][3], float a[3][3], float b[3][3])
 }
 
 // matrix times vector
-void matrixDotVector3x3(float p[3], float m[3][3], float v[3])
+void matrix_dotvector3x3(float p[3], float m[3][3], float v[3])
 {
    p[0] = m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2];
    p[1] = m[1][0] * v[0] + m[1][1] * v[1] + m[1][2] * v[2];
@@ -229,7 +229,7 @@ void adjoint3x3(float a[3][3], float m[3][3])
 
 // compute adjoint of matrix and scale
 // Computes adjoint of matrix m, scales it by s, returning a
-void scaleAdjoint3x3(float a[3][3], float s, float m[3][3])
+void scale_adjoint3x3(float a[3][3], float s, float m[3][3])
 {
    a[0][0] = (s) * (m[1][1] * m[2][2] - m[1][2] * m[2][1]);
    a[1][0] = (s) * -(m[1][2] * m[2][0] - m[1][0] * m[2][2]);
@@ -257,7 +257,7 @@ bool invert3x3(float b[3][3], float a[3][3])
       return false;
    }
    tmp = 1.0 / (tmp);
-   scaleAdjoint3x3(b, tmp, a);
+   scale_adjoint3x3(b, tmp, a);
    return true;
 }
 
@@ -276,7 +276,7 @@ void skew(float a[3][3], float v[3])
    a[2][2] = 0.0;
 }
 
-void printMatrix3X3(float mmm[3][3])
+void print_matrix3X3(float mmm[3][3])
 {
    int i, j;
    printf("matrix mmm is \n");
@@ -297,9 +297,9 @@ void printMatrix3X3(float mmm[3][3])
    }
 }
 
-void vecPrint(float a[3])
+void vec_print(float a[3])
 {
    float len;
-   vectorLength(&len, a);
+   vector_length(&len, a);
    printf(" a is %f %f %f length of a is %f \n", a[0], a[1], a[2], len);
 }

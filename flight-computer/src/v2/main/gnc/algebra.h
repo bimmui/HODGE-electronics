@@ -45,7 +45,7 @@ void vector_length(float *len, float a[3]);
 void normalize_vector(float a[3]);
 
 // 3D Vector cross product yeilding vector
-void crossproduct_ectors(float c[3], float a[3], float b[3]);
+void crossproduct_vectors(float c[3], float a[3], float b[3]);
 
 // initialize matrix
 void identity_matrix3x3(float m[3][3]);
@@ -92,4 +92,4 @@ void skew(float a[3][3], float v[3]);
 
 void print_matrix3X3(float mmm[3][3]);
 
-void vecPrint(float a[3]);
+void vec_print(float a[3]);
