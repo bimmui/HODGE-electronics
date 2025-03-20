@@ -1,0 +1,2 @@
+C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Release\net8.0\win-x64\publish\groundstation-application-c-sharp.pdb
+C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Release\net8.0\win-x64\publish\groundstation-application-c-sharp.exe

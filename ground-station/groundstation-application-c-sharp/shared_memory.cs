@@ -1,10 +1,10 @@
 ﻿// NOTE: I want to make the next and previous nodes only set by nested classes.
 // See: https://stackoverflow.com/questions/42961744/how-to-restrict-access-to-a-nested-class-to-its-container-in-c
 
+using Python.Runtime;
 
+namespace DiagnosticApp;
 
-namespace DiagnosticApp
-{
 	/*
 * SharedMemory - Specifies an object that multiple threads can access simeltaneously.  Serves as a "shared memory" between them.
 * The SharedMemory class is formatted as a linked list, which can be written and read from
@@ -105,7 +105,6 @@ public class SharedMemory
 	/*
 	* Converts one columtn in the linkedList to an array
 	* category_number (int): the index corresponding to the category name (first column is zero)
-	* return: (node_data_type[])
 	*/
 	public List<double>? convert_to_array(int category_number)
 	{
@@ -114,23 +113,22 @@ public class SharedMemory
 			return null;
 		}
 
-		List<double> returnList = new List<double>();
+		List<double> return_list = new List<double>();
 
-		Node<double>? currentNode = last;
+		Node<double>? current_node = last;
 
-		while(currentNode != null)
+		while(current_node != null)
 		{
-			returnList.Add(currentNode.data[category_number]);
-			currentNode = currentNode.next;
+			return_list.Add(current_node.data[category_number]);
+			current_node = current_node.next;
 		}
 
-		return returnList;
+		return return_list;
 	}
 
 	/*
 	* Overload: Converts one columtn in the linkedList to an array
 	* category_name (String): the name of the target category
-	* return: (node_data_type[])
 	*/
 	public List<double>? convert_to_array(String category_name)
 	{
@@ -145,6 +143,46 @@ public class SharedMemory
 		return null;
 	}
 
+	/*
+	* Converts one columtn in the linkedList to an Python list
+	* category_number (int): the index corresponding to the category name (first column is zero)
+	*/
+	public PyList? convert_to_array_python(int category_number)
+	{
+		if(category_number > column_names.Length)
+		{
+			return null;
+		}
+
+		PyList return_list = new PyList();
+
+		Node<double>? current_node = last;
+
+		while (current_node != null)
+		{
+			return_list.Append(new PyFloat(current_node.data[category_number]));
+			current_node = current_node.next;
+		}
+
+		return return_list;
+	}
+
+	/*
+	* Overload: Converts one columtn in the linkedList to a Python list
+	* category_name (String): the name of the target category
+	* return: (PyList)
+	*/
+	public PyList? convert_to_array_python(String category_name)
+	{
+		for (int i = 0; i < column_names.Length; i++)
+		{
+			if (column_names[i].Equals(category_name))
+			{
+				return convert_to_array_python(i);
+			}
+		}
+
+		return null;
+	}
 }
 
-}

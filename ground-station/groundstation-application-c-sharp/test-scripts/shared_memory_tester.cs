@@ -1,4 +1,4 @@
-using InfluxDB.Client.Api.Domain;
+/*
 using DiagnosticApp;
 public class SharedMemoryTester
 {
@@ -12,3 +12,4 @@ public class SharedMemoryTester
 		reader.join_task();
 	}
 }
+*/

@@ -5,6 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>groundstation_application_c_sharp</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

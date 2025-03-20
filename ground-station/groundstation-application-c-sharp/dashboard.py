@@ -1,11 +1,16 @@
 import dash
 from dash import dcc, html, Input, Output, callback
 import plotly.graph_objs as go
+import logging
 
-display_data_array = []
+
+
+display_data_array = [1,2,3]
 
 def update_graph_data(data):
+	global display_data_array
 	display_data_array = data
+	print(display_data_array)
 
 external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 

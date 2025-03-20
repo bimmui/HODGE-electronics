@@ -1,3 +1,7 @@
+from typing import TypeVar, Generic
+from __future__ import annotations
+
+T = TypeVar("T")
 #The SharedMemory class is a linked list with that keeps track of data transferred from the arduino
 #SharedMemory has a fixed length that is specified to prevent memory overflow
 #SharedMemory opens a connection to an InfluxDB to write the data for long term use
@@ -10,10 +14,10 @@ class SharedMemory:
 		#next (Node): the next node in the linked list
 		#previous (Node): the previous node in the linked list
 		#data (array: any): the data stored by the node
-		def __init__(self, next, previous, data):
-			self.next = next
-			self.prev = previous
-			self.data = data
+		def __init__(self, next: Node, previous: Node, data: list[T]):
+			self.next: Node = next
+			self.prev: Node = previous
+			self.data: list[T] = data
 
 		#Gets data in a node 
 		#Return: (array: any)
@@ -33,7 +37,7 @@ class SharedMemory:
 	#Constructor: initializes a linked list with a specified maximum length
 	#max_length (int): the maximum length of the linked list
 	#column_names (array: string): the names of the fields in the InfluxDB measurement
-	def __init__(self, max_length=None, column_names=None):
+	def __init__(self, max_length: int, column_names: list[str]):
 		self.max_length = max_length
 		self.length = 1
 		self.first = self.Node(None, None, column_names) #CONSIDER MAKING COLUMN NAMES NODE ALWAYS LAST

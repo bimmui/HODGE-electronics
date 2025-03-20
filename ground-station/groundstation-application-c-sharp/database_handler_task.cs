@@ -1,12 +1,12 @@
 using InfluxDB.Client;
 using InfluxDB.Client.Writes;
 
+namespace DiagnosticApp;
+
 /*
 * DatabaseHandlerTask - Opens a connection to an influxDB database and contains a thread that can be run to continually log data to the database.
 */
-namespace DiagnosticApp
-{
-	public class DatabaseHandlerTask : TaskHandler
+public class DatabaseHandlerTask : TaskHandler
 {
 	private String org {get; set;} //the organization name of the InfluxDB
 	private String bucket {get; set;} //the bucket to log the data to
@@ -66,4 +66,4 @@ namespace DiagnosticApp
 		}
 	}
 }
-}
+

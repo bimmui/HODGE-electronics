@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>groundstation-application-c-sharp</id>
+    <version>1.0.0</version>
+    <authors>groundstation-application-c-sharp</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="b053385363f341c0b8a5f5b38490f87f43bc4126" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="InfluxDB.Client" version="4.18.0" exclude="Build,Analyzers" />
+        <dependency id="System.IO.Ports" version="9.0.3" exclude="Build,Analyzers" />
+        <dependency id="pythonnet" version="3.0.5" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Release\net8.0\groundstation-application-c-sharp.runtimeconfig.json" target="lib\net8.0\groundstation-application-c-sharp.runtimeconfig.json" />
+    <file src="C:\Users\patel\Desktop\Rocketry\HODGE-electronics\ground-station\groundstation-application-c-sharp\bin\Release\net8.0\groundstation-application-c-sharp.dll" target="lib\net8.0\groundstation-application-c-sharp.dll" />
+  </files>
+</package>
