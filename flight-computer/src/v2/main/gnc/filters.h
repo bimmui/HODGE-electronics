@@ -28,9 +28,6 @@ struct Ekf
   // Process noise 4x4
   float Q[4][4];
 
-  // static gyro bias
-  float gyro_bias[3];
-
   // measurement jacobian for accelerometer
   float H[3][4];
 
@@ -57,7 +54,7 @@ struct euler_angles
 class ExtendedKalmanFilter
 {
 public:
-  ExtendedKalmanFilter(float ca, float sigmaGyro, float sigmaAccel);
+  ExtendedKalmanFilter(float gyro_noise);
 
   float getVerticalAccel(const float accel[3]);
   euler_angles getAttitude();
@@ -65,10 +62,11 @@ public:
 private:
   State curr_quat_;
   Ekf efk_vals_; // will hold curr vals
+  float gyro_noise;
 
   // prediction steps
-  void setQOrientation(float gyro_noise, float dt);
   State processFunction(const float gyro[3], float dt);
+  void setQOrientation(float dt);
   void computeF(const float gyro[3], float dt, float F[4][4]);
   void predict(const float gyro[3], float dt);
 

@@ -8,11 +8,9 @@
 #include "algebra.h"
 #include "filters.h"
 
-ExtendedKalmanFilter::ExtendedKalmanFilter(float ca, float sigmaGyro, float sigmaAccel)
+ExtendedKalmanFilter::ExtendedKalmanFilter(float gyro_noise)
 {
-  this->ca = ca;
-  this->sigmaGyro = sigmaGyro;
-  this->sigmaAccel = sigmaAccel;
+  this->gyro_noise = gyro_noise;
 }
 
 void quaternion_to_rotation_matrix(State x, float R[3][3])
@@ -126,8 +124,8 @@ void build_omega(const float gyro[3], float Omega[4][4])
 }
 
 // called in each time step, essentially a random walk
-// TODO: tune this mf
-void ExtendedKalmanFilter::setQOrientation(float gyro_noise, float dt)
+// TODO: tune this mf, should gyro noise be static or dynamic?
+void ExtendedKalmanFilter::setQOrientation(float dt)
 {
   // Very rough approach: we guess Q ~ (dt^2 * gyro_noise^2) * I
   // not sure if time needs to be squred here tho
@@ -178,8 +176,11 @@ void ExtendedKalmanFilter::computeF(const float gyro[3], float dt, float F[4][4]
 
 void ExtendedKalmanFilter::predict(const float gyro[3], float dt)
 {
-  // compute xPred
+  // compute predicted quaternion
   State pred_quat = processFunction(gyro, dt);
+
+  // setting up the process noise matrix (Q matrix)
+  setQOrientation(dt);
 
   // compute F e.g. jacobian e.g. partial derivative of process function
   float F[4][4];
