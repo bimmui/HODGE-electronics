@@ -10,6 +10,7 @@ enum sensor_type
 typedef enum
 {
     SENSOR_OK,
+    SENSOR_ERR_BAD_HEALTH,
     SENSOR_ERR_INIT,
     SENSOR_ERR_READ,
     SENSOR_ERR_CALIB
@@ -22,8 +23,8 @@ struct sensor_value
     {
         struct
         {
-            double altitude, pressure;
-            float temp;
+            double altitude;
+            float temp, pressure;
         } bmp;
         struct
         {

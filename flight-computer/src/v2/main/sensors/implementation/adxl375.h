@@ -1,13 +1,8 @@
 #ifndef ADXL375_H
 #define ADXL375_H
 
-#include "driver/gpio.h"
-#include "driver/i2c_master.h"
+#include "./i2c_ex.h"
 #include "sensor_interface.h"
-
-#define ADXL375_I2C_ADDRESS (0x69)
-#define ADXL375_WHO_AM_I_VAL (0xE5)
-#define ADXL375_MG2G_MULTIPLIER (0.049) /**< 49mg per lsb */
 
 struct ADXL375Config
 {
@@ -33,14 +28,14 @@ public:
 
     sensor_type getType() const override;
     sensor_reading read() override;
-    bool initialize(void *cfg) override;
+    sensor_status initialize() override;
 
 private:
-    i2c_master_dev_handle_t adxl375_dev_handle;
+    i2c_master_dev_handle_t adxl375_dev_handle_;
 
     ADXL375Config config_; // will contain default config on init
     void configure() override;
-    uint8_t getDevID();
+    uint8_t getDevID() override;
 };
 
 #endif

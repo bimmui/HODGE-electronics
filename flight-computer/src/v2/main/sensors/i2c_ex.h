@@ -7,6 +7,8 @@
 #include "esp_system.h"
 #include "esp_log.h"
 
+#define TIMEOUT_LIMIT_MS 50
+
 void i2c_bus_init(void)
 {
     i2c_master_bus_config_t i2c_mst_config = {};
@@ -46,7 +48,7 @@ void i2c_remove_device(i2c_master_dev_handle_t dev_handle) { i2c_master_bus_rm_d
 void i2c_write(i2c_master_dev_handle_t sensor,
                uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, TIMEOUT_LIMIT_MS));
 }
 
 // TODO: add some ret value that says it fails
@@ -55,5 +57,5 @@ void i2c_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, TIMEOUT_LIMIT_MS));
 }

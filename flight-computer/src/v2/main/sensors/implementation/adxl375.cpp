@@ -1,4 +1,3 @@
-#include "./i2c_ex.h"
 #include "adxl375.h"
 
 #define ADXL375_POWER_CTL (0X2D)
@@ -12,31 +11,36 @@
 #define ADXL375_DATA_FORMAT (0x31)
 #define ADXL375_FIFO_CTL (0x38)
 
+// unused i think, should delete later
 #define ADXL375_WRITE_ADDR (0xA6)
 #define ADXL375_READ_ADDR (0xA7)
+
+#define ADXL375_WHO_AM_I_REG (0x00)
+#define ADXL375_WHO_AM_I_VAL (0xE5)
+#define ADXL375_MG2G_MULTIPLIER (0.049) // 49mg per lsb
 
 ADXL375::ADXL375(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,
                  uint16_t adxl375_address, uint32_t scl_clk_speed) : config_{0, 0, false, 0x0A, 0x08, 0, 0x0B, 0}
 {
-    this->adxl375_dev_handle = i2c_create_device(port, addr_len, adxl375_address, scl_clk_speed);
+    this->adxl375_dev_handle_ = i2c_create_device(port, addr_len, adxl375_address, scl_clk_speed);
 }
 
 ADXL375::ADXL375(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,
                  uint16_t adxl375_address, uint32_t scl_clk_speed,
                  const ADXL375Config &cfg) : config_(cfg)
 {
-    this->adxl375_dev_handle = i2c_create_device(port, addr_len, adxl375_address, scl_clk_speed);
+    this->adxl375_dev_handle_ = i2c_create_device(port, addr_len, adxl375_address, scl_clk_speed);
 }
 
 ADXL375::~ADXL375()
 {
-    i2c_remove_device(adxl375_dev_handle);
+    i2c_remove_device(adxl375_dev_handle_);
 }
 
 uint8_t ADXL375::getDevID()
 {
     uint8_t tmp[1] = {0};
-    _read(adxl375_dev_handle, ADXL375_WHO_AM_I_VAL, tmp, sizeof(tmp));
+    _read(adxl375_dev_handle_, ADXL375_WHO_AM_I_REG, tmp, sizeof(tmp));
     return tmp[0];
 }
 
@@ -49,45 +53,52 @@ SensorType ADXL375::getType() const
 void ADXL375::configure()
 {
     // not elegant but things get compolicated if you make i2c_write infer what the module wants
-    const uint8_t reg_and_data[] = {ADXL375_ACTIVITY_INACTIVITY_CTL, config_.activity_inactivity_cntl};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    uint8_t reg_and_data[] = {ADXL375_ACTIVITY_INACTIVITY_CTL, config_.activity_inactivity_cntl};
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
-    const uint8_t reg_and_data1[] = {ADXL375_SHOCK_DETECTION_AXES_ENABLE, config_.enable_shock_detection};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    reg_and_data[0] = ADXL375_SHOCK_DETECTION_AXES_ENABLE;
+    reg_and_data[1] = config_.enable_shock_detection;
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
     if (config_.enable_low_power)
     {
-        uint8_t reg_res = BIT4 | config_.bw_output_rate;
-        const uint8_t reg_and_data2[] = {ADXL375_BW_RATE, reg_res};
-        i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+        uint8_t res = BIT4 | config_.bw_output_rate;
+        reg_and_data[0] = ADXL375_BW_RATE;
+        reg_and_data[1] = res;
+        i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
     }
     else
     {
-        const uint8_t reg_and_data2[] = {ADXL375_BW_RATE, config_.bw_output_rate};
-        i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+        reg_and_data[0] = ADXL375_BW_RATE;
+        reg_and_data[1] = config_.bw_output_rate;
+        i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
     }
 
-    const uint8_t reg_and_data3[] = {ADXL375_POWER_CTL, config_.power_cntl};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    reg_and_data[0] = ADXL375_POWER_CTL;
+    reg_and_data[1] = config_.power_cntl;
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
-    const uint8_t reg_and_data4[] = {ADXL375_ENABLE_INTERRUPTS, config_.enable_interrupts};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    reg_and_data[0] = ADXL375_ENABLE_INTERRUPTS;
+    reg_and_data[1] = config_.enable_interrupts;
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
-    const uint8_t reg_and_data5[] = {ADXL375_DATA_FORMAT, config_.data_format};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    reg_and_data[0] = ADXL375_DATA_FORMAT;
+    reg_and_data[1] = config_.data_format;
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
-    const uint8_t reg_and_data6[] = {ADXL375_FIFO_CTL, config_.fifo_cntl};
-    i2c_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+    reg_and_data[0] = ADXL375_FIFO_CTL;
+    reg_and_data[1] = config_.fifo_cntl;
+    i2c_write(adxl375_dev_handle_, reg_and_data, sizeof(reg_and_data));
 }
 
-bool ADXL375::initialize(void *cfg)
+sensor_status ADXL375::initialize()
 {
     if (getDevID() != ADXL375_WHO_AM_I_VAL)
         return false;
 
-    configure(nullptr); // applies default config
+    configure(); // applies default config if non provided on init
 
-    return true;
+    return SENSOR_OK;
 }
 
 sensor_reading ADXL375::read()
@@ -96,7 +107,7 @@ sensor_reading ADXL375::read()
     result.value.type = ACCELEROMETER;
 
     uint8_t data_rd[6] = {0};
-    i2c_read(adxl375_dev_handle, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
+    i2c_read(adxl375_dev_handle_, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
 
     int16_t accel_x = ((int16_t)((data_rd[1] << 8) + (data_rd[0]))) * ADXL375_MG2G_MULTIPLIER;
     int16_t accel_y = ((int16_t)((data_rd[3] << 8) + (data_rd[2]))) * ADXL375_MG2G_MULTIPLIER;
