@@ -19,7 +19,7 @@ public class SerialReaderTask : TaskHandler
 	* Constructor: creates a new SerialReaderTask with a specified connection path to the
 	* memory_manager (SharedMemory): a reference to the shared memory where data can be pulled from
 	* serial_connection_path (String): the path that represents the USB connection
-	* baud_rate (int): the baud rate of the serial connection.  I should match the boud rate specified in the arduino code
+	* baud_rate (int): the baud rate of the serial connection.  It should match the boud rate specified in the arduino code
 	*/
 	public SerialReaderTask(SharedMemory memory_manager, String serial_connection_path, int baud_rate) : base(memory_manager)
 	{
