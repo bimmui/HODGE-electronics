@@ -14,85 +14,85 @@
 // maybe in the future do a 7D matrix
 struct State
 {
-  float qw; // w
-  float qx; // x
-  float qy; // y
-  float qz; // z
+	float qw; // w
+	float qx; // x
+	float qy; // y
+	float qz; // z
 };
 
 struct Ekf
 {
-  // 4x4 predicted covariance matrix
-  float P[4][4];
+	// 4x4 predicted covariance matrix
+	float P[4][4];
 
-  // Process noise 4x4
-  float Q[4][4];
+	// Process noise 4x4
+	float Q[4][4];
 
-  // measurement jacobian for accelerometer
-  float H[3][4];
+	// measurement jacobian for accelerometer
+	float H[3][4];
 
-  // accelerometer measurement noise
-  float R[3][3];
+	// accelerometer measurement noise
+	float R[3][3];
 
-  // looks something like this, do this in the init
-  //  {
-  //      {accel_noise, 0.f, 0.f},
-  //      {0.f, accel_noise, 0.f},
-  //      {0.f, 0.f, accel_noise}};
+	// looks something like this, do this in the init
+	//  {
+	//      {accel_noise, 0.f, 0.f},
+	//      {0.f, accel_noise, 0.f},
+	//      {0.f, 0.f, accel_noise}};
 
-  // accelerometer measurement covariance
-  float R[3][3];
+	// accelerometer measurement covariance
+	float R[3][3];
 };
 
 struct euler_angles
 {
-  float yaw;
-  float pitch;
-  float roll;
+	float yaw;
+	float pitch;
+	float roll;
 }; // these are actually Tait-Bryant angles :p
 
 class ExtendedKalmanFilter
 {
 public:
-  ExtendedKalmanFilter(float gyro_noise);
+	ExtendedKalmanFilter(float gyro_noise);
 
-  float getVerticalAccel(const float accel[3]);
-  euler_angles getAttitude();
+	float getVerticalAccel(const float accel[3]);
+	euler_angles getAttitude();
 
 private:
-  State curr_quat_;
-  Ekf efk_vals_; // will hold curr vals
-  float gyro_noise;
+	State curr_quat_;
+	Ekf efk_vals_; // will hold curr vals
+	float gyro_noise;
 
-  // prediction steps
-  State processFunction(const float gyro[3], float dt);
-  void setQOrientation(float dt);
-  void computeF(const float gyro[3], float dt, float F[4][4]);
-  void predict(const float gyro[3], float dt);
+	// prediction steps
+	State processFunction(const float gyro[3], float dt);
+	void setQOrientation(float dt);
+	void computeF(const float gyro[3], float dt, float F[4][4]);
+	void predict(const float gyro[3], float dt);
 
-  // update prediction with accelerometer data (nonlinear update step)
-  void rotateGravity(float out[3]);
-  void computeH_Accel();
-  void updateAccel(const float accel[3]);
+	// update prediction with accelerometer data (nonlinear update step)
+	void rotateGravity(float out[3]);
+	void computeH_Accel();
+	void updateAccel(const float accel[3]);
 };
 
 class ComplementaryFilter
 {
 
 private:
-  // filter gain
-  float gain[2];
-  // Zero-velocity update
-  float accelThreshold;
-  static const uint8_t ZUPT_SIZE = 12;
-  uint8_t ZUPTIdx;
-  float ZUPT[ZUPT_SIZE];
+	// filter gain
+	float gain[2];
+	// Zero-velocity update
+	float accelThreshold;
+	static const uint8_t ZUPT_SIZE = 12;
+	uint8_t ZUPTIdx;
+	float ZUPT[ZUPT_SIZE];
 
-  float ApplyZUPT(float accel, float vel);
+	float ApplyZUPT(float accel, float vel);
 
 public:
-  ComplementaryFilter(float sigmaAccel, float sigmaBaro, float accelThreshold);
+	ComplementaryFilter(float sigmaAccel, float sigmaBaro, float accelThreshold);
 
-  void estimate(float *velocity, float *altitude, float baroAltitude,
-                float pastAltitude, float pastVelocity, float accel, float deltat);
+	void estimate(float *velocity, float *altitude, float baroAltitude,
+				  float pastAltitude, float pastVelocity, float accel, float deltat);
 }; // Class ComplementaryFilter
