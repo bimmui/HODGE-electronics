@@ -10,10 +10,12 @@ enum sensor_type
 typedef enum
 {
     SENSOR_OK,
+    SENSOR_ERR, // generic error
     SENSOR_ERR_BAD_HEALTH,
     SENSOR_ERR_INIT,
     SENSOR_ERR_READ,
-    SENSOR_ERR_CALIB
+    SENSOR_ERR_CALIB,
+    SENSOR_ERR_TASK,
 } sensor_status;
 
 struct sensor_value

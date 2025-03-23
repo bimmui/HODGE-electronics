@@ -68,6 +68,11 @@ uint8_t BMP581::getDevID(void)
     return tmp[0];
 }
 
+sensor_type BMP581::getType() const
+{
+    return BMP;
+}
+
 void BMP581::configure()
 {
     // configure the sensor to register both temp and pressure

@@ -29,13 +29,13 @@ public:
     sensor_type getType() const override;
     sensor_reading read() override;
     sensor_status initialize() override;
+    uint8_t getDevID() override;
 
 private:
     i2c_master_dev_handle_t adxl375_dev_handle_;
 
     ADXL375Config config_; // will contain default config on init
     void configure() override;
-    uint8_t getDevID() override;
 };
 
 #endif

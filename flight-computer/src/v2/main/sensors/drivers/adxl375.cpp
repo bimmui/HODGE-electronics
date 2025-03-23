@@ -44,8 +44,7 @@ uint8_t ADXL375::getDevID()
     return tmp[0];
 }
 
-// ApoSensor interface implementation
-SensorType ADXL375::getType() const
+sensor_type ADXL375::getType() const
 {
     return ACCELEROMETER;
 }
