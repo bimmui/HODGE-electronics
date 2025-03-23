@@ -2,7 +2,7 @@
 #define BMP581_H_
 
 #include "./i2c_ex.h"
-#include "sensor_interface.h"
+#include "./sensor_interface.h"
 
 class BMP581 : public ApoSensor
 {

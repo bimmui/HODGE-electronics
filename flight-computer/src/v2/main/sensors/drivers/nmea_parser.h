@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include "esp_event.h"
 #include "driver/uart.h"
+#include "./sensor_types.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -37,51 +38,51 @@ enum class GpsFixMode : uint8_t
 
 struct GpsSatellite
 {
-    uint8_t num = 0;
-    uint8_t elevation = 0;
-    uint16_t azimuth = 0;
-    uint8_t snr = 0;
+    uint8_t num;
+    uint8_t elevation;
+    uint16_t azimuth;
+    uint8_t snr;
 };
 
 struct GpsTime
 {
-    uint8_t hour = 0;
-    uint8_t minute = 0;
-    uint8_t second = 0;
-    uint16_t thousand = 0; ///< fractional thousandths
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+    uint16_t thousand; ///< fractional thousandths
 };
 
 struct GpsDate
 {
-    uint8_t day = 0;
-    uint8_t month = 0;
-    uint16_t year = 0; ///< offset from 2000
+    uint8_t day;
+    uint8_t month;
+    uint16_t year; ///< offset from 2000
 };
 
 struct GpsData
 {
-    float latitude = 0.0f;
-    float longitude = 0.0f;
-    float altitude = 0.0f;
-    GpsFixType fix = GpsFixType::INVALID;
-    uint8_t sats_in_use = 0;
+    double latitude;
+    double longitude;
+    double altitude;
+    GpsFixType fix;
+    uint8_t sats_in_use;
 
     GpsTime tim;
-    GpsFixMode fix_mode = GpsFixMode::INVALID;
-    uint8_t sats_id_in_use[GPS_MAX_SATELLITES_IN_USE] = {0};
+    GpsFixMode fix_mode;
+    uint8_t sats_id_in_use[GPS_MAX_SATELLITES_IN_USE];
 
-    float dop_h = 0.0f;
-    float dop_p = 0.0f;
-    float dop_v = 0.0f;
+    float dop_h;
+    float dop_p;
+    float dop_v;
 
     uint8_t sats_in_view = 0;
     GpsSatellite sats_desc_in_view[GPS_MAX_SATELLITES_IN_VIEW] = {};
 
     GpsDate date;
-    bool valid = false;
-    float speed = 0.0f;
-    float cog = 0.0f;
-    float variation = 0.0f;
+    bool fix_valid;
+    float speed;
+    float cog;
+    float variation;
 };
 
 // GPS Event IDs
@@ -121,10 +122,7 @@ public:
     explicit GpsNmea(const GpsNmeaConfig &cfg);
     ~GpsNmea();
 
-    sensor_status initialize() override;
-    sensor_type getType() const override;
-    uint8_t getDevID() override;
-
+    sensor_status init();
     sensor_status deinit();
     sensor_status addHandler(esp_event_handler_t handler, void *handler_args);
     sensor_status removeHandler(esp_event_handler_t handler);
@@ -156,11 +154,11 @@ private:
     bool running_ = false;
 
     //  ESP-IDF approach uses a queue to receive UART events
-    QueueHandle_t uartQueue_ = nullptr;
+    QueueHandle_t uart_queue_ = nullptr;
     // event loop handle
-    esp_event_loop_handle_t eventLoop_ = nullptr;
+    esp_event_loop_handle_t event_loop_ = nullptr;
     // handle for background task
-    TaskHandle_t taskHandle_ = nullptr;
+    TaskHandle_t task_handle_ = nullptr;
 
     // "current" GPS data object
     GpsData data_;

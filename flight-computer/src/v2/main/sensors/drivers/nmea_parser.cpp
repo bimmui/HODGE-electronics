@@ -1,4 +1,4 @@
-#include "gps_nmea.h"
+#include "nmea_parser.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -11,17 +11,12 @@ ESP_EVENT_DEFINE_BASE(GPS_EVENT);
 
 static const char *TAG = "GpsNmea";
 
-/********************************************************************
- *  Helper for reading 2 digits
- *******************************************************************/
+//  Helper for reading 2 digits
 static inline uint8_t twoDigitToInt(const char *c)
 {
     return (uint8_t)((c[0] - '0') * 10 + (c[1] - '0'));
 }
 
-/********************************************************************
- *  Constructor
- *******************************************************************/
 GpsNmea::GpsNmea(const GpsNmeaConfig &cfg)
     : cfg_(cfg)
 {
@@ -38,7 +33,7 @@ sensor_status GpsNmea::init()
                                         cfg_.ring_buffer_size,
                                         0,
                                         cfg_.event_queue_size,
-                                        &uartQueue_,
+                                        &uart_queue_,
                                         0);
     if (err != ESP_OK)
     {
@@ -78,7 +73,7 @@ sensor_status GpsNmea::init()
         .queue_size = 8,
         .task_name = nullptr // no dedicated task for the loop
     };
-    err = esp_event_loop_create(&loop_args, &eventLoop_);
+    err = esp_event_loop_create(&loop_args, &event_loop_);
     if (err != ESP_OK)
     {
         return SENSOR_ERR_INIT;
@@ -92,7 +87,7 @@ sensor_status GpsNmea::init()
         4096, // stack
         this, // arg
         5,    // priority
-        &taskHandle_);
+        &task_handle_);
     if (t_err != pdTRUE)
     {
         running_ = false;
@@ -105,32 +100,32 @@ sensor_status GpsNmea::init()
 
 sensor_status GpsNmea::deinit()
 {
-    if (running_ && taskHandle_)
+    if (running_ && task_handle_)
     {
         running_ = false;
         vTaskDelay(pdMS_TO_TICKS(50));
-        vTaskDelete(taskHandle_);
-        taskHandle_ = nullptr;
+        vTaskDelete(task_handle_);
+        task_handle_ = nullptr;
     }
-    if (eventLoop_)
+    if (event_loop_)
     {
-        esp_event_loop_delete(eventLoop_);
-        eventLoop_ = nullptr;
+        esp_event_loop_delete(event_loop_);
+        event_loop_ = nullptr;
     }
-    if (uartQueue_)
+    if (uart_queue_)
     {
         uart_driver_delete(cfg_.uart_port);
-        uartQueue_ = nullptr;
+        uart_queue_ = nullptr;
     }
     return SENSOR_OK;
 }
 
 sensor_status GpsNmea::addHandler(esp_event_handler_t handler, void *handler_args)
 {
-    if (!eventLoop_)
+    if (!event_loop_)
         return SENSOR_ERR;
     esp_err_t err = esp_event_handler_register_with(
-        eventLoop_,
+        event_loop_,
         GPS_EVENT,
         ESP_EVENT_ANY_ID,
         handler,
@@ -142,10 +137,10 @@ sensor_status GpsNmea::addHandler(esp_event_handler_t handler, void *handler_arg
 
 sensor_status GpsNmea::removeHandler(esp_event_handler_t handler)
 {
-    if (!eventLoop_)
+    if (!event_loop_)
         return SENSOR_ERR;
     esp_err_t err = esp_event_handler_unregister_with(
-        eventLoop_,
+        event_loop_,
         GPS_EVENT,
         ESP_EVENT_ANY_ID,
         handler);
@@ -167,7 +162,7 @@ void GpsNmea::gpsTask()
     uart_event_t event;
     while (running_)
     {
-        if (xQueueReceive(uartQueue_, &event, pdMS_TO_TICKS(200)))
+        if (xQueueReceive(uart_queue_, &event, pdMS_TO_TICKS(200)))
         {
             switch (event.type)
             {
@@ -181,12 +176,12 @@ void GpsNmea::gpsTask()
             case UART_BUFFER_FULL:
                 ESP_LOGW(TAG, "UART buffer full. Flushing.");
                 uart_flush(cfg_.uart_port);
-                xQueueReset(uartQueue_);
+                xQueueReset(uart_queue_);
                 break;
             case UART_FIFO_OVF:
                 ESP_LOGW(TAG, "UART FIFO overflow. Flushing.");
                 uart_flush(cfg_.uart_port);
-                xQueueReset(uartQueue_);
+                xQueueReset(uart_queue_);
                 break;
             default:
                 // handle other events if needed
@@ -239,7 +234,7 @@ void GpsNmea::handleUartPattern()
     if (!checkNmeaChecksum(buffer))
     {
         // if it fails checksum, post GPS_UNKNOWN or just ignore
-        esp_event_post_to(eventLoop_, GPS_EVENT, GPS_UNKNOWN,
+        esp_event_post_to(event_loop_, GPS_EVENT, GPS_UNKNOWN,
                           buffer, read_len + 1, pdMS_TO_TICKS(100));
         return;
     }
@@ -247,7 +242,7 @@ void GpsNmea::handleUartPattern()
     // good line = parse
     parseNmeaLine(buffer);
 
-    esp_event_post_to(eventLoop_, MY_GPS_EVENT, GPS_UPDATE,
+    esp_event_post_to(event_loop_, GPS_EVENT, GPS_UPDATE,
                       &data_, sizeof(GpsData),
                       pdMS_TO_TICKS(100));
 }
@@ -304,35 +299,54 @@ void GpsNmea::parseNmeaLine(const char *line)
     if (idx == 0)
         return;
 
-    // check statement
+// check statement
+#if CONFIG_NMEA_STATEMENT_GGA
     if (strstr(tokens[0], "GGA"))
     {
         parseGGA(tokens, idx);
     }
-    else if (strstr(tokens[0], "GSA"))
+    return;
+#endif
+
+#if CONFIG_NMEA_STATEMENT_GSA
+    if (strstr(tokens[0], "GSA"))
     {
         parseGSA(tokens, idx);
     }
-    else if (strstr(tokens[0], "GSV"))
+    return;
+#endif
+
+#if CONFIG_NMEA_STATEMENT_GSV
+    if (strstr(tokens[0], "GSV"))
     {
         parseGSV(tokens, idx);
     }
-    else if (strstr(tokens[0], "RMC"))
+    return;
+#endif
+
+#if CONFIG_NMEA_STATEMENT_RMC
+    if (strstr(tokens[0], "RMC"))
     {
         parseRMC(tokens, idx);
     }
-    else if (strstr(tokens[0], "GLL"))
+    return;
+#endif
+
+#if CONFIG_NMEA_STATEMENT_GLL
+    if (strstr(tokens[0], "GLL"))
     {
         parseGLL(tokens, idx);
     }
-    else if (strstr(tokens[0], "VTG"))
+    return;
+#endif
+
+#if CONFIG_NMEA_STATEMENT_VTG
+    if (strstr(tokens[0], "VTG"))
     {
         parseVTG(tokens, idx);
     }
-    else
-    {
-        // unknown
-    }
+    return;
+#endif
 }
 
 float GpsNmea::parseLatLong(const char *field)
@@ -465,7 +479,7 @@ void GpsNmea::parseRMC(const char **tokens, int count)
     if (count < 10)
         return;
     parseUtcTime(tokens[1]);
-    data_.valid = (tokens[2][0] == 'A');
+    data_.fix_valid = (tokens[2][0] == 'A');
 
     if (strlen(tokens[3]) > 0)
     {
@@ -524,7 +538,7 @@ void GpsNmea::parseGLL(const char **tokens, int count)
         data_.longitude = lon;
     }
     parseUtcTime(tokens[5]);
-    data_.valid = (tokens[6][0] == 'A');
+    data_.fix_valid = (tokens[6][0] == 'A');
 }
 
 void GpsNmea::parseVTG(const char **tokens, int count)

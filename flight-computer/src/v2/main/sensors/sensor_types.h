@@ -1,11 +1,11 @@
-enum sensor_type
+typedef enum
 {
     TEMPERATURE,
     BMP,
     GPS,
     IMU,
     ACCELEROMETER
-};
+} sensor_type;
 
 typedef enum
 {
@@ -32,8 +32,9 @@ struct sensor_value
         {
             double lat, lon, alt;
             float speed, cog, mag_vari;
-            int num_sats, fix_status, fix_valid;
+            int num_sats, fix_status;
             int year, month, day, hour, minute, second;
+            bool fix_valid;
         } gps;
         struct
         {
