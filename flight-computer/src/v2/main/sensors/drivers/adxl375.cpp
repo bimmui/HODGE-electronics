@@ -93,7 +93,7 @@ void ADXL375::configure()
 sensor_status ADXL375::initialize()
 {
     if (getDevID() != ADXL375_WHO_AM_I_VAL)
-        return false;
+        return SENSOR_ERR_INIT;
 
     configure(); // applies default config if non provided on init
 

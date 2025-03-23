@@ -44,5 +44,9 @@ struct sensor_value
         {
             float accel[3];
         } accelerometerHG;
+        struct
+        {
+            float temp_c;
+        } temp;
     } data;
 };
