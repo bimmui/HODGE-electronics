@@ -208,6 +208,7 @@ sensor_reading BMP581::read()
     result.value.data.bmp.pressure = pressure;
     result.value.data.bmp.temp = temperature_c;
     result.value.data.bmp.altitude = convert_to_altitude(pressure);
+    // TODO: add timestamp
 
     return result;
 }

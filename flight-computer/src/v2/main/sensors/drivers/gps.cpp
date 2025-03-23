@@ -74,7 +74,7 @@ void GpsSensor::s_gpsEventHandler(void *handler_args,
 }
 
 // called whenever there's a new NMEA line
-// If it's GPS_UPDATE, we copy the new GpsData into our sensor_reading
+// If it's GPS_UPDATE, we copy the new gps_data into our sensor_reading
 //    so that read() can return it
 void GpsSensor::onGpsEvent(int32_t id, void *event_data)
 {
@@ -82,8 +82,8 @@ void GpsSensor::onGpsEvent(int32_t id, void *event_data)
     {
     case GPS_UPDATE:
     {
-        // event_data is a pointer to a GpsData
-        GpsData *gd = static_cast<GpsData *>(event_data);
+        // event_data is a pointer to a gps_data
+        gps_data *gd = static_cast<gps_data *>(event_data);
         if (!gd)
             return;
 

@@ -22,21 +22,21 @@ extern "C"
 #define TIME_ZONE (-5)   // EST Time
 #define YEAR_BASE (2000) // date in GPS starts from 2000
 
-enum class GpsFixType : uint8_t
+enum class gps_fix_type : uint8_t
 {
     INVALID = 0,
     GPS,
     DGPS
 };
 
-enum class GpsFixMode : uint8_t
+enum class gps_fix_mode : uint8_t
 {
     INVALID = 1,
     MODE_2D,
     MODE_3D
 };
 
-struct GpsSatellite
+struct gps_satellite
 {
     uint8_t num;
     uint8_t elevation;
@@ -44,7 +44,7 @@ struct GpsSatellite
     uint8_t snr;
 };
 
-struct GpsTime
+struct gps_time
 {
     uint8_t hour;
     uint8_t minute;
@@ -52,23 +52,23 @@ struct GpsTime
     uint16_t thousand; ///< fractional thousandths
 };
 
-struct GpsDate
+struct gps_date
 {
     uint8_t day;
     uint8_t month;
     uint16_t year; ///< offset from 2000
 };
 
-struct GpsData
+struct gps_data
 {
     double latitude;
     double longitude;
     double altitude;
-    GpsFixType fix;
+    gps_fix_type fix;
     uint8_t sats_in_use;
 
-    GpsTime tim;
-    GpsFixMode fix_mode;
+    gps_time tim;
+    gps_fix_mode fix_mode;
     uint8_t sats_id_in_use[GPS_MAX_SATELLITES_IN_USE];
 
     float dop_h;
@@ -76,9 +76,9 @@ struct GpsData
     float dop_v;
 
     uint8_t sats_in_view = 0;
-    GpsSatellite sats_desc_in_view[GPS_MAX_SATELLITES_IN_VIEW] = {};
+    gps_satellite sats_desc_in_view[GPS_MAX_SATELLITES_IN_VIEW] = {};
 
-    GpsDate date;
+    gps_date date;
     bool fix_valid;
     float speed;
     float cog;
@@ -161,6 +161,6 @@ private:
     TaskHandle_t task_handle_ = nullptr;
 
     // "current" GPS data object
-    GpsData data_;
+    gps_data data_;
 };
 #endif

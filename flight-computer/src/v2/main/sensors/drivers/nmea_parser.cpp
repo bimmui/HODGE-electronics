@@ -243,7 +243,7 @@ void GpsNmea::handleUartPattern()
     parseNmeaLine(buffer);
 
     esp_event_post_to(event_loop_, GPS_EVENT, GPS_UPDATE,
-                      &data_, sizeof(GpsData),
+                      &data_, sizeof(gps_data),
                       pdMS_TO_TICKS(100));
 }
 
@@ -409,15 +409,15 @@ void GpsNmea::parseGGA(const char **tokens, int count)
     int fixQual = atoi(tokens[6]);
     if (fixQual == 1)
     {
-        data_.fix = GpsFixType::GPS;
+        data_.fix = gps_fix_type::GPS;
     }
     else if (fixQual == 2)
     {
-        data_.fix = GpsFixType::DGPS;
+        data_.fix = gps_fix_type::DGPS;
     }
     else
     {
-        data_.fix = GpsFixType::INVALID;
+        data_.fix = gps_fix_type::INVALID;
     }
     data_.sats_in_use = (uint8_t)atoi(tokens[7]);
     data_.dop_h = strtof(tokens[8], nullptr);
@@ -435,11 +435,11 @@ void GpsNmea::parseGSA(const char **tokens, int count)
         return;
     int mode = atoi(tokens[2]);
     if (mode == 2)
-        data_.fix_mode = GpsFixMode::MODE_2D;
+        data_.fix_mode = gps_fix_mode::MODE_2D;
     else if (mode == 3)
-        data_.fix_mode = GpsFixMode::MODE_3D;
+        data_.fix_mode = gps_fix_mode::MODE_3D;
     else
-        data_.fix_mode = GpsFixMode::INVALID;
+        data_.fix_mode = gps_fix_mode::INVALID;
 
     for (int i = 3; i <= 14 && i < count; i++)
     {
@@ -464,7 +464,7 @@ void GpsNmea::parseGSV(const char **tokens, int count)
         uint8_t globalIndex = 4 * (thisMsg - 1) + satIndex;
         if (globalIndex < GPS_MAX_SATELLITES_IN_VIEW)
         {
-            GpsSatellite &sat = data_.sats_desc_in_view[globalIndex];
+            gps_satellite &sat = data_.sats_desc_in_view[globalIndex];
             sat.num = (uint8_t)atoi(tokens[idx]);
             sat.elevation = (uint8_t)atoi(tokens[idx + 1]);
             sat.azimuth = (uint16_t)atoi(tokens[idx + 2]);
