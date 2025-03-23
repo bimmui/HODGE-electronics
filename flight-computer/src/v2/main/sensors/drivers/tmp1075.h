@@ -1,12 +1,8 @@
 #ifndef TMP1075_H
 #define TMP1075_H
 
-#include "./i2c_ex.h"
+#include "peripherals/i2c_ex.h"
 #include "sensor_interface.h"
-
-// change address
-#define TMP1075_I2C_ADDRESS 0x69
-#define TMP1075_WHO_AM_I_VAL 0xE5
 
 class TMP1075 : public ApoSensor
 {

@@ -1,7 +1,7 @@
 #ifndef ADXL375_H
 #define ADXL375_H
 
-#include "./i2c_ex.h"
+#include "peripherals/i2c_ex.h"
 #include "sensor_interface.h"
 
 struct ADXL375Config

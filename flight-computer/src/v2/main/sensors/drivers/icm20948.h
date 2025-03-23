@@ -1,7 +1,7 @@
 #ifndef ICM20948_H
 #define ICM20948_H
 
-#include "./i2c_ex.h"
+#include "peripherals/i2c_ex.h"
 #include "sensor_interface.h"
 
 typedef enum
