@@ -66,6 +66,23 @@ sensor_status TMP1075::initialize()
     return SENSOR_OK;
 }
 
+static void TMP1075::vreadTask(void *pvParameters)
+{
+    while (true)
+    {
+        sensor_reading curr_reading = read();
+        ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
+
+        if (curr_reading.value.type != TEMPERATURE)
+            continue;
+
+        if (curr_reading.status == SENSOR_OK)
+        {
+            data->temp_temp_c.store(curr_reading.value.data.temp.temp_c, std::memory_order_relaxed);
+        }
+    }
+}
+
 sensor_reading TMP1075::read()
 {
     uint8_t tmp[2] = {0};
@@ -76,8 +93,6 @@ sensor_reading TMP1075::read()
     float thing = (ntmp * 0.0625f); // TODO: ts still dont work
 
     result.value.data.temp.temp_c = thing;
-
-    result.timestamp = esp_timer_get_time() / 1000ULL; // TODO: make this a macro for microseconds
 
     result.status = SENSOR_OK; // this is a placeholder before we add error checking to the reads
 

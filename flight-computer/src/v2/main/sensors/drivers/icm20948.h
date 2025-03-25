@@ -54,9 +54,11 @@ public:
              const ICM20948Config &cfg);
     ~ICM20948();
 
-    sensor_type getType() const override;
-    sensor_reading read() override;
     sensor_status initialize() override;
+    sensor_reading read() override;
+    static void vreadTask(void *pvParameters) override;
+    sensor_type getType() const override;
+    uint8_t getDevID() override;
 
 private:
     ICM20948Config config_;
@@ -68,7 +70,6 @@ private:
     i2c_master_dev_handle_t ak09916_dev_handle_;
 
     void configure() override;
-    uint8_t getDevID() override;
     void wakeup();
     void sleep();
     void reset();

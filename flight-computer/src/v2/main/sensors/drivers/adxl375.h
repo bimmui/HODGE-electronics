@@ -26,9 +26,10 @@ public:
             const ADXL375Config &cfg);
     ~ADXL375();
 
-    sensor_type getType() const override;
-    sensor_reading read() override;
     sensor_status initialize() override;
+    sensor_reading read() override;
+    static void vreadTask(void *pvParameters) override;
+    sensor_type getType() const override;
     uint8_t getDevID() override;
 
 private:

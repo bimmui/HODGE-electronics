@@ -100,6 +100,25 @@ sensor_status ADXL375::initialize()
     return SENSOR_OK;
 }
 
+static void ADXL375::vreadTask(void *pvParameters)
+{
+    while (true)
+    {
+        sensor_reading curr_reading = read();
+        ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
+
+        if (curr_reading.value.type != ACCELEROMETER)
+            continue;
+
+        if (curr_reading.status == SENSOR_OK)
+        {
+            data->hg_accel_x.store(curr_reading.value.data.accelerometerHG.accel[0], std::memory_order_relaxed);
+            data->hg_accel_y.store(curr_reading.value.data.accelerometerHG.accel[1], std::memory_order_relaxed);
+            data->hg_accel_z.store(curr_reading.value.data.accelerometerHG.accel[2], std::memory_order_relaxed);
+        }
+    }
+}
+
 sensor_reading ADXL375::read()
 {
     sensor_reading result;
@@ -113,10 +132,8 @@ sensor_reading ADXL375::read()
     int16_t accel_z = ((int16_t)((data_rd[5] << 8) + (data_rd[4]))) * ADXL375_MG2G_MULTIPLIER;
 
     result.value.data.accelerometerHG.accel[0] = accel_x;
-    result.value.data.accelerometerHG.accel[0] = accel_y;
-    result.value.data.accelerometerHG.accel[0] = accel_z;
-
-    result.timestamp = esp_timer_get_time() / 1000ULL; // TODO: make this a macro for microseconds
+    result.value.data.accelerometerHG.accel[1] = accel_y;
+    result.value.data.accelerometerHG.accel[2] = accel_z;
 
     result.status = SENSOR_OK; // this is a placeholder before we add error checking to the reads
 

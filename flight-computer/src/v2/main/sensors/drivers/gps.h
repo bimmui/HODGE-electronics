@@ -12,6 +12,7 @@ public:
     // ApoSensor interface:
     sensor_status initialize() override;
     sensor_reading read() override;
+    static void vreadTask(void *pvParameters) override;
     sensor_type getType() const override;
     uint8_t getDevID() override;
 

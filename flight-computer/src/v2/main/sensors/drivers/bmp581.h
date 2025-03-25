@@ -11,15 +11,16 @@ public:
            uint16_t bmp581_address, uint32_t scl_clk_speed);
     ~BMP581();
 
-    sensor_type getType() const override;
-    sensor_reading read() override;
     sensor_status initialize() override;
+    sensor_reading read() override;
+    static void vreadTask(void *pvParameters) override;
+    sensor_type getType() const override;
+    uint8_t getDevID() override;
 
 private:
     i2c_master_dev_handle_t bmp581_dev_handle_;
 
     void configure() override;
-    uint8_t getDevID() override;
 
     sensor_status softReset();
     sensor_status powerUpCheck();

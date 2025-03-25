@@ -187,6 +187,25 @@ sensor_status BMP581::initialize()
     return ret;
 }
 
+static void BMP581::vreadTask(void *pvParameters)
+{
+    while (true)
+    {
+        sensor_reading curr_reading = read();
+        ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
+
+        if (curr_reading.value.type != BMP)
+            continue;
+
+        if (curr_reading.status == SENSOR_OK)
+        {
+            data->baro_altitude.store(curr_reading.value.data.bmp.altitude, std::memory_order_relaxed);
+            data->baro_temp.store(curr_reading.value.data.bmp.temp, std::memory_order_relaxed);
+            data->baro_pressure.store(curr_reading.value.data.bmp.pressure, std::memory_order_relaxed);
+        }
+    }
+}
+
 sensor_reading BMP581::read()
 {
     sensor_reading result;

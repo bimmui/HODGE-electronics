@@ -20,8 +20,7 @@
 #define SIGMA_ACCEL 8
 #define SIGMA_BARO 8
 
-// KF concept: how closely calculated future values are to prev values
-// we set this to 0.5 to err on the side of safety
+// TODO: see if this is still needed
 #define CA 0.5
 
 // something for complementary filtering for the zero-velocity update feature

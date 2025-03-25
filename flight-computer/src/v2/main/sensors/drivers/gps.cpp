@@ -34,7 +34,41 @@ sensor_status GpsSensor::initialize()
 
     // If everything is okay, we might want to return SENSOR_OK
     ESP_LOGI(TAG, "GPS sensor initialized");
+
     return SENSOR_OK;
+}
+
+static void GpsSensor::vreadTask(void *pvParameters)
+{
+    while (true)
+    {
+        sensor_reading curr_reading = read();
+        ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
+
+        if (curr_reading.value.type != GPS)
+            continue;
+
+        if (curr_reading.status == SENSOR_OK)
+        {
+            data->gps_lat.store(curr_reading.value.data.gps.lat, std::memory_order_relaxed);
+            data->gps_lon.store(curr_reading.value.data.gps.lon, std::memory_order_relaxed);
+            data->gps_alt.store(curr_reading.value.data.gps.alt, std::memory_order_relaxed);
+            data->gps_speed.store(curr_reading.value.data.gps.speed, std::memory_order_relaxed);
+            data->gps_cog.store(curr_reading.value.data.gps.cog, std::memory_order_relaxed);
+            data->gps_mag_vari.store(curr_reading.value.data.gps.mag_vari, std::memory_order_relaxed);
+
+            data->gps_num_sats.store(curr_reading.value.data.gps.num_sats, std::memory_order_relaxed);
+            data->gps_fix_status.store(curr_reading.value.data.gps.fix_status, std::memory_order_relaxed);
+            data->gps_fix_valid.store(curr_reading.value.data.gps.fix_valid, std::memory_order_relaxed);
+
+            data->gps_year.store(curr_reading.value.data.gps.year, std::memory_order_relaxed);
+            data->gps_month.store(curr_reading.value.data.gps.month, std::memory_order_relaxed);
+            data->gps_day.store(curr_reading.value.data.gps.day, std::memory_order_relaxed);
+            data->gps_hour.store(curr_reading.value.data.gps.hour, std::memory_order_relaxed);
+            data->gps_minute.store(curr_reading.value.data.gps.minute, std::memory_order_relaxed);
+            data->gps_second.store(curr_reading.value.data.gps.second, std::memory_order_relaxed);
+        }
+    }
 }
 
 // return last reading we got from the background driver
@@ -88,7 +122,6 @@ void GpsSensor::onGpsEvent(int32_t id, void *event_data)
             return;
 
         sensor_reading result;
-        result.timestamp = (uint32_t)(esp_timer_get_time() / 1000ULL);
         result.value.type = GPS;
 
         result.value.data.gps.lat = gd->latitude;

@@ -274,6 +274,28 @@ void ICM20948::configure()
     enableGyroDLPF(config_.enable_gyro_dlpf);
 }
 
+static void ICM20948::vreadTask(void *pvParameters)
+{
+    while (true)
+    {
+        sensor_reading curr_reading = read();
+        ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
+
+        if (curr_reading.value.type != IMU)
+            continue;
+
+        if (curr_reading.status == SENSOR_OK)
+        {
+            data->imu_accel_x.store(curr_reading.value.data.imu.accel[0], std::memory_order_relaxed);
+            data->imu_accel_y.store(curr_reading.value.data.imu.accel[1], std::memory_order_relaxed);
+            data->imu_accel_z.store(curr_reading.value.data.imu.accel[2], std::memory_order_relaxed);
+            data->imu_gyro_x.store(curr_reading.value.data.imu.gyro[0], std::memory_order_relaxed);
+            data->imu_gyro_y.store(curr_reading.value.data.imu.gyro[1], std::memory_order_relaxed);
+            data->imu_gyro_z.store(curr_reading.value.data.imu.gyro[2], std::memory_order_relaxed);
+        }
+    }
+}
+
 sensor_reading ICM20948::read()
 {
     setBank(0);
