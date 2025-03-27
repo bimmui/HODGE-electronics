@@ -1,4 +1,3 @@
-
 #include "sensor_interface.h"
 
 #define MAX_SENSORS 8

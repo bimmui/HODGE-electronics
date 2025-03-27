@@ -20,4 +20,5 @@ public:
 
 private:
     virtual void configure() = 0;
+    virtual void applyCorrections(sensor_value *data) = 0;
 };
