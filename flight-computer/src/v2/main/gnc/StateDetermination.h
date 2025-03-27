@@ -21,14 +21,14 @@
 #define SIGMA_BARO 8
 
 // TODO: see if this is still needed
-#define CA 0.5
+// #define CA 0.5
 
 // something for complementary filtering for the zero-velocity update feature
 #define ACCEL_THRESHOLD 0.1
 
 #define MAIN_DEPLOY_ALTITUDE 213.36 // meters, bode set it to 700 feet
 
-enum class state
+enum class rocket_state
 {
     POWER_ON = 0,
     LAUNCH_READY,
@@ -42,13 +42,6 @@ enum class state
     RECOVERY
 };
 
-typedef struct
-{
-    float kf_altitude;
-    float kf_vert_velo;
-    float kf_accel;
-} kf_vals;
-
 class StateDeterminer
 {
 public:
@@ -58,19 +51,13 @@ public:
     // void switchGroundState(BBManager &manager, uint64_t packet);
 
 private:
-    AltitudeEstimator estimator;
+    Estimator estimator_;
 
     // used for ensuring the time is properly setup
-    bool first_step;
+    bool first_step_;
 
-    // prev values
-    float prev_alt;
-    float prev_accel;
-    float prev_velo;
-
-    bool main_attempted;
-    float launch_start_time;
-    state curr_state;
+    bool main_attempted_;
+    rocket_state curr_state_;
 
     void updatePrevEstimates(float altitude, float acceleration, float velocity);
 };

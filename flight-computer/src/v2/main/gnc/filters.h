@@ -51,13 +51,26 @@ struct euler_angles
 	float roll;
 }; // these are actually Tait-Bryant angles :p
 
+struct comp_filter_results
+{
+	float vertical_velocity;
+	float altitude;
+};
+
 class ExtendedKalmanFilter
 {
 public:
 	ExtendedKalmanFilter(float gyro_noise);
 
-	float getVerticalAccel(const float accel[3]);
-	euler_angles getAttitude();
+	// call these for actual values
+	float calcVerticalAccel(const float accel[3]);
+	euler_angles calcAttitude();
+
+	// call prediction first
+	void predict(const float gyro[3], float dt);
+
+	// then update the state with other sensor values
+	void updateAccel(const float accel[3]);
 
 private:
 	State curr_quat_;
@@ -68,31 +81,29 @@ private:
 	State processFunction(const float gyro[3], float dt);
 	void setQOrientation(float dt);
 	void computeF(const float gyro[3], float dt, float F[4][4]);
-	void predict(const float gyro[3], float dt);
 
 	// update prediction with accelerometer data (nonlinear update step)
 	void rotateGravity(float out[3]);
 	void computeH_Accel();
-	void updateAccel(const float accel[3]);
 };
 
 class ComplementaryFilter
 {
 
+public:
+	ComplementaryFilter(float sigma_accel, float sigma_baro, float accel_threshold);
+
+	comp_filter_results estimate(float baro_altitude, float past_altitude,
+								 float past_velocity, float accel, float dt);
+
 private:
 	// filter gain
-	float gain[2];
+	float gain_[2];
 	// Zero-velocity update
-	float accelThreshold;
-	static const uint8_t ZUPT_SIZE = 12;
-	uint8_t ZUPTIdx;
-	float ZUPT[ZUPT_SIZE];
+	float accel_threshold_;
+	static const uint8_t zupt_size_ = 32;
+	uint8_t zupt_idx_;
+	float zupt_[zupt_size_];
 
 	float ApplyZUPT(float accel, float vel);
-
-public:
-	ComplementaryFilter(float sigmaAccel, float sigmaBaro, float accelThreshold);
-
-	void estimate(float *velocity, float *altitude, float baroAltitude,
-				  float pastAltitude, float pastVelocity, float accel, float deltat);
 }; // Class ComplementaryFilter

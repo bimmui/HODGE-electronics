@@ -6,74 +6,42 @@
 #include "algebra.h"
 #include "altitude.h"
 
-AltitudeEstimator::AltitudeEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
-                                     float ca, float accelThreshold)
-    : kalman(ca, sigmaGyro, sigmaAccel), complementary(sigmaAccel, sigmaBaro, accelThreshold)
+Estimator::Estimator(float sigma_accel, float sigma_gyro, float sigma_baro,
+                     float accel_threshold, float gyro_noise)
+    : kalman(gyro_noise), complementary(sigma_accel, sigma_baro, accel_threshold)
 {
-        this->sigmaAccel = sigmaAccel;
-        this->sigmaGyro = sigmaGyro;
-        this->sigmaBaro = sigmaBaro;
-        this->ca = ca;
-        this->accelThreshold = accelThreshold;
 }
 
-void AltitudeEstimator::estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp)
+void Estimator::estimate(float accel[3], float gyro[3], float baro_height, uint32_t timestamp)
 {
-        float deltat = (float)(timestamp - previousTime) / 1000.0f;
-        float verticalAccel = kalman.estimate(pastGyro,
-                                              pastAccel,
-                                              deltat);
-        complementary.estimate(&estimatedVelocity,
-                               &estimatedAltitude,
-                               baroHeight,
-                               pastAltitude,
-                               pastVerticalVelocity,
-                               pastVerticalAccel,
-                               deltat);
+        float dt = (float)(timestamp - previous_time_) / 1000.0f;
+
+        kalman.predict(gyro, dt);
+        kalman.updateAccel(accel);
+
+        float vertical_accel = kalman.calcVerticalAccel(accel);
+        euler_angles attitude = kalman.calcAttitude();
+        comp_filter_results cfr = complementary.estimate(baro_height,
+                                                         prev_altitude_,
+                                                         prev_vertical_velocity_,
+                                                         prev_vertical_accel_,
+                                                         dt);
+
         // update values for next iteration
-        copyVector(pastGyro, gyro);
-        copyVector(pastAccel, accel);
-        pastAltitude = estimatedAltitude;
-        pastVerticalVelocity = estimatedVelocity;
-        pastVerticalAccel = verticalAccel;
-        previousTime = timestamp;
+        copy_vector(prev_gyro_, gyro);
+        copy_vector(prev_accel_, accel);
+        prev_altitude_ = cfr.altitude;
+        prev_vertical_velocity_ = cfr.vertical_velocity;
+        prev_vertical_accel_ = vertical_accel;
+        previous_time_ = timestamp;
+
+        // updating results to return
+        estimates_.angles = attitude;
+        estimates_.cf_results = cfr;
+        estimates_.vertical_accel = vertical_accel;
 }
 
-float AltitudeEstimator::getAltitude()
+void Estimator::setInitTime(uint32_t time)
 {
-        // return the last estimated altitude
-        return estimatedAltitude;
-}
-
-float AltitudeEstimator::getVerticalVelocity()
-{
-        // return the last estimated vertical velocity
-        return estimatedVelocity;
-}
-
-float AltitudeEstimator::getVerticalAcceleration()
-{
-        // return the last estimated vertical acceleration
-        return pastVerticalAccel;
-}
-
-void AltitudeEstimator::resetPriors()
-{
-        pastGyro[0] = 0;
-        pastGyro[1] = 0;
-        pastGyro[3] = 0;
-        pastAccel[0] = 0;
-        pastAccel[1] = 0;
-        pastAccel[3] = 0;
-        pastVerticalAccel = 0;
-        pastVerticalVelocity = 0;
-        pastAltitude = 0;
-        previousTime = 0;
-        estimatedAltitude = 0;
-        estimatedVelocity = 0;
-}
-
-void AltitudeEstimator::setInitTime(unsigned long time)
-{
-        previousTime = time;
+        previous_time_ = time;
 }

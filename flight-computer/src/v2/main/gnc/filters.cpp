@@ -456,7 +456,7 @@ void ExtendedKalmanFilter::updateAccel(const float accel[3])
 	memcpy(efk_vals_.P, PUpdated, sizeof(PUpdated));
 }
 
-float ExtendedKalmanFilter::getVerticalAccel(const float accel[3])
+float ExtendedKalmanFilter::calcVerticalAccel(const float accel[3])
 {
 	float R[3][3];
 	quaternion_to_rotation_matrix(curr_quat_, R);
@@ -473,7 +473,7 @@ float ExtendedKalmanFilter::getVerticalAccel(const float accel[3])
 	return aEarth[2];
 }
 
-euler_angles ExtendedKalmanFilter::getAttitude()
+euler_angles ExtendedKalmanFilter::calcAttitude()
 {
 
 	float qw = curr_quat_.qw;
@@ -498,7 +498,7 @@ float ComplementaryFilter::ApplyZUPT(float accel, float vel)
 	uint8_t nextIndex = (ZUPTIdx + 1) % ZUPT_SIZE;
 	ZUPTIdx = nextIndex;
 	// Apply Zero-velocity update
-	for (uint8_t k = 0; k < ZUPT_SIZE; ++k)
+	for (uint8_t k = 0; k < ZUPT_SIZE; k++)
 	{
 		if (abs(ZUPT[k]) > accelThreshold)
 			return vel;
@@ -506,28 +506,28 @@ float ComplementaryFilter::ApplyZUPT(float accel, float vel)
 	return 0.0;
 }
 
-ComplementaryFilter::ComplementaryFilter(float sigmaAccel, float sigmaBaro, float accelThreshold)
+ComplementaryFilter::ComplementaryFilter(float sigma_accel, float sigma_baro, float accel_threshold)
 {
 	// Compute the filter gain
-	gain[0] = sqrt(2 * sigmaAccel / sigmaBaro);
-	gain[1] = sigmaAccel / sigmaBaro;
+	gain_[0] = sqrt(2 * sigma_accel / sigma_baro);
+	gain_[1] = sigma_accel / sigma_baro;
 	// If acceleration is below the threshold the ZUPT counter
 	// will be increased
-	this->accelThreshold = accelThreshold;
+	this->accel_threshold_ = accel_threshold_;
 	// initialize zero-velocity update
-	ZUPTIdx = 0;
-	for (uint8_t k = 0; k < ZUPT_SIZE; ++k)
+	zupt_idx_ = 0;
+	for (uint8_t k = 0; k < zupt_size_; k++)
 	{
-		ZUPT[k] = 0;
+		zupt_[k] = 0;
 	}
 }
 
-void ComplementaryFilter::estimate(float *velocity, float *altitude, float baroAltitude,
-								   float pastAltitude, float pastVelocity, float accel, float deltat)
+comp_filter_results ComplementaryFilter::estimate(float baro_altitude, float past_altitude,
+												  float past_velocity, float accel, float dt)
 {
 	// Apply complementary filter
-	*altitude = pastAltitude + deltat * (pastVelocity + (gain[0] + gain[1] * deltat / 2) * (baroAltitude - pastAltitude)) + accel * pow(deltat, 2) / 2;
-	*velocity = pastVelocity + deltat * (gain[1] * (baroAltitude - pastAltitude) + accel);
+	*altitude = past_altitude + dt * (past_velocity + (gain[0] + gain[1] * dt / 2) * (baro_altitude - past_altitude)) + accel * pow(dt, 2) / 2;
+	*velocity = past_velocity + dt * (gain[1] * (baro_altitude - past_altitude) + accel);
 	// Compute zero-velocity update
 	*velocity = ApplyZUPT(accel, *velocity);
 }
