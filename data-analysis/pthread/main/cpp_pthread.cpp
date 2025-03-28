@@ -18,12 +18,12 @@
 #include <freertos/task.h>
 #include <esp_log.h>
 
-#include "compress_rs.h"
+#include "compress.h"
 
 using namespace std::chrono;
 
 const auto sleep_time = seconds {
-    return_five() 
+    return_five()
 };
 
 void print_thread_info(const char *extra = nullptr)
