@@ -18,7 +18,8 @@
 #include <freertos/task.h>
 #include <esp_log.h>
 
-#include "compress.h"
+//#include "compress.h"
+#include "lib.rs.h"
 
 using namespace std::chrono;
 

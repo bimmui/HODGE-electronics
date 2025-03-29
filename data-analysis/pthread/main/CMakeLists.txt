@@ -33,7 +33,7 @@
 #
 #endif() 
 
-idf_component_register(SRCS "cpp_pthread.cpp"
+idf_component_register(SRCS "cpp_pthread.cpp" "lib.rs.cc"
                     INCLUDE_DIRS ".")
 add_prebuilt_library(libcompress "${COMPONENT_DIR}/libcompress.a")
 target_link_libraries(${COMPONENT_LIB} PUBLIC libcompress)

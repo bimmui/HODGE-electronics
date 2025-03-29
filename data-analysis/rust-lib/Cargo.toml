@@ -9,8 +9,14 @@ edition = "2018"
 
 [lib]
 name = "compress"
-path = "lib.rs"
+path = "src/lib.rs"
 crate-type = ["staticlib"]
+
+[dependencies]
+cxx = "1.0.144"
+
+[build-dependencies]
+cxx-build = "1.0"
 
 [profile.release]
 lto = true
