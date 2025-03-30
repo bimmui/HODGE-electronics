@@ -34,5 +34,7 @@ class SerialReaderThread (ThreadHandler):
 
 		add_input_list_float: list[float] = []
 
-		for i in range(len(add_input)):
+		for i in range(len(add_input_list_str)):
 			add_input_list_float.append(float(add_input_list_str[i]))
+
+		self.memory_manager.write(add_input_list_float)
