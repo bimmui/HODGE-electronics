@@ -36,3 +36,5 @@ DBHandlerThread(shared_mem, url, token, org, bucket, table_name)
 
 threadrunner: ThreadManager = ThreadManager(my_threads)
 threadrunner.start()
+while True:
+    print(shared_mem.get_first().get_data())
