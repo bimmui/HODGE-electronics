@@ -1,12 +1,12 @@
 from __future__ import annotations
-import threading
+from multiprocessing.dummy import Process
 from abc import ABC, abstractmethod
 
 from shared_memory import SharedMemory
 
 # The ThreadHandler class controls a single thread.  The class controls stopping and starting the thread
 
-class ThreadHandler (ABC, threading.Thread):
+class ThreadHandler (ABC):
 	
 	# Constructor: Initializes the task and assigns a memory_manager to it.
 	# memory_manager (SharedMemory): the shared memory object this thread has access to
@@ -14,13 +14,13 @@ class ThreadHandler (ABC, threading.Thread):
 
 		self._kill: bool = False
 		self._is_infinite_loop: bool = is_infinite_loop
-
 		self._is_alive: bool = False
 		self.memory_manager: SharedMemory = memory_manager
+		self._wrapped_thread: Process = Process(target=self._thread_runner)
 
 
 	# This function is what the _wrapped_task runs
-	def run(self):
+	def _thread_runner(self):
 		if not self._is_infinite_loop:
 			self.thread_function()
 			return
@@ -43,7 +43,7 @@ class ThreadHandler (ABC, threading.Thread):
 	# Starts the thread associated with the derived class
 	def start_thread(self):
 		if not self._is_alive:
-			self.run()
+			self._wrapped_thread.start()
 			self._is_alive = True
 
 	# Stops the thread from running by breaking it out of an infinite loop
@@ -53,7 +53,7 @@ class ThreadHandler (ABC, threading.Thread):
 	# Wait for the thread to complete execution
 	def join_thread(self):
 		if self._is_alive:
-			self.join()
+			self._wrapped_thread.join()
 	
 	# check if the task is alive
 	def is_alive(self) -> bool:

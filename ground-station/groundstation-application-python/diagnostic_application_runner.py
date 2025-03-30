@@ -28,11 +28,10 @@ shared_memory_length: int = 1000
 shared_mem: SharedMemory = SharedMemory(1000, field_names)
 
 my_threads: list[ThreadHandler] = [
+DashboardThread(shared_mem, 8060, "0.0.0.0"),
 SerialReaderThread(shared_mem, SerialReaderThread.DEFAULT_CONNECTION_LINUX_0, baud_rate),
 DBHandlerThread(shared_mem, url, token, org, bucket, table_name)
 ]
-#DashboardThread(shared_mem, 8060, "0.0.0.0"),
+
 threadrunner: ThreadManager = ThreadManager(my_threads)
 threadrunner.start()
-while True:
-    print(shared_mem.get_first().get_data())
