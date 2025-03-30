@@ -18,7 +18,8 @@ url: str = "http://localhost:8086" #uncomment this value for local testing
 #url: str = "http://192.168.1.181:8086" #uncomment this value if doing remote testing
 bucket: str = "Test With Dash Revamped"
 table_name: str = "Dummy alt and velocity integers"
-field_names: list[str] = ["Time", "Altitude", "Velocity"]
+field_names: list[str,list[int]] = ["Time", "Altitude", "Velocity", "Acceleration", "Positions","Internal Temp", "External Temp"]
+# "Positions": [[37.7749, -122.4194],], # Check to see if typing has to be different bc its a list
 baud_rate: int = 88600
 shared_memory_length: int = 1000
 
