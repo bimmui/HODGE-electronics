@@ -25,18 +25,16 @@ field_names: list[str] = ["Time", "Velocity", "Acceleration"]
 baud_rate: int = 88600
 shared_memory_length: int = 1000
 
-shared_mem1: SharedMemory = SharedMemory(1000, field_names)
-shared_mem2: SharedMemory = SharedMemory(1000, field_names)
-shared_mem3: SharedMemory = SharedMemory(1000, field_names)
+shared_mem: SharedMemory = SharedMemory(1000, field_names)
 
 my_threads: list[ThreadHandler] = [
-DashboardThread(shared_mem1, 8060, "0.0.0.0"),
-SerialReaderThread(shared_mem2, SerialReaderThread.DEFAULT_CONNECTION_LINUX_0, baud_rate),
-DBHandlerThread(shared_mem3, url, token, org, bucket, table_name)
+DashboardThread(shared_mem, 8060, "0.0.0.0"),
+SerialReaderThread(shared_mem, SerialReaderThread.DEFAULT_CONNECTION_LINUX_0, baud_rate),
+DBHandlerThread(shared_mem, url, token, org, bucket, table_name)
 
 ]
 
 threadrunner: ThreadManager = ThreadManager(my_threads)
 threadrunner.start()
 while True:
-    print(shared_mem2.get_first().get_data())
+    print(shared_mem.get_first().get_data())
