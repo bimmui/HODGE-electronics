@@ -36,3 +36,4 @@ class SerialReaderThread (ThreadHandler):
 
 		for i in range(len(add_input)):
 			add_input_list_float.append(float(add_input_list_str[i]))
+			#
