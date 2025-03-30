@@ -6,7 +6,7 @@ from shared_memory import SharedMemory
 
 # The ThreadHandler class controls a single thread.  The class controls stopping and starting the thread
 
-class ThreadHandler (ABC):
+class ThreadHandler (ABC, threading.Thread):
 	
 	# Constructor: Initializes the task and assigns a memory_manager to it.
 	# memory_manager (SharedMemory): the shared memory object this thread has access to
@@ -17,11 +17,10 @@ class ThreadHandler (ABC):
 
 		self._is_alive: bool = False
 		self.memory_manager: SharedMemory = memory_manager
-		self._wrapped_thread: threading.Thread = threading.Thread(target=self._thread_runner)
 
 
 	# This function is what the _wrapped_task runs
-	def _thread_runner(self):
+	def run(self):
 		if not self._is_infinite_loop:
 			self.thread_function()
 			return
@@ -44,7 +43,7 @@ class ThreadHandler (ABC):
 	# Starts the thread associated with the derived class
 	def start_thread(self):
 		if not self._is_alive:
-			self._wrapped_thread.run()
+			self.run()
 			self._is_alive = True
 
 	# Stops the thread from running by breaking it out of an infinite loop
@@ -54,7 +53,7 @@ class ThreadHandler (ABC):
 	# Wait for the thread to complete execution
 	def join_thread(self):
 		if self._is_alive:
-			self._wrapped_thread.join()
+			self.join()
 	
 	# check if the task is alive
 	def is_alive(self) -> bool:
