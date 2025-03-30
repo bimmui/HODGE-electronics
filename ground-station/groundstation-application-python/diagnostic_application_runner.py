@@ -20,6 +20,7 @@ bucket: str = "Test With Dash Revamped"
 table_name: str = "Dummy alt and velocity integers"
 field_names: list[str,list[int]] = ["Time", "Altitude", "Velocity", "Acceleration", "Positions","Internal Temp", "External Temp"]
 # "Positions": [[37.7749, -122.4194],], # Check to see if typing has to be different bc its a list
+# Old field_names: list[str] = ["Time", "Velocity"]
 baud_rate: int = 88600
 shared_memory_length: int = 1000
 
