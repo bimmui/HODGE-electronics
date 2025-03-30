@@ -45,7 +45,7 @@ class DashboardThread (ThreadHandler):
 			Output("live-update-graph", "figure"),
 			Input("interval-component", "n_intervals"),
 		)
-		def update_graph_live(n):
+		def update_graph_live(n) -> go.Figure:
 
 			fig: go.Figure = go.Figure()
 			fig.add_trace(

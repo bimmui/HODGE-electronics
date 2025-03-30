@@ -41,4 +41,3 @@ class DBHandlerThread (ThreadHandler):
 	def thread_function(self):
 		if self.memory_manager.get_first() != None:
 			self.write_to_database(self.memory_manager.get_first().get_data())
-				
