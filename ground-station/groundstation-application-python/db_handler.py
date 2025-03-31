@@ -15,7 +15,7 @@ class DBHandler:
 	def __init__(self, token, org, url, bucket, table_name, field_names):
 		self.org = org
 		
-		write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org)
+		write_client = influxdb_client.InfluxDBClient(url=url, token=token, org=org, debug=False)
 		self.write_api = write_client.write_api(write_options=SYNCHRONOUS)
 		
 		self.bucket = bucket
