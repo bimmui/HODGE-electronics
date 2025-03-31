@@ -23,7 +23,7 @@ class DBHandlerThread (ThreadHandler):
 		self._table_name: str = table_name
 		self._field_names: list[str] = self.memory_manager.get_column_names()
 		
-		write_client: InfluxDBClient = InfluxDBClient(url, token, org, debug=False)
+		write_client: InfluxDBClient = InfluxDBClient(url, token, org, False)
 		self._api_writer: WriteApi = write_client.write_api(SYNCHRONOUS)
 		
 	#writes data to influx DB database
