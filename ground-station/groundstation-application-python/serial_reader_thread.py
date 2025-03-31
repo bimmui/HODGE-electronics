@@ -21,6 +21,8 @@ class SerialReaderThread (ThreadHandler):
 		self._serial_connection_path: str = serial_connection_path
 		self._baud_rate: int = baud_rate
 
+		self._serial_controller.flush()
+
 	# Continually logs data to the memory_manager
 	# Notes on formatting data:
 	# - Each list should be a number of entries equal to the number of column_names in the memory manager.  
