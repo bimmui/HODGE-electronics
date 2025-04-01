@@ -1,7 +1,7 @@
 use macros::export_concrete;
 
 mod efloat;
-mod huffman;
+//mod huffman;
 
 #[cxx::bridge] 
 mod ffi {
