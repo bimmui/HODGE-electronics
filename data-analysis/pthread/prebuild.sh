@@ -15,6 +15,7 @@ else
     ENV_VAR="RUST_LIB_DIR";
     # Default path (Change if you use this other places!)
     DEFAULT="../rust-lib/"
+    CWD=$(pwd)
 
     # Did they pass an argument?
     if [ -n "$1" ]; then
@@ -29,6 +30,6 @@ else
     # Build library with the esp toolchain
     cargo +esp build --release --verbose;
     # Copy built files
-    cp target/xtensa-esp32-espidf/release/libcompress.a ../pthread/main; 
-    cp target/xtensa-esp32-espidf/cxxbridge/compress/src/* ../pthread/main;
+    cp target/xtensa-esp32-espidf/release/libcompress.a ${CWD}/main; 
+    cp target/xtensa-esp32-espidf/cxxbridge/compress/src/* ${CWD}/main;
 fi
