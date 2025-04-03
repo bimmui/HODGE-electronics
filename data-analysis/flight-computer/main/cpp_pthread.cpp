@@ -29,12 +29,16 @@ extern "C" void app_main(void)
 {
     esp_rom_gpio_pad_select_gpio(LED_PIN);
     gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
-    int ON = 0;
+    int32_t level = 0;
 
     // Let the main task do something too
+    /*
     while (true) {
-        ON = !ON;
-        gpio_set_level(LED_PIN, ON);
+        //level = !level;
+        //gpio_set_level(LED_PIN, level);
+        toggle_led(level);
         std::this_thread::sleep_for(sleep_time);
     }
+        */
+    toggle_loop();
 }
