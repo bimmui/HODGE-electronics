@@ -1,5 +1,5 @@
 [package]
-name = "compress-rs"
+name = "compress"
 version = "0.1.0"
 edition = "2021"
 [lib]
@@ -15,3 +15,9 @@ macros = { path = "../macros" }
 
 [build-dependencies]
 cxx-build = "1.0"
+
+[profile.release]
+lto = true
+
+[package.metadata.capi.header]
+generation = false

@@ -5,7 +5,7 @@
 if [ "${1,,}" == "help" ]; then
     echo "ESP build script with Rust linking"
     echo ""
-    echo "Source (not ./) this script to build an ESP component and link to a rust library"
+    echo "Run or source this script to build an ESP component and link to a rust library"
     echo "The Rust files are built with prebuild.sh, which should be in this same directory"
     echo "The first argument to this script is interpreted as the path to the ESP-IDF export script"
     echo "If none is provided, the script attempts to find one, starting at $HOME/esp/"
