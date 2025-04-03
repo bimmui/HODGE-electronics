@@ -38,4 +38,6 @@ else
     # Copy built files
     cp ../target/xtensa-esp32-espidf/release/libcompress.a ${CWD}/main; 
     cp ../target/xtensa-esp32-espidf/cxxbridge/compress/src/* ${CWD}/main;
+
+    cd ${CWD}
 fi

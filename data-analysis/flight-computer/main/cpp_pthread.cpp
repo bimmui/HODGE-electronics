@@ -35,7 +35,6 @@ extern "C" void app_main(void)
     while (true) {
         ON = !ON;
         gpio_set_level(LED_PIN, ON);
-        //vTaskDelay(1000/ portTICK_PERIOD_MS);
         std::this_thread::sleep_for(sleep_time);
     }
 }
