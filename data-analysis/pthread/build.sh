@@ -2,7 +2,7 @@
 
 # Print help message
 # convert first arg to lowercase
-if [ ${1,,} == "help" ]; then
+if [ "${1,,}" == "help" ]; then
     echo "ESP build script with Rust linking"
     echo ""
     echo "Source (not ./) this script to build an ESP component and link to a rust library"

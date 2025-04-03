@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ${1,,} == "help" ]; then
+if [ "${1,,}"- == "help" ]; then
         echo "PREBUILD";
         echo ""
         echo "Run this script before doing development on the C++ library";
@@ -11,6 +11,10 @@ if [ ${1,,} == "help" ]; then
 
         echo "This script builds a static library, and C++/header files for use in the project";
 else 
+    if [ -z "$LIBCLANG_PATH" ]; then
+    	source $HOME/export-esp.sh
+    fi
+
     # Environment variable to find rust library
     ENV_VAR="RUST_LIB_DIR";
     # Default path (Change if you use this other places!)
@@ -28,7 +32,7 @@ else
     fi
 
     # Build library with the esp toolchain
-    cargo +esp build --release --verbose;
+    cargo +esp build --config ./.cargo/xtensa-config.toml --release --verbose;
     # Copy built files
     cp target/xtensa-esp32-espidf/release/libcompress.a ${CWD}/main; 
     cp target/xtensa-esp32-espidf/cxxbridge/compress/src/* ${CWD}/main;
