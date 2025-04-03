@@ -32,7 +32,7 @@ else
     fi
 
     # Build library with the esp toolchain
-    cargo +esp build --config ./.cargo/xtensa-config.toml --release --verbose;
+    cargo +esp build --config ./.cargo/config-xtensa.toml --release --verbose;
     # Copy built files
     cp target/xtensa-esp32-espidf/release/libcompress.a ${CWD}/main; 
     cp target/xtensa-esp32-espidf/cxxbridge/compress/src/* ${CWD}/main;
