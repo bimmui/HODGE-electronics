@@ -28,7 +28,7 @@ EspHal *hal = new EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
 // DIO0 pin:  26
 // NRST pin:  14
 // DIO1 pin:  33
-RFM96 radio = new Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, 2);
+RFM96 radio = new Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, RADIOLIB_NC);
 
 static const char *TAG = "main";
 
@@ -38,7 +38,7 @@ extern "C" void app_main(void)
 {
   // initialize just like with Arduino
   ESP_LOGI(TAG, "[RFM69] Initializing ... ");
-  int state = radio.begin(433);
+  int state = radio.begin(433.0);
   if (state != RADIOLIB_ERR_NONE)
   {
     ESP_LOGI(TAG, "failed, code %d\n", state);
@@ -49,11 +49,9 @@ extern "C" void app_main(void)
   }
   ESP_LOGI(TAG, "success!\n");
 
-  radio.setOutputPower(20);
-  // Set FSK parameters (defaults for RFM69)
-  radio.setFrequencyDeviation(50.0); // 50 kHz deviation
-  radio.setBitRate(100.0);           // 100 kbps bitrate
-  radio.setRxBandwidth(250.0);       // 250 kHz RX bandwidth
+  radio.setSpreadingFactor(7);
+  radio.setBandwidth(125.0);
+  radio.setCodingRate(7);
 
   // loop forever
   for (;;)
