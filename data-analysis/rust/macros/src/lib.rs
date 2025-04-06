@@ -199,7 +199,7 @@ pub fn export_concrete(attr: TokenStream, item: TokenStream) -> TokenStream {
 
         #(#funcs_to_export)*
 
-        #[cxx::bridge(namespace = "compress")]
+        //#[cxx::bridge]
         mod #mod_name {
             extern "Rust" {
                 type #struct_name;

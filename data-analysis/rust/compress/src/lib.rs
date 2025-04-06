@@ -1,56 +1,44 @@
-use ffi::set_pin;
 use lazy_static::lazy_static;
 use macros::export_concrete;
+use paste::paste;
 
 mod efloat;
-//mod huffman;
+mod huffman;
 
-#[cxx::bridge] 
+#[cxx::bridge(namespace = "ffi  ")] 
 mod ffi {
 
     extern "Rust" {
-        fn return_five() -> u32;
-        fn toggle_loop();
-    }
-
-    unsafe extern  "C++" {
-        include!("gpio.h");
-
-        fn set_pin(pin: i32, level: i32);
+        
     }
 }
 
-#[export_concrete(concrete = Thinger, wrapper = Compressor, module = CompressorModule)]
-pub trait DoThing: Sync {
+pub trait Compress {
     fn return_value(&self) -> u32;
     fn make() -> Self;
 }
 
+struct Compressor {
+    inner: Thinger,
+}
 
-struct Thinger {}
-
-impl Thinger {
-    pub fn pub_thing() -> u32 {
-        17
+impl Compressor {
+    fn return_value(&self) -> u32 {
+        self.inner.return_value()
+    }
+    fn make() -> Self {
+        Self { inner: Thinger::make() }
     }
 }
-
-impl DoThing for Thinger {
-    fn return_value(&self) -> u32 { 6 }
-    fn make() -> Self { Thinger {} }
+fn make() -> Box<Compressor> {
+    Box::new(Compressor::make())
 }
 
-fn return_five() -> u32 {
-    5
-}
-
-const PIN: i32 = 13;
-
-fn toggle_loop() {
-    let mut level = 0;
-    loop {
-        set_pin(PIN, level);
-        level = level ^ 1;
-        std::thread::sleep(std::time::Duration::from_secs(1));
+#[cxx::bridge(namespace = "compress")]
+mod CompressorModule {
+    extern "Rust" {
+        type Compressor;
+        fn return_value(&self) -> u32;
+        fn make() -> Box<Compressor>;
     }
 }

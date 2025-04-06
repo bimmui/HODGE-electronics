@@ -32,7 +32,39 @@ impl<T: Copy> HuffmanNode<T> {
     }
 }
 
+pub struct BitRepr {
+    pub bits: u64,
+    pub len: u8,
+}
 
+pub struct TranslationTable<T: Hash + Copy + Eq> {
+    table: HashMap<T, BitRepr>,
+}
+
+impl<T: Hash + Copy + Eq> From<&HuffmanNode<T>> for TranslationTable<T> {
+    fn from(value: &HuffmanNode<T>) -> Self {
+        let mut table = HashMap::new();
+        match value {
+            HuffmanNode::Leaf(val) => {
+                table.insert(*val, BitRepr { bits: 0, len: 0 });
+            }
+            HuffmanNode::Inner(left, right) => {
+                let left_table: TranslationTable<T> = (&**left).into();
+                for (val, bits) in left_table.table.iter() {
+                    let new_bits = BitRepr { bits: bits.bits, len: bits.len + 1 };
+                    table.insert(*val, new_bits);
+                }
+
+                let right_table: TranslationTable<T> = (&**right).into();
+                for (val, bits) in right_table.table.iter() {
+                    let new_bits = BitRepr { bits: bits.bits | (1 << bits.len + 1), len: bits.len + 1 };
+                    table.insert(*val, new_bits);
+                }
+            }
+        }
+        TranslationTable { table }
+    }
+}
 
 enum Node<T> {
     Inner(Box<Node<T>>, Box<Node<T>>, u64),
@@ -68,7 +100,9 @@ impl<T> PartialEq for Node<T> {
 
 impl<T> Eq for Node<T> {}
 
-pub fn create_huffman_table<T: Copy + PartialEq + Eq+ Hash>(data: Vec<(T, u64)>) -> Node<T> {
+pub fn create_huffman<T: Copy + PartialEq + Eq+ Hash>(data: Vec<(T, u64)>) 
+    -> (HuffmanNode<T>,  TranslationTable<T>)
+{
     let mut queue = BinaryHeap::from_iter(
         data.iter()
         .map(|(data, freq)| {
@@ -98,5 +132,7 @@ pub fn create_huffman_table<T: Copy + PartialEq + Eq+ Hash>(data: Vec<(T, u64)>)
         queue.push(new);
     }
 
-    queue.pop().unwrap()
+    let top_tree: HuffmanNode<T> = queue.pop().unwrap().into();
+    let table = (&top_tree).into();
+    (top_tree, table)
 }
