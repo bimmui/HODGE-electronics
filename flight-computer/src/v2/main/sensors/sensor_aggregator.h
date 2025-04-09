@@ -14,5 +14,5 @@ public:
 private:
     ApoSensor *sensors_[MAX_SENSORS];
     uint8_t num_sensors_;
-    ts_sensor_data polling_data_;
+    atomic_sensor_data polling_data_;
 };

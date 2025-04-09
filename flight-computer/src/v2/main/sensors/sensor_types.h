@@ -20,7 +20,7 @@ typedef enum
     SENSOR_ERR_TASK,
 } sensor_status;
 
-struct ts_sensor_data
+struct atomic_sensor_data
 {
     std::atomic<double> baro_altitude{0.0};
     std::atomic<float> baro_temp{0.0f};
