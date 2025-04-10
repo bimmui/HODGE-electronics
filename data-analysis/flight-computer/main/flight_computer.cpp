@@ -21,9 +21,7 @@
 
 #define LED_PIN (gpio_num_t) 13
 
-const auto sleep_time = std::chrono::seconds {
-    return_five()
-};
+const auto sleep_time = std::chrono::seconds { 1 };
 
 extern "C" void app_main(void)
 {
@@ -31,14 +29,10 @@ extern "C" void app_main(void)
     gpio_set_direction(LED_PIN, GPIO_MODE_OUTPUT);
     int32_t level = 0;
 
-    // Let the main task do something too
-    /*
     while (true) {
-        //level = !level;
-        //gpio_set_level(LED_PIN, level);
-        toggle_led(level);
+        level = !level;
+        gpio_set_level(LED_PIN, level);
         std::this_thread::sleep_for(sleep_time);
     }
-        */
-    toggle_loop();
+
 }

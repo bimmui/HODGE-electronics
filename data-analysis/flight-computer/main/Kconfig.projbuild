@@ -1,0 +1,32 @@
+menu "Example Configuration"
+
+    config EXAMPLE_STORE_HISTORY
+        bool "Store command history in flash"
+        default n
+        help
+            Linenoise line editing library provides functions to save and load
+            command history. If this option is enabled, initalizes a FAT filesystem
+            and uses it to store command history.
+
+    config SPI_CLK
+        int "Serial Clock GPIO Num"
+        default 18
+
+    config SPI_MOSI
+        int "MOSI GPIO Num"
+        default 23
+
+    config SPI_MISO
+        int "MISO GPIO Num"
+        default 19
+    
+    config RFM96_CHIP_SELECT
+        int "CS Pin GPIO Num"
+        default 4
+
+    config RFM69_HARDWARE_RESET
+        int "Reset Pin GPIO Num"
+        default 2
+    
+
+endmenu
