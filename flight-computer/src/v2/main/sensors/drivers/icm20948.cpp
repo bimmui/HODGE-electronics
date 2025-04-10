@@ -326,14 +326,13 @@ sensor_reading ICM20948::read()
     float gyro_y = raw_gyro_y / gyro_sensitivity_;
     float gyro_z = raw_gyro_z / gyro_sensitivity_;
 
-    // eventuall we'll get that mag data
+    // eventually we'll get that mag data
 
     result.value.data.imu.accel = [ accel_x, accel_y, accel_z ];
     result.value.data.imu.gyro = [ gyro_x, gyro_y, gyro_z ];
     result.value.data.imu.mag = [ 0, 0, 0 ];
 
-    result.status = SENSOR_OK;                         // this is a placeholder before we add error checking to the reads
-    result.timestamp = esp_timer_get_time() / 1000ULL; // TODO: make this a macro for microseconds
+    result.status = SENSOR_OK; // this is a placeholder before we add error checking to the reads
 
     return result;
 }

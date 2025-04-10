@@ -38,7 +38,19 @@ extern "C" void app_main(void)
 {
   // initialize just like with Arduino
   ESP_LOGI(TAG, "[RFM96] Initializing ... ");
-  int state = radio.begin(433.0);
+  // int state = radio.begin(434.550);
+  float freq = 434.550;       // in MHz
+  float bit_rate = 38.3606;   // in kbps
+  float freq_dev = 20.507812; // in kHz
+  float rx_bw = 100.0;        // in kHz
+  int power = 20;             // in dBm
+  int preamble_len = 4;
+  int shaping = 0; // 0 = no shaping
+
+  // initialize radio in FSK mode
+  //   dataShaping is a float typically 0.0, 0.3, 0.5, 1.0, etc. for Gaussian filters
+  // TODO: figure out the value to put for Gaussian filters that the cots gps tracker uses
+  int state = radio.beginFSK(freq, bit_rate, freq_dev, rx_bw, power, preamble_len, 0.0);
   if (state != RADIOLIB_ERR_NONE)
   {
     ESP_LOGI(TAG, "failed, code %d\n", state);
@@ -50,9 +62,17 @@ extern "C" void app_main(void)
   ESP_LOGI(TAG, "success!\n");
 
   // lora specific settings
-  radio.setSpreadingFactor(7);
-  radio.setBandwidth(125.0);
-  radio.setCodingRate(7);
+  // radio.setSpreadingFactor(7);
+  // radio.setBandwidth(125.0);
+  // radio.setCodingRate(7);
+
+  // fsk specific settings
+  radio.setPreambleLength(16);
+  // For sync word: the CC115L might use 2 or 3 bytes. Example:
+  radio.setSyncWord(0x2D, 0xD4);
+  radio.setDataShaping(0.5);                // if TX uses GFSK shaping
+  radio.setEncoding(RADIOLIB_ENCODING_NRZ); // or whatever the TX uses
+  radio.setCrcFiltering(false);
 
   // loop forever
   for (;;)

@@ -58,6 +58,7 @@ struct atomic_sensor_data
     std::atomic<float> hg_accel_z{0.0f};
 
     std::atomic<float> temp_temp_c{0.0f};
+    std::atomic<unsigned long> timestamp{0.0f};
 };
 
 struct sensor_data_snapshot

@@ -43,7 +43,7 @@ i2c_master_dev_handle_t i2c_create_device(i2c_port_num_t port, i2c_addr_bit_len_
 
 void i2c_remove_device(i2c_master_dev_handle_t dev_handle) { i2c_master_bus_rm_device(dev_handle); }
 
-// BIG TODO: make it so that the i2c periferals is more of a hal, the user shouldnt have to provide
+// BIG TODO: make it so that the i2c periferals is more of a proper cpp hal, the user shouldnt have to provide
 //      a buffer/prefilled buffer for the read and write functions to work, the user should just tell
 //      the hal what it wants and it should return it
 
