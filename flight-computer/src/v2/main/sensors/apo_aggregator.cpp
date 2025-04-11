@@ -1,6 +1,11 @@
-#include "sensor_aggregator.h"
+#include "apo_aggregator.h"
 
 ApoAggregator::ApoAggregator() : num_sensors_(0) {}
+
+uint8_t ApoAggregator::getNumSensors()
+{
+    return num_sensors_;
+}
 
 bool ApoAggregator::addSensor(ApoSensor *sensor)
 {
@@ -10,19 +15,22 @@ bool ApoAggregator::addSensor(ApoSensor *sensor)
     return true;
 }
 
-void ApoAggregator::initializeSensors()
+char *ApoAggregator::initializeSensors()
 {
     // TODO: add a check to make sure some sensors have been added to the aggregator
     //      using addSensor
+    char *sensor_stats[num_sensors_];
     for (int i = 0; i < num_sensors_; i++)
     {
-        sensors_[i]->initialize();
-        char sensor_name[16];
+        sensor_status stat = sensors_[i]->initialize();
+        char sensor_name[32];
 
         // formats the char string to be:
-        // Sensor_[order in sensors_]_[sensor_type]_[device id]
+        // Sensor_[order in sensors_]_[sensor_type]_[device id]: status [sensor_status]
         snprintf(sensor_name, sizeof(sensor_name),
-                 "Sensor_%d_%d_%u", i, sensors_[i]->getType(), sensors_[i]->getDevID());
+                 "Sensor_%d_%d_%u: status %d\n", i, sensors_[i]->getType(), sensors_[i]->getDevID(), static_cast<int>(stat));
+
+        sensor_stats[i] = sensor_name;
 
         // TODO: do some profiling to figure out the stack size of each
         //      to make this a call to xTaskCreateStatic instead of xTaskCreate

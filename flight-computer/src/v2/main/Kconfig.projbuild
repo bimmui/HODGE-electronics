@@ -1,5 +1,11 @@
 menu "Pita Plate Configuration"
 
+    config DEBUG_MODE
+        bool "Whether or not to run in debug mode"
+        default true
+        help
+            Bool to determine whether or not to run the flight software in debug mode
+
     config I2C_MASTER_SCL
         int "SCL GPIO Num"
         default 25
@@ -57,7 +63,7 @@ menu "Pita Plate Configuration"
             int "CLK GPIO number"
             default 14
     
-        config PIN_CS
+        config SD_PIN_CS
             int "CS GPIO number"
             default 5
     

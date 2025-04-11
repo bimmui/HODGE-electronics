@@ -40,7 +40,7 @@ ADXL375::~ADXL375()
 uint8_t ADXL375::getDevID()
 {
     uint8_t tmp[1] = {0};
-    _read(adxl375_dev_handle_, ADXL375_WHO_AM_I_REG, tmp, sizeof(tmp));
+    i2c_read(adxl375_dev_handle_, ADXL375_WHO_AM_I_REG, tmp, sizeof(tmp));
     return tmp[0];
 }
 

@@ -20,7 +20,7 @@ void i2c_bus_init(void)
     i2c_mst_config.flags.enable_internal_pullup = true;
 
     i2c_master_bus_handle_t bus_handle;
-    ESP_ERROR_CHECK(i2c_new_master_bus(&i2c_mst_config, &bus_handle));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_new_master_bus(&i2c_mst_config, &bus_handle));
 }
 
 i2c_master_dev_handle_t i2c_create_device(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,
@@ -36,30 +36,22 @@ i2c_master_dev_handle_t i2c_create_device(i2c_port_num_t port, i2c_addr_bit_len_
     i2c_master_bus_handle_t bus_handle;
     static i2c_master_dev_handle_t dev_handle;
     // TODO: add logging to the statements below
-    ESP_ERROR_CHECK(i2c_master_get_bus_handle(port, &bus_handle));
-    ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_cfg, dev_handle));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_get_bus_handle(port, &bus_handle));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_bus_add_device(bus_handle, &dev_cfg, dev_handle));
     return dev_handle;
 }
 
 void i2c_remove_device(i2c_master_dev_handle_t dev_handle) { i2c_master_bus_rm_device(dev_handle); }
 
-// BIG TODO: make it so that the i2c periferals is more of a proper cpp hal, the user shouldnt have to provide
-//      a buffer/prefilled buffer for the read and write functions to work, the user should just tell
-//      the hal what it wants and it should return it
-
-// TODO: add some ret value that says it fails
-// also edit the ESP_ERROR_CHECK so it says what went wrong when it prints
 void i2c_write(i2c_master_dev_handle_t sensor,
                uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, TIMEOUT_LIMIT_MS));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_transmit(sensor, data_buf, data_len, TIMEOUT_LIMIT_MS));
 }
 
-// TODO: add some ret value that says it fails
-// also edit the ESP_ERROR_CHECK so it says what went wrong when it prints
 void i2c_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, TIMEOUT_LIMIT_MS));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, TIMEOUT_LIMIT_MS));
 }
