@@ -20,11 +20,16 @@
 #define DLPF_ENABLE_MASK (0x07)
 #define DLPF_DISABLE_MASK (0xFE)
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 ICM20948::ICM20948(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,
                    uint16_t adxl375_address, uint32_t scl_clk_speed) : config_{ACCEL_FS_8G, GYRO_FS_1000DPS, false, false, ICM20948_DLPF_OFF, ICM20948_DLPF_OFF}
 {
     this->icm20948_dev_handle_ = i2c_create_device(port, addr_len, adxl375_address, scl_clk_speed);
     this->ak09916_dev_handle_ = nullptr;
+    this->calibrated_ = false;
 }
 
 ICM20948::ICM20948(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,
@@ -257,6 +262,21 @@ sensor_status ICM20948::enableGyroDLPF(bool enable)
     i2c_write(icm20948_dev_handle_, reg_and_data, sizeof(reg_and_data));
 }
 
+void ICM20948::setCalibrationFactors(const float G_offset[3],
+                                     const float A_B[3], const float A_Ainv[3][3],
+                                     const float M_B[3], const float M_Ainv[3][3])
+{
+    // this is converting to redians, idk if we want that
+    g_scale_ = (M_PI / 180.0f) * gyro_sensitivity_;
+    G_offset_ = G_offset;
+    A_B_ = A_B;
+    A_Ainv_ = A_Ainv;
+    M_B_ = M_B;
+    M_Ainv_ = M_Ainv;
+
+    calibrated_ = true;
+}
+
 void ICM20948::configure()
 {
     if (getDevID() != ICM20948_WHO_AM_I_VAL)
@@ -327,6 +347,33 @@ sensor_reading ICM20948::read()
     float gyro_z = raw_gyro_z / gyro_sensitivity_;
 
     // eventually we'll get that mag data
+    // insert getting mag data here
+
+    if (calibrated_)
+    {
+        // gyro calibration
+        gyro_x = g_scale_ * (gyro_x - G_offset_[0]);
+        gyro_y = g_scale_ * (gyro_y - G_offset_[1]);
+        gyro_z = g_scale_ * (gyro_z - G_offset_[2]);
+
+        // accel calibrations
+        float tmp_x = accel_x - A_B_[0];
+        float tmp_y = accel_y - A_B_[1];
+        float tmp_z = accel_z - A_B_[2];
+
+        accel_x = A_Ainv_[0][0] * tmp_x + A_Ainv_[0][1] * tmp_y + A_Ainv_[0][2] * tmp_z;
+        accel_y = A_Ainv_[1][0] * tmp_x + A_Ainv_[1][1] * tmp_y + A_Ainv_[1][2] * tmp_z;
+        accel_z = A_Ainv_[2][0] * tmp_x + A_Ainv_[2][1] * tmp_y + A_Ainv_[2][2] * tmp_z;
+
+        // mag calibration
+        // tmp_x = mag_x - M_B_[0];
+        // tmp_y = mag_y - M_B_[1];
+        // tmp_z = mag_z - M_B_[2];
+
+        // mag_x = M_Ainv_[0][0] * tmp_x + M_Ainv_[0][1] * tmp_y + M_Ainv_[0][2] * tmp_z;
+        // mag_y = M_Ainv_[1][0] * tmp_x + M_Ainv_[1][1] * tmp_y + M_Ainv_[1][2] * tmp_z;
+        // mag_z = M_Ainv_[2][0] * tmp_x + M_Ainv_[2][1] * tmp_y + M_Ainv_[2][2] * tmp_z;
+    }
 
     result.value.data.imu.accel = [ accel_x, accel_y, accel_z ];
     result.value.data.imu.gyro = [ gyro_x, gyro_y, gyro_z ];

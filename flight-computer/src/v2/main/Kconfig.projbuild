@@ -33,6 +33,14 @@ menu "Pita Plate Configuration"
         config BMP581_ADDRESS
             hex "I2C device address of the BMP581"
             default 0x46
+
+        config ICM20948_ADDRESS
+            hex "I2C device address of the ICM20948"
+            default 0x68
+
+        config TMP1075_ADDRESS
+            hex "I2C device address of the TMP1075"
+            default 0x47
             
     endmenu
 

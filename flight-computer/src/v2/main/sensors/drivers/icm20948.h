@@ -59,12 +59,25 @@ public:
     static void vreadTask(void *pvParameters) override;
     sensor_type getType() const override;
     uint8_t getDevID() override;
+    void setCalibrationFactors(const float G_offset[3],
+                               const float A_B[3], const float A_Ainv[3][3],
+                               const float M_B[3], const float M_Ainv[3][3]);
 
 private:
     ICM20948Config config_;
 
-    float gyro_sensitivity_;
+    float gyro_sensitivity_; // TODO: figure out if this is dps or rps
     float accel_sensitivity_;
+
+    bool calibrated_;
+
+    // bunch of matrixes and values to scale and calibrate imu data
+    const float g_scale_;
+    const float G_offset_[3];
+    const float A_B_[3];
+    const float A_Ainv_[3][3];
+    const float M_B_[3];
+    const float M_Ainv_[3][3];
 
     i2c_master_dev_handle_t icm20948_dev_handle_;
     i2c_master_dev_handle_t ak09916_dev_handle_;
