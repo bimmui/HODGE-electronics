@@ -86,5 +86,47 @@ sensor_data_snapshot ApoAggregator::generateSnapshot() const
         polling_data_.hg_accel_y.load(),
         polling_data_.hg_accel_z.load(),
 
-        polling_data_.temp_temp_c.load()};
+        polling_data_.temp_temp_c.load(),
+        MILLIS()};
+}
+
+complete_sensor_data_snapshot ApoAggregator::generateCompleteSnapshot() const
+{
+    return complete_sensor_data_snapshot{
+        polling_data_.baro_altitude.load(),
+        polling_data_.baro_temp.load(),
+        polling_data_.baro_pressure.load(),
+
+        polling_data_.gps_lat.load(),
+        polling_data_.gps_lon.load(),
+        polling_data_.gps_alt.load(),
+        polling_data_.gps_speed.load(),
+        polling_data_.gps_cog.load(),
+        polling_data_.gps_mag_vari.load(),
+        polling_data_.gps_num_sats.load(),
+        polling_data_.gps_fix_status.load(),
+        polling_data_.gps_year.load(),
+        polling_data_.gps_month.load(),
+        polling_data_.gps_day.load(),
+        polling_data_.gps_hour.load(),
+        polling_data_.gps_minute.load(),
+        polling_data_.gps_second.load(),
+        polling_data_.gps_fix_valid.load(),
+
+        polling_data_.imu_accel_x.load(),
+        polling_data_.imu_accel_y.load(),
+        polling_data_.imu_accel_z.load(),
+        polling_data_.imu_gyro_x.load(),
+        polling_data_.imu_gyro_y.load(),
+        polling_data_.imu_gyro_z.load(),
+        polling_data_.imu_mag_x.load(),
+        polling_data_.imu_mag_y.load(),
+        polling_data_.imu_mag_z.load(),
+
+        polling_data_.hg_accel_x.load(),
+        polling_data_.hg_accel_y.load(),
+        polling_data_.hg_accel_z.load(),
+
+        polling_data_.temp_temp_c.load(),
+        MILLIS()};
 }

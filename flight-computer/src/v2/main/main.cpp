@@ -13,6 +13,8 @@
 #include "esp_timer.h"
 #include "sdkconfig.h"
 
+#define MILLIS() (esp_timer_get_time() / 1000ULL)
+
 // sensor drivers
 #include "apo_agreggator.h"
 #include "systems.h"
