@@ -18,10 +18,12 @@ public:
     uint8_t getDevID() override;
 
 private:
+    float baro_offset_;
     i2c_master_dev_handle_t bmp581_dev_handle_;
 
     void configure() override;
 
+    void calcBaroOffset();
     sensor_status softReset();
     sensor_status powerUpCheck();
     sensor_status checkHealth();

@@ -94,6 +94,8 @@ void BMP581::configure()
     reg_and_data[1] = curr_config[0];
     i2c_write(bmp581_dev_handle_, reg_and_data, sizeof(reg_and_data));
 
+    calcBaroOffset();
+
     // TODO: change this to use a macro
     vTaskDelay(pdMS_TO_TICKS(RECONFIG_DELAY_MS));
 }
@@ -167,6 +169,27 @@ sensor_status BMP581::powerUpCheck()
     return SENSOR_OK;
 }
 
+void BMP581::calcBaroOffset()
+{
+    float sum = 0;
+    int sample_count = 300;
+
+    for (int i = 0; i < sample_count; i++)
+    {
+        sensor_reading curr_reading = read();
+        if (curr_reading.status == SENSOR_OK)
+        {
+            sum += curr_reading.value.data.bmp.altitude;
+        }
+        else
+        {
+            sample_count -= 1;
+        }
+    }
+
+    baro_offset_ = sum / sample_count;
+}
+
 sensor_status BMP581::initialize()
 {
     sensor_status ret;
@@ -194,6 +217,7 @@ static void BMP581::vreadTask(void *pvParameters)
         sensor_reading curr_reading = read();
         ts_sensor_data *data = static_cast<ts_sensor_data *>(pvParameters);
 
+        // TODO: honestly what even is the point of this check, it will always call its own read() anyways
         if (curr_reading.value.type != BMP)
             continue;
 
