@@ -1,9 +1,11 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++11 -Ignc
+CXXFLAGS = -Wall -Wextra -std=c++14 -Ignc -IDSPFilters
 
 # Source files: main.cpp and all .cpp files in the gnc folder
-SRC = main.cpp $(wildcard gnc/*.cpp)
+SRC = main.cpp \
+	$(wildcard gnc/*.cpp) \
+	$(wildcard DSPFilters/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 # Output executable

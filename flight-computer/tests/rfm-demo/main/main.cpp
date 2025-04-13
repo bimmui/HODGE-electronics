@@ -37,8 +37,8 @@ static const char *TAG = "main";
 extern "C" void app_main(void)
 {
   // initialize just like with Arduino
-  ESP_LOGI(TAG, "[RFM69] Initializing ... ");
-  int state = radio.begin(433.0);
+  ESP_LOGI(TAG, "[RFM96] Initializing ... ");
+  int state = radio.begin(434.550);
   if (state != RADIOLIB_ERR_NONE)
   {
     ESP_LOGI(TAG, "failed, code %d\n", state);
@@ -57,7 +57,7 @@ extern "C" void app_main(void)
   for (;;)
   {
     // send a packet
-    ESP_LOGI(TAG, "[RFM69] Transmitting packet ... ");
+    ESP_LOGI(TAG, "[RFM96] Transmitting packet ... ");
     state = radio.transmit("Hello World!");
     if (state == RADIOLIB_ERR_NONE)
     {
