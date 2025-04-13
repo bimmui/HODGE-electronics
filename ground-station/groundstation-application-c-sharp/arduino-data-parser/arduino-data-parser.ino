@@ -19,7 +19,7 @@ void loop()
   time++;
   velocity--;
   acceleration++;
-  delay(1);
+  delay(10);
 }
 //Send Data to the pi
 //data: the data to be written.  "," separates fields, "]" separates entries

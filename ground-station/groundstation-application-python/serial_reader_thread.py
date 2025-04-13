@@ -32,7 +32,7 @@ class SerialReaderThread (ThreadHandler):
 	# - Each entry is separated by a comma (,)
 	# - A newline denotes a new list
 	def thread_function(self):
-		"""
+		
 		add_input: str = ""
 		add_input_list_str: list[str] = []
 		add_input_list_float: list[float] = []
@@ -54,9 +54,9 @@ class SerialReaderThread (ThreadHandler):
 
 		except ValueError:
 			print("Serial reader read an improper value")
-			print(f"floatList: {add_input_list_float}")"
-		"""
-		add_input: str = ""
+			print(f"floatList: {add_input_list_float}")
+		
+		"""add_input: str = ""
 		add_input_list_str: list[str] = []
 		add_input_list_float: list[float] = []
 		add_input = self._serial_controller.readline().decode().strip()
@@ -64,4 +64,4 @@ class SerialReaderThread (ThreadHandler):
 		for i in range(len(add_input_list_str)):
 				add_input_list_float.append(float(add_input_list_str[i]))
 
-		self.memory_manager.write(add_input_list_float)
+		self.memory_manager.write(add_input_list_float)"""

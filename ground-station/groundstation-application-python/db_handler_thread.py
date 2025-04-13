@@ -31,6 +31,9 @@ class DBHandlerThread (ThreadHandler):
 	def write_to_database(self, data: list[float]):
 		
 		#Fields corresponding to values must be a dictionary (field is the key, value is the value).  Therefore, we must rearrange data accordingly
+		if len(self._field_names) != len(data):
+			print("DB data does not fit field names")
+			return
 		field_value_pairs: dict[str, float] = {}
 
 		for i in range(len(self._field_names)):
