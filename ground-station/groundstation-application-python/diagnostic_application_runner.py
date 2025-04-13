@@ -22,7 +22,7 @@ table_name: str = "Dummy alt and velocity integers"
 field_names: list[str] = ["Time", "Velocity", "Acceleration"]
 # "Positions": [[37.7749, -122.4194],], # Check to see if typing has to be different bc its a list
 # Old field_names: list[str] = ["Time", "Velocity"]
-baud_rate: int = 88600
+baud_rate: int = 9600
 shared_memory_length: int = 1000
 
 shared_mem: SharedMemory = SharedMemory(1000, field_names)

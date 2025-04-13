@@ -6,7 +6,7 @@ int acceleration = 0;
 void setup()
 {
   //Open serial port (USB and wait for connection)
-	Serial.begin(88600);
+	Serial.begin(9600);
 	while (!Serial); //Wait for serial port connection
   
 }
