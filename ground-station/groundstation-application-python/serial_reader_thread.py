@@ -45,3 +45,6 @@ class SerialReaderThread (ThreadHandler):
 			#print(self.memory_manager.get_first().get_data())
 		except SerialException:
 			print("Serial reader did not read a value!")
+
+		except ValueError:
+			print("Serial reader read an improper value")
