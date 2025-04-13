@@ -41,7 +41,7 @@ class SerialReaderThread (ThreadHandler):
 
 		except SerialException:
 			print("Serial reader did not read a value!")
-			print(f"strList: {add_input_list_str}")
+			print(f"strList: {add_input}")
 
 
 		try:

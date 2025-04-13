@@ -64,7 +64,7 @@ class SharedMemory:
 	#data (array: any): an array with a row to be added to a CSV sheet
 	def write(self, data: list[float]):
 		
-		if len(data) != len(self._column_names):
+		if len(data) > len(self._column_names):
 			print("There are more data entries than column names.  Data not added!")
 
 		node_to_add: Node[float] = Node(None, self._first, data)
