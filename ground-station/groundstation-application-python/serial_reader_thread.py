@@ -32,10 +32,11 @@ class SerialReaderThread (ThreadHandler):
 	# - Each entry is separated by a comma (,)
 	# - A newline denotes a new list
 	def thread_function(self):
+		add_input: str = ""
 		add_input_list_str: list[str] = []
 		add_input_list_float: list[float] = []
 		try:
-			add_input: str = self._serial_controller.readline().decode().strip()
+			add_input = self._serial_controller.readline().decode().strip()
 			add_input_list_str = add_input.split(",")
 
 		except SerialException:
