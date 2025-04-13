@@ -1,5 +1,6 @@
 from __future__ import annotations
 from serial import Serial
+from serial import SerialException
 
 from thread_handler import ThreadHandler
 from shared_memory import SharedMemory
@@ -31,13 +32,16 @@ class SerialReaderThread (ThreadHandler):
 	# - Each entry is separated by a comma (,)
 	# - A newline denotes a new list
 	def thread_function(self):
-		add_input: str = self._serial_controller.readline().decode().strip()
-		add_input_list_str: list[str] = add_input.split(",")
+		try:
+			add_input: str = self._serial_controller.readline().decode().strip()
+			add_input_list_str: list[str] = add_input.split(",")
 
-		add_input_list_float: list[float] = []
+			add_input_list_float: list[float] = []
 
-		for i in range(len(add_input_list_str)):
-			add_input_list_float.append(float(add_input_list_str[i]))
+			for i in range(len(add_input_list_str)):
+				add_input_list_float.append(float(add_input_list_str[i]))
 
-		self.memory_manager.write(add_input_list_float)
-		#print(self.memory_manager.get_first().get_data())
+			self.memory_manager.write(add_input_list_float)
+			#print(self.memory_manager.get_first().get_data())
+		except SerialException:
+			print("Serial reader did not read a value!")
