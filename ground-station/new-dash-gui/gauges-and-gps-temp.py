@@ -10,8 +10,10 @@ from queue import Empty
 import dash
 import dash_leaflet as dl
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 from dash import dcc, html, Input, Output, callback, State
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
@@ -154,7 +156,7 @@ def dashboard(rocket):
             ]
             ),
 
-            dbc.Col(dbc.Card(
+            dbc.Col(dbc.Card([
                 
                 dbc.CardBody(
                     [
@@ -214,8 +216,9 @@ def dashboard(rocket):
                             ]
                         ),
                     ]
-                )
-            ),width=4)
+                ),
+                
+            ]),width=4)
         ]),
         html.Div([
             dcc.Graph(id="live-update-temp-graph"),
@@ -225,11 +228,27 @@ def dashboard(rocket):
 
             ])
             
-        ])
+        ]),
+        daq.BooleanSwitch(
+            id="switch-id",
+            on=False,
+            label="Label here",
+            color="#00cc96",
+            persistence=True,
+            persisted_props=["on"],
+            labelPosition="bottom",
+        ),
     ])
 
     # boundaries for the simulated path (coordinates within the USA)
     
+    @app.callback(
+        Output("switch-id","label"),
+        Input("switch-id","on"),
+    )
+
+    def update_bool_label(on):
+        return "Metric" if on else "Imperial"
 
     @app.callback(
         
@@ -259,7 +278,9 @@ def dashboard(rocket):
         rocketo_proxy.generate_new_temp()
         data = rocketo_proxy.get()
 
-        fig = go.Figure()
+        #fig = go.Figure()
+        # Create a single figure with two subplots
+        fig = make_subplots(rows=2, cols=1)  # Two graphs stacked vertically
         fig.add_trace(
             go.Scatter(
                 x=data["Time"],
@@ -267,7 +288,8 @@ def dashboard(rocket):
                 mode="lines+markers",
                 name="Internal Temp (°C)",
                 hoverinfo="none",
-            )
+            ),
+            row=1,col=1
         )
         fig.add_trace(
             go.Scatter(
@@ -276,7 +298,8 @@ def dashboard(rocket):
                 mode="lines+markers",
                 name="External Temp (°C)",
                 hoverinfo="none",
-            )
+            ),
+            row=2, col=1
         )
 
         fig.update_layout(

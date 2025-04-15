@@ -10,8 +10,10 @@ from queue import Empty
 import dash
 import dash_leaflet as dl
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 from dash import dcc, html, Input, Output, callback, State
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 
 import influxdb_client, os, time
 from influxdb_client import InfluxDBClient, Point, WritePrecision
@@ -90,10 +92,10 @@ class DummyRocket:
         elapsed_time = time.time() - self.start_time
         # time_since_burnout = elapsed_time - 5
 
-        # Use a simple parabolic trajectory, with a peak of 10,000 at 50 seconds
-        accel = -8 + random.uniform(-1,1)
-        velocity = -8 * elapsed_time + 400
-        altitude = -4 * elapsed_time **2 + 400*elapsed_time
+        # Use a simple parabolic trajectory, with a peak of 3050m at 50 seconds
+        accel = -2.44 + elapsed_time #random.uniform(-1,1)
+        velocity = -2.44 * elapsed_time + 122
+        altitude = -1.22 * elapsed_time **2 + 122*elapsed_time
 
         if altitude <= 0:
             velocity = 0
@@ -151,9 +153,9 @@ def dashboard(rocket):
         # |            |            |            |
         # +------------+------------+------------+
         # | State      |  Int-Temp  | Data       |
-        # |            |  Ex-Temp   |            |
-        # |------------|------------+------------+    --> This is R2, which has been split into 2 mini rows
-        # |            | Accel Gauge| Toggle     |
+        # |------------|  Ex-Temp   |            |
+        # |            |            +------------+    --> This is R2, whose boxes are split to fit more data
+        # |Accel Gauge |            | Toggle     |
         # +------------+------------+------------+
 
 
@@ -196,79 +198,83 @@ def dashboard(rocket):
                     html.H4("State goes here!")
                 )),
                 dbc.Row(
-                    dcc.Graph(id="live-update-accel-gauge")
+                    dcc.Graph(id="live-update-accel-gauge", style={'height': '45vh'})
                 ),
             ]),
 
             dbc.Col([
-                dbc.Row([
-                    dcc.Graph(id="live-update-int-temp-graph",style={'height': '30vh'}),
-                    dcc.Graph(id="live-update-ext-temp-graph",style={'height': '30vh'}),
-                ]),
+                dbc.Row(
+                    dcc.Graph(id="live-update-temp-graph",style={'height': '55vh'})
+                ),
                 
 
             ]),
 
             dbc.Col([
-                #dbc.Row([
-                    dbc.Card(
-                        dbc.CardBody([
-                            html.H4("GPS Data", className="card-title", style={"text-align":"center"}),
-                            html.P([
-                                    html.Span(
-                                        "Coordinates: ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="coordinates", className="card-text"),
-                            ]),
-                            html.P([
-                                    html.Span(
-                                        "Altitude (m): ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="altitude-m", className="card-text"),
-                            ]),
-                            html.P([
-                                    html.Span(
-                                        "Altitude (ft): ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="altitude-ft", className="card-text"),
-                                
-                            ]),
-                            html.P([
-                                    html.Span(
-                                        "Signal Quality: ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="signal_quality", className="card-text"),    
-                            ]),
-                            html.P([
-                                    html.Span(
-                                        "GPS Fix: ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="gps_fix", className="card-text"),
-                                
-                            ]),
-                            html.P([
-                                    html.Span(
-                                        "Antenna Status: ",
-                                        style={"fontWeight": "bold", "textDecoration": "underline"},
-                                    ),
-                                    html.Span(id="antenna_status", className="card-text"),
-                                
-                            ]),
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("GPS Data", className="card-title", style={"text-align":"center"}),
+                        html.P([
+                            html.Span(
+                                "Coordinates: ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="coordinates", className="card-text"),
                         ]),
-                        style={"height":"40vh","margin":"1vh","width":"45vh"}
-                    ),
+                        html.P([
+                            html.Span(
+                                "Altitude (m): ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="altitude-m", className="card-text"),
+                        ]),
+                        html.P([
+                            html.Span(
+                                "Altitude (ft): ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="altitude-ft", className="card-text"),
+                        
+                        ]),
+                        html.P([
+                            html.Span(
+                                "Signal Quality: ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="signal_quality", className="card-text"),    
+                        ]),
+                        html.P([
+                            html.Span(
+                                "GPS Fix: ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="gps_fix", className="card-text"),
+                            
+                        ]),
+                        html.P([
+                            html.Span(
+                                "Antenna Status: ",
+                                style={"fontWeight": "bold", "textDecoration": "underline"},
+                            ),
+                            html.Span(id="antenna_status", className="card-text"),
+                            
+                        ]),
+                    ]),
+                    style={"height":"40vh","margin":"1vh"}
+                ),
 
-                    dbc.CardBody(
-                        html.H4("Toggles go here!")
+                dbc.Card(dbc.CardBody(
+                    daq.BooleanSwitch(
+                        id="switch-id",
+                        on=False,
+                        label="Label here",
+                        color="#00cc96",
+                        persistence=True,
+                        persisted_props=["on"],
+                        labelPosition="bottom",
                     )
+                ))
                     
-                #]),
-                
                 
                 
             ]),
@@ -299,59 +305,62 @@ def dashboard(rocket):
     
     
     @app.callback(
-        [
-            Output("live-update-int-temp-graph", "figure"),
-            Output("live-update-ext-temp-graph", "figure")
-        ],
+        
+        Output("live-update-temp-graph", "figure"),
+        
         Input("interval-component", "n_intervals"),
     )
     def update_temp_graphs_live(n):
         rocketo_proxy.generate_new_temp()
         data = rocketo_proxy.get()
 
-        intTempFig = go.Figure()
-        extTempFig = go.Figure()
+        tempFig = make_subplots(
+            rows=2,
+            cols=1,
+            subplot_titles=("Int Temp", "Ext Temp")
+        )
 
-        intTempFig.add_trace(
+        tempFig.add_trace(
             go.Scatter(
                 x=data["Time"],
                 y=data["Internal Temp"],
                 mode="lines+markers",
-                name="Av Bay Temp (°C)",
+                name="Internal Temp (°C)",
                 hoverinfo="none",
-            )
+            ),
+            row=1,col=1
         )
-        extTempFig.add_trace(
+        tempFig.add_trace(
             go.Scatter(
                 x=data["Time"],
                 y=data["External Temp"],
                 mode="lines+markers",
                 name="External Temp (°C)",
                 hoverinfo="none",
+            ),
+            row=2, col=1
+        )
+
+        tempFig.update_layout(
+            title_text="Temperatures",
+            title_x=0.5,
+            #height=600,
+            showlegend=True,
+            hovermode="closest",
+            legend=dict(
+                x=0.5,  # Center horizontally
+                y=-0.2,  # Move below the plot
+                xanchor="center",  # Anchor position to center
+                yanchor="top"
             )
         )
 
-        intTempFig.update_layout(
-            title_text="Av Bay Temps",
-            xaxis_title="Time",
-            yaxis_title="Temp (°C)",
-            title_x=0.5,
-            #height=600,
-            showlegend=True,
-            hovermode="closest",
-        )
+        tempFig.update_xaxes(title_text="Time (s)", row=2, col=1)
+        tempFig.update_yaxes(title_text="Degrees", row=1, col=1)
+        tempFig.update_yaxes(title_text="Degrees", row=2, col=1)
 
-        extTempFig.update_layout(
-            title_text="External Temps",
-            xaxis_title="Time",
-            yaxis_title="Temp (°C)",
-            title_x=0.5,
-            #height=600,
-            showlegend=True,
-            hovermode="closest",
-        )
 
-        return intTempFig, extTempFig
+        return tempFig
     
 
     @app.callback(
@@ -367,7 +376,7 @@ def dashboard(rocket):
             
     )
 
-    def update_gps_status(n):
+    def update_gps_card_status(n):
     # Simulate data update, replace with actual data retrieval
 
         data = rocketo_proxy.get()
@@ -379,7 +388,7 @@ def dashboard(rocket):
         new_values = {
             "coordinates": f"Lat: {current_positions[-1][0]:.2f}, Lon: {current_positions[-1][1]:.2f}",
             "altitude-m": f"{data["Altitude"][-1]:.2f} m",
-            "altitude-ft": f"{random.uniform(0, 10000):.2f} ft",
+            "altitude-ft": f"{data["Altitude"][-1]*3.28:.2f} ft",
             "signal_quality": f"{random.randint(0, 100)}",
             "gps_fix": "Yes" if random.choice([True, False]) else "No",
             "antenna_status": (
@@ -403,72 +412,88 @@ def dashboard(rocket):
             Output("live-update-alt-gauge", "figure"),
         ],
         
-        Input("interval-component", "n_intervals"),
+        [
+            Input("interval-component", "n_intervals"),
+            Input("switch-id", "on")
+        ]
     )
 
-    def update_all_gauges_live(n):
+    def update_all_gauges_live(n, is_imperial):
         
         
         rocketo_proxy.gen_new_ava()
         data = rocketo_proxy.get()
 
-        accelGaugeLine = data["Acceleration"][-1]
+        
+        valList = [
+                # Acceleration Markers, last one is latest acel data pt
+                   -15,40,-9.8, (data["Acceleration"][-1]),
+                # Velocity Markers, last one is latest vel data pt
+                   -400,400,(data["Velocity"][-1]),
+                # Altitude Markers, last one is latest alt data pt
+                   4000,100,(data["Altitude"][-1])
+                ]
+        if is_imperial:
+            for x in range(0,10):
+                valList[x] *=3.28
         
         data = rocketo_proxy.get()
         accelFig = go.Figure(
             go.Indicator(
                 mode="gauge+number",
-                value=0,
+                value=round(valList[3],3),
                 
                 gauge={
                     "shape": "angular",
-                    "axis": {"range": [-10, 40]},
-                    "bar": {"color": "#FFA07A"},  # Use black to hide the bar
+                    "axis": {"range": [valList[0], valList[1]]},
+                    "bar": {"color": "rgba(0,0,0,0)"},  # Use black to hide the bar
                     "steps" : [
-                        {'range': [-10, -9.8], 'color': 'red'},
-                        {'range': [-9.8, 0], 'color': 'yellow'},
-                        {'range': [0, 40], 'color': 'green'},
+                        {'range': [valList[0], valList[2]], 'color': 'red'},
+                        {'range': [valList[2], 0], 'color': 'yellow'},
+                        {'range': [0, valList[1]], 'color': 'green'},
                     ],
                     "bgcolor": "#FFA07A",
                     "threshold": {
                         "line": {"color": "#800020", "width": 6},
                         "thickness": 0.75,
-                        "value": accelGaugeLine,
+                        "value": valList[3],
                     },
                     
                 },
                 domain={"x": [0, 1], "y": [0, 1]},
-                title="Acceleration (m/s^2)"
+                title=f"Acceleration ({"ft/s^2" if is_imperial else "m/s^2"})"
             )
         )
 
-
+        accelFig.update_layout(
+            paper_bgcolor='yellow',
+            margin=dict(l=25, r=50, t=35, b=10),
+        )
         
-        velGaugeLine = data["Velocity"][-1]
 
         velFig = go.Figure(
             go.Indicator(
                 mode="gauge+number",
-                value=velGaugeLine,
+                value=round(valList[6],3),
                 
                 gauge={
                     "shape": "angular",
-                    "axis": {"range": [-400, 400]},
+                    "axis": {"range": [valList[4], valList[5]]},
                     "bar": {"color": "rgba(0,0,0,0)"},  # Use black to hide the bar
                     "steps" : [
-                        {'range': [-400, 0], 'color': 'lightgray'},
-                        {'range': [0, 400], 'color': 'green'}
+                        {'range': [valList[4], 0], 'color': 'lightgray'},
+                        {'range': [0, valList[5]], 'color': 'green'}
                     ],
                     "bgcolor": "#FFA07A",
                     "threshold": {
                         "line": {"color": "#cef2ef", "width": 6},
                         "thickness": 0.75,
-                        "value": velGaugeLine,
+                        "value": valList[6],
                     },
                 },
                 
                 domain={"x": [0, 1], "y": [0, 1]},
-                title="Velocity (m/s)"
+                title=f"Velocity ({"ft/s" if is_imperial else "m/s"})"
             )
         )
 
@@ -477,30 +502,29 @@ def dashboard(rocket):
             margin=dict(l=25, r=50, t=35, b=10),
         )
 
-        altGaugeLine = data["Altitude"][-1]
 
         altFig = go.Figure(
             go.Indicator(
                 mode="gauge+number",
-                value=altGaugeLine,
+                value=round(valList[9],3),
                 
                 gauge={
                     "shape": "angular",
-                    "axis": {"range": [0, 10000]},
+                    "axis": {"range": [0, valList[7]]},
                     "bar": {"color": "rgba(0,0,0,0)"},  # Use black to hide the bar
                     "steps" : [
-                        {'range': [0, 100], 'color': 'green'}
+                        {'range': [0, valList[8]], 'color': 'green'}
                     ],
                     "bgcolor": "#FFA07A",
                     "threshold": {
                         "line": {"color": "#cef2ef", "width": 6},
                         "thickness": 0.75,
-                        "value": altGaugeLine,
+                        "value": valList[9],
                     },
                 },
                 
                 domain={"x": [0, 1], "y": [0, 1]},
-                title="Altitude (m)"
+                title=f"Altitude ({"ft" if is_imperial else "m"})"
             )
         )
 
@@ -509,13 +533,24 @@ def dashboard(rocket):
             margin=dict(l=25, r=50, t=35, b=10),
         )
 
-        accelFig.update_traces(value=data["Acceleration"][-1])
-        velFig.update_traces(value=data["Velocity"][-1])
-        altFig.update_traces(value=data["Altitude"][-1])
+        #accelFig.update_traces(value=valList[3])
+        #velFig.update_traces(value=data["Velocity"][-1])
+        #altFig.update_traces(value=data["Altitude"][-1])
         #return data["Acceleration"]
         # return positions
 
         return accelFig, velFig, altFig
+    
+
+    @app.callback(
+        
+        Output("switch-id","label"),
+        
+        Input("switch-id","on"),
+    )
+
+    def update_bool_label(on):
+        return "Imperial" if on else "Metric"#, on
 
 
     app.run_server(debug=True, port=8060)
