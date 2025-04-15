@@ -85,30 +85,41 @@ class DummyRocket:
         #return internal_temp, external_temp
         return 0
     
-    def generate_new_accel_and_vel(self):
-
+    def gen_new_ava(self):
+        """Dummy Rocket method for generating new acceleration, velocity, and altitude"""
         elapsed_time = time.time() - self.start_time
-        time_since_burnout = elapsed_time - 5
-        
-        if elapsed_time <= 15:
-            accel = 2 * elapsed_time
-            velocity = 6.5 * elapsed_time
-            #altitude = 0.5 * 9.8 * elapsed_time**2
-        else:
-            accel = -9.8
-            velocity = 6.5 * 15 - 2 * time_since_burnout
-            #altitude = 0.5 * 9.8 * 5**2 - 0.5 * 9.8 * time_since_burnout**2
+        # time_since_burnout = elapsed_time - 5
+
+        # Use a simple parabolic trajectory, with a peak of 10,000 at 50 seconds
+        accel = -8 + random.uniform(-1,1)
+        velocity = -8 * elapsed_time + 400
+        altitude = -4 * elapsed_time **2 + 400*elapsed_time
+
+        if altitude <= 0:
+            velocity = 0
+            accel = 0
+            altitude = 0
+        # if elapsed_time <= 50:
+        #     accel = -8
+        #     velocity = -8 * elapsed_time + 400
+        #     altitude = -4 * elapsed_time **2 + 400*elapsed_time
+        # else:
+        #     accel = -9.8
+        #     velocity = 6.5 * 15 - 2 * time_since_burnout
+        #     altitude = 0.5 * 9.8 * 5**2 - 0.5 * 9.8 * time_since_burnout**2
             
-            # if altitude < 0:
-            #     altitude = 0
-            #     velocity = 0
-            #     accel = 0
+        #     if altitude < 0:
+        #         altitude = 0
+        #         # velocity = 0
+        #         # accel = 0
+        #     if velocity > 175:
+        #         velocity = 100
                 
         new_data = {
             "Time": elapsed_time,
             "Acceleration": accel,
             "Velocity" : velocity,
-            #"Altitude": altitude
+            "Altitude": altitude
             
         }
         self.set(new_data)
@@ -129,10 +140,32 @@ def dashboard(rocket):
     #print(f"line 65, last pos: {positions[-1]}")
 
     app.layout = html.Div([
+
+        html.H4("Rocket Launch Simulation", style={"text-align":"center"}),
+
+        # Here is a diagram of the layout:
+        # +------------+------------+------------+
+        # | Alt Gauge  | Vel Gauge  | Map        |
+        # |            |            |            |    --> This is R1
+        # |            |            |            |
+        # |            |            |            |
+        # +------------+------------+------------+
+        # | State      |  Int-Temp  | Data       |
+        # |            |  Ex-Temp   |            |
+        # |------------|------------+------------+    --> This is R2, which has been split into 2 mini rows
+        # |            | Accel Gauge| Toggle     |
+        # +------------+------------+------------+
+
+
+        # First Row: Alt gauge, vel gauge, map
         dbc.Row([
+            dbc.Col([
+                dcc.Graph(id="live-update-vel-gauge",style={"height": "35vh", "margin":".5vh"},),
+            ]),
+            dbc.Col(dcc.Graph(id="live-update-alt-gauge",style={"height": "35vh", "margin":".5vh"})),
             dbc.Col(
             [
-                html.H4("Rocket Launch Simulation"),
+                
                 dl.Map(
                     [
                         dl.TileLayer(),
@@ -142,7 +175,7 @@ def dashboard(rocket):
                     ],
                     center=[37.7749, -122.4194],
                     zoom=5,
-                    style={"height": "50vh"},
+                    style={"height": "35vh", "margin":".5vh"},
                     id="map",
                 ),
                 
@@ -153,78 +186,92 @@ def dashboard(rocket):
                 ),
             ]
             ),
-
-            dbc.Col(dbc.Card(
-                
-                dbc.CardBody(
-                    [
-                        html.H4("GPS", className="card-title"),
-                        html.P(
-                            [
-                                html.Span(
-                                    "Coordinates: ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="coordinates", className="card-text"),
-                            ]
-                        ),
-                        html.P(
-                            [
-                                html.Span(
-                                    "Altitude (m): ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="altitude-m", className="card-text"),
-                            ]
-                        ),
-                        html.P(
-                            [
-                                html.Span(
-                                    "Altitude (ft): ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="altitude-ft", className="card-text"),
-                            ]
-                        ),
-                        html.P(
-                            [
-                                html.Span(
-                                    "Signal Quality: ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="signal_quality", className="card-text"),
-                            ]
-                        ),
-                        html.P(
-                            [
-                                html.Span(
-                                    "GPS Fix: ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="gps_fix", className="card-text"),
-                            ]
-                        ),
-                        html.P(
-                            [
-                                html.Span(
-                                    "Antenna Status: ",
-                                    style={"fontWeight": "bold", "textDecoration": "underline"},
-                                ),
-                                html.Span(id="antenna_status", className="card-text"),
-                            ]
-                        ),
-                    ]
-                )
-            ),width=4)
         ]),
-        html.Div([
-            dcc.Graph(id="live-update-temp-graph"),
-            dbc.Row([
-                dbc.Col(dcc.Graph(id="live-update-accel-gauge")),
-                dbc.Col(dcc.Graph(id="live-update-vel-gauge")),
 
-            ])
-            
+
+        # Second Row: See diagram for depiction
+        dbc.Row([
+            dbc.Col([
+                dbc.Card(dbc.CardBody(
+                    html.H4("State goes here!")
+                )),
+                dbc.Row(
+                    dcc.Graph(id="live-update-accel-gauge")
+                ),
+            ]),
+
+            dbc.Col([
+                dbc.Row([
+                    dcc.Graph(id="live-update-int-temp-graph",style={'height': '30vh'}),
+                    dcc.Graph(id="live-update-ext-temp-graph",style={'height': '30vh'}),
+                ]),
+                
+
+            ]),
+
+            dbc.Col([
+                #dbc.Row([
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.H4("GPS Data", className="card-title", style={"text-align":"center"}),
+                            html.P([
+                                    html.Span(
+                                        "Coordinates: ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="coordinates", className="card-text"),
+                            ]),
+                            html.P([
+                                    html.Span(
+                                        "Altitude (m): ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="altitude-m", className="card-text"),
+                            ]),
+                            html.P([
+                                    html.Span(
+                                        "Altitude (ft): ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="altitude-ft", className="card-text"),
+                                
+                            ]),
+                            html.P([
+                                    html.Span(
+                                        "Signal Quality: ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="signal_quality", className="card-text"),    
+                            ]),
+                            html.P([
+                                    html.Span(
+                                        "GPS Fix: ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="gps_fix", className="card-text"),
+                                
+                            ]),
+                            html.P([
+                                    html.Span(
+                                        "Antenna Status: ",
+                                        style={"fontWeight": "bold", "textDecoration": "underline"},
+                                    ),
+                                    html.Span(id="antenna_status", className="card-text"),
+                                
+                            ]),
+                        ]),
+                        style={"height":"40vh","margin":"1vh","width":"45vh"}
+                    ),
+
+                    dbc.CardBody(
+                        html.H4("Toggles go here!")
+                    )
+                    
+                #]),
+                
+                
+                
+            ]),
         ])
     ])
 
@@ -252,24 +299,29 @@ def dashboard(rocket):
     
     
     @app.callback(
-        Output("live-update-temp-graph", "figure"),
+        [
+            Output("live-update-int-temp-graph", "figure"),
+            Output("live-update-ext-temp-graph", "figure")
+        ],
         Input("interval-component", "n_intervals"),
     )
-    def update_temp_graph_live(n):
+    def update_temp_graphs_live(n):
         rocketo_proxy.generate_new_temp()
         data = rocketo_proxy.get()
 
-        fig = go.Figure()
-        fig.add_trace(
+        intTempFig = go.Figure()
+        extTempFig = go.Figure()
+
+        intTempFig.add_trace(
             go.Scatter(
                 x=data["Time"],
                 y=data["Internal Temp"],
                 mode="lines+markers",
-                name="Internal Temp (°C)",
+                name="Av Bay Temp (°C)",
                 hoverinfo="none",
             )
         )
-        fig.add_trace(
+        extTempFig.add_trace(
             go.Scatter(
                 x=data["Time"],
                 y=data["External Temp"],
@@ -279,17 +331,27 @@ def dashboard(rocket):
             )
         )
 
-        fig.update_layout(
-            title_text="Temperatures",
+        intTempFig.update_layout(
+            title_text="Av Bay Temps",
             xaxis_title="Time",
-            yaxis_title="Value",
+            yaxis_title="Temp (°C)",
             title_x=0.5,
-            height=600,
+            #height=600,
             showlegend=True,
             hovermode="closest",
         )
 
-        return fig
+        extTempFig.update_layout(
+            title_text="External Temps",
+            xaxis_title="Time",
+            yaxis_title="Temp (°C)",
+            title_x=0.5,
+            #height=600,
+            showlegend=True,
+            hovermode="closest",
+        )
+
+        return intTempFig, extTempFig
     
 
     @app.callback(
@@ -310,12 +372,13 @@ def dashboard(rocket):
 
         data = rocketo_proxy.get()
         current_positions = data["Positions"]
+        altitude = data["Altitude"]
         #print(f"latest pos: {current_positions[-1]}")
 
 
         new_values = {
             "coordinates": f"Lat: {current_positions[-1][0]:.2f}, Lon: {current_positions[-1][1]:.2f}",
-            "altitude-m": f"{random.uniform(0, 10000):.2f} m",
+            "altitude-m": f"{data["Altitude"][-1]:.2f} m",
             "altitude-ft": f"{random.uniform(0, 10000):.2f} ft",
             "signal_quality": f"{random.randint(0, 100)}",
             "gps_fix": "Yes" if random.choice([True, False]) else "No",
@@ -337,15 +400,19 @@ def dashboard(rocket):
         [
             Output("live-update-accel-gauge", "figure"),
             Output("live-update-vel-gauge", "figure"),
+            Output("live-update-alt-gauge", "figure"),
         ],
         
         Input("interval-component", "n_intervals"),
     )
 
-    def update_accel_gauge_live(n):
+    def update_all_gauges_live(n):
         
         
-        rocketo_proxy.generate_new_accel_and_vel()
+        rocketo_proxy.gen_new_ava()
+        data = rocketo_proxy.get()
+
+        accelGaugeLine = data["Acceleration"][-1]
         
         data = rocketo_proxy.get()
         accelFig = go.Figure(
@@ -366,44 +433,89 @@ def dashboard(rocket):
                     "threshold": {
                         "line": {"color": "#800020", "width": 6},
                         "thickness": 0.75,
-                        "value": 100,
+                        "value": accelGaugeLine,
                     },
+                    
                 },
                 domain={"x": [0, 1], "y": [0, 1]},
+                title="Acceleration (m/s^2)"
             )
         )
-        gaugeLine = data["Velocity"][-1]
+
+
+        
+        velGaugeLine = data["Velocity"][-1]
 
         velFig = go.Figure(
             go.Indicator(
                 mode="gauge+number",
-                value=gaugeLine,
+                value=velGaugeLine,
                 
                 gauge={
                     "shape": "angular",
-                    "axis": {"range": [-30, 100]},
+                    "axis": {"range": [-400, 400]},
                     "bar": {"color": "rgba(0,0,0,0)"},  # Use black to hide the bar
                     "steps" : [
-                        {'range': [-30, 0], 'color': 'lightgray'},
+                        {'range': [-400, 0], 'color': 'lightgray'},
+                        {'range': [0, 400], 'color': 'green'}
+                    ],
+                    "bgcolor": "#FFA07A",
+                    "threshold": {
+                        "line": {"color": "#cef2ef", "width": 6},
+                        "thickness": 0.75,
+                        "value": velGaugeLine,
+                    },
+                },
+                
+                domain={"x": [0, 1], "y": [0, 1]},
+                title="Velocity (m/s)"
+            )
+        )
+
+        velFig.update_layout(
+            paper_bgcolor='yellow',
+            margin=dict(l=25, r=50, t=35, b=10),
+        )
+
+        altGaugeLine = data["Altitude"][-1]
+
+        altFig = go.Figure(
+            go.Indicator(
+                mode="gauge+number",
+                value=altGaugeLine,
+                
+                gauge={
+                    "shape": "angular",
+                    "axis": {"range": [0, 10000]},
+                    "bar": {"color": "rgba(0,0,0,0)"},  # Use black to hide the bar
+                    "steps" : [
                         {'range': [0, 100], 'color': 'green'}
                     ],
                     "bgcolor": "#FFA07A",
                     "threshold": {
                         "line": {"color": "#cef2ef", "width": 6},
                         "thickness": 0.75,
-                        "value": gaugeLine,
+                        "value": altGaugeLine,
                     },
                 },
                 
                 domain={"x": [0, 1], "y": [0, 1]},
+                title="Altitude (m)"
             )
         )
+
+        altFig.update_layout(
+            paper_bgcolor='lightblue',
+            margin=dict(l=25, r=50, t=35, b=10),
+        )
+
         accelFig.update_traces(value=data["Acceleration"][-1])
         velFig.update_traces(value=data["Velocity"][-1])
+        altFig.update_traces(value=data["Altitude"][-1])
         #return data["Acceleration"]
         # return positions
 
-        return accelFig, velFig
+        return accelFig, velFig, altFig
 
 
     app.run_server(debug=True, port=8060)
