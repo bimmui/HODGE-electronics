@@ -279,9 +279,7 @@ void ICM20948::setCalibrationFactors(const float G_offset[3],
 
 void ICM20948::configure()
 {
-    if (getDevID() != ICM20948_WHO_AM_I_VAL)
-        // return false;
-        reset();
+    reset();
     vTaskDelay(500 / portTICK_PERIOD_MS); // change this
 
     setGyroFS();
@@ -292,6 +290,16 @@ void ICM20948::configure()
     // gotta do something with the return values here
     enableAccelDLPF(config_.enable_accel_dlpf);
     enableGyroDLPF(config_.enable_gyro_dlpf);
+}
+
+sensor_status ICM20948::initialize()
+{
+    if (getDevID() != ICM20948_WHO_AM_I_VAL)
+        return SENSOR_ERR_INIT;
+
+    configure();
+
+    return SENSOR_OK;
 }
 
 static void ICM20948::vreadTask(void *pvParameters)

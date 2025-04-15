@@ -1,28 +1,52 @@
-menu "Pita Plate Configuration"
+mainmenu "Pita Plate Configuration"
 
-    config DEBUG_MODE
-        bool "Whether or not to run in debug mode"
-        default true
-        help
-            Bool to determine whether or not to run the flight software in debug mode
+    menu "FreeRTOS Threading and Multiprocessing Constant"
 
-    config I2C_MASTER_SCL
-        int "SCL GPIO Num"
-        default 25
-        help
-            GPIO number for I2C Master clock line.
+        config STACK_SIZE
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 8192
 
-    config I2C_MASTER_SDA
-        int "SDA GPIO Num"
-        default 33
-        help
-            GPIO number for I2C Master data line.
+        config SENSOR_CORE
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 0
 
-    config I2C_MASTER_FREQUENCY
-        int "Master Frequency"
-        default 100000
-        help
-            I2C Speed of Master device.
+        config DATA_CORE
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 1
+            
+    endmenu
+
+    menu "DEBUG"
+
+        config DEBUG_MODE
+            bool "Whether or not to run in debug mode"
+            default true
+            help
+                Bool to determine whether or not to run the flight software in debug mode
+            
+    endmenu
+
+    menu "I2C Settings"
+
+        config I2C_MASTER_SCL
+            int "SCL GPIO Num"
+            default 25
+            help
+                GPIO number for I2C Master clock line.
+    
+        config I2C_MASTER_SDA
+            int "SDA GPIO Num"
+            default 33
+            help
+                GPIO number for I2C Master data line.
+    
+        config I2C_MASTER_FREQUENCY
+            int "Master Frequency"
+            default 100000
+            help
+                I2C Speed of Master device.
+            
+    endmenu
     
     menu "I2C Device Addresses"
 
@@ -44,7 +68,39 @@ menu "Pita Plate Configuration"
             
     endmenu
 
-    menu "SD SPI Example Configuration"
+    menu "NVS Keys and Namespace"
+
+        config NVS_NAMESPACE
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "startup_storage"
+        
+        config KEY_COUNT
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "access_count"
+
+        config KEY_G_OFFSET
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "gyro_offset"
+        
+        config KEY_A_B
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "accel_bias"
+            
+        config KEY_A_AInv
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "accel_inverse_correction_matrix"
+
+        config KEY_M_B
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "mag_bias"
+        
+        config KEY_M_AInv
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "mag_inverse_correction_matrix"
+            
+    endmenu
+
+    menu "SD SPI Configuration"
 
         config FORMAT_IF_MOUNT_FAILED
             bool "Format the card if mount failed"
@@ -135,6 +191,22 @@ menu "Pita Plate Configuration"
             default 4 if IDF_TARGET_ESP32P4
             help
                 Please read the schematic first and input your LDO ID.
+    endmenu
+
+    menu "SD File Storage"
+
+        config INIT_FILE
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "/sdcard/sys_init.txt"
+
+        config DATA_FILE
+            string "TODO: WRITE A DESCRIPTION FOR THIS"
+            default "/sdcard/datalog.csv"
+
+        config MAX_CHAR_SIZE
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 1024
+            
     endmenu
             
     menu "GPS Configuration"
@@ -232,4 +304,18 @@ menu "Pita Plate Configuration"
 
     endmenu
 
-endmenu
+    menu "RFM96 Setup"
+
+        config SPREADING_FACTOR
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 7
+
+        config BANDWIDTH
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 125
+
+        config CODING_RATE
+            int "TODO: WRITE A DESCRIPTION FOR THIS"
+            default 7
+            
+    endmenu

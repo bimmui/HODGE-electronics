@@ -9,21 +9,21 @@ menu "SD SPI Example Configuration"
 
     config EXAMPLE_FORMAT_SD_CARD
         bool "Format the card as a part of the example"
-        default n
+        default y
         help
             If this config item is set, the card will be formatted as a part of the example.
 
     config EXAMPLE_PIN_MOSI
         int "MOSI GPIO number"
-        default 23 
+        default 13 
 
     config EXAMPLE_PIN_MISO
         int "MISO GPIO number"
-        default 19
+        default 12
 
     config EXAMPLE_PIN_CLK
         int "CLK GPIO number"
-        default 18
+        default 14
 
     config EXAMPLE_PIN_CS
         int "CS GPIO number"
@@ -31,7 +31,7 @@ menu "SD SPI Example Configuration"
 
     config EXAMPLE_DEBUG_PIN_CONNECTIONS
         bool "Debug sd pin connections and pullup strength"
-        default n
+        default y
 
     config EXAMPLE_ENABLE_ADC_FEATURE
         bool "Enable ADC feature"

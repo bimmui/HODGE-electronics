@@ -47,6 +47,7 @@ char *ApoAggregator::initializeSensors()
     // invokes any handlers that are registered for them
     // this is mainly just for gps
     esp_event_loop_run();
+    return stat;
 }
 
 sensor_data_snapshot ApoAggregator::generateSnapshot() const
