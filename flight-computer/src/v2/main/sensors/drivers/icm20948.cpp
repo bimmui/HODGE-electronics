@@ -332,7 +332,13 @@ sensor_reading ICM20948::read()
 
     // getting acceleration data first
     uint8_t data_rd[6] = {0};
-    i2c_read(icm20948_dev_handle_, ICM20948_ACCEL_XOUT_H, data_rd, sizeof(data_rd));
+    esp_err_t success = i2c_read(icm20948_dev_handle_, ICM20948_ACCEL_XOUT_H, data_rd, sizeof(data_rd));
+
+    if (success != ESP_OK)
+    {
+        result.status = SENSOR_ERR_READ;
+        return result;
+    }
 
     int16_t raw_accel_x = (int16_t)((data_rd[0] << 8) + (data_rd[1]));
     int16_t raw_accel_y = (int16_t)((data_rd[2] << 8) + (data_rd[3]));

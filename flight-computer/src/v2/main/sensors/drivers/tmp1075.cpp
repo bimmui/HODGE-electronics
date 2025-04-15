@@ -85,8 +85,17 @@ static void TMP1075::vreadTask(void *pvParameters)
 
 sensor_reading TMP1075::read()
 {
+    sensor_reading result;
+    result.value.type = TEMPERATURE;
+
     uint8_t tmp[2] = {0};
-    _read(tmp1075_dev_handle_, TMP1075_TEMP_REG, tmp, sizeof(tmp));
+    esp_err_t success = i2c_read(tmp1075_dev_handle_, TMP1075_TEMP_REG, tmp, sizeof(tmp));
+
+    if (success != ESP_OK)
+    {
+        result.status = SENSOR_ERR_READ;
+        return result;
+    }
 
     // first 4 lsb arent used
     int16_t ntmp = (int16_t)((tmp[1] << 4) + (tmp[0]));

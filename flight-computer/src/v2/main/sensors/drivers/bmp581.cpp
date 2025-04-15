@@ -236,7 +236,13 @@ sensor_reading BMP581::read()
     result.value.type = BMP;
 
     uint8_t data[6] = {0};
-    i2c_read(bmp581_dev_handle_, BMP5_TEMP_DATA_LSB_REG, data, sizeof(data));
+    esp_err_t success = i2c_read(bmp581_dev_handle_, BMP5_TEMP_DATA_LSB_REG, data, sizeof(data));
+
+    if (success != ESP_OK)
+    {
+        result.status = SENSOR_ERR_READ;
+        return result;
+    }
 
     // Extract raw temperature
     int32_t raw_temperature = (int32_t)((((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0]) << 8) >> 8;

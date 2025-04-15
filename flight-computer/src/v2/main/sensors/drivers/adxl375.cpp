@@ -125,7 +125,13 @@ sensor_reading ADXL375::read()
     result.value.type = ACCELEROMETER;
 
     uint8_t data_rd[6] = {0};
-    i2c_read(adxl375_dev_handle_, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
+    esp_err_t success = i2c_read(adxl375_dev_handle_, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
+
+    if (success != ESP_OK)
+    {
+        result.status = SENSOR_ERR_READ;
+        return result;
+    }
 
     int16_t accel_x = ((int16_t)((data_rd[1] << 8) + (data_rd[0]))) * ADXL375_MG2G_MULTIPLIER;
     int16_t accel_y = ((int16_t)((data_rd[3] << 8) + (data_rd[2]))) * ADXL375_MG2G_MULTIPLIER;

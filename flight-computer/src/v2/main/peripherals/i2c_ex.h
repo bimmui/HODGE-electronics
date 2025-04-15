@@ -43,15 +43,17 @@ i2c_master_dev_handle_t i2c_create_device(i2c_port_num_t port, i2c_addr_bit_len_
 
 void i2c_remove_device(i2c_master_dev_handle_t dev_handle) { i2c_master_bus_rm_device(dev_handle); }
 
-void i2c_write(i2c_master_dev_handle_t sensor,
-               uint8_t const *data_buf, const uint8_t data_len)
+esp_err_t i2c_write(i2c_master_dev_handle_t sensor,
+                    uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_transmit(sensor, data_buf, data_len, TIMEOUT_LIMIT_MS));
+    esp_err_t ret = i2c_master_transmit(sensor, data_buf, data_len, TIMEOUT_LIMIT_MS);
+    return ret;
 }
 
-void i2c_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
+esp_err_t i2c_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK_WITHOUT_ABORT(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, TIMEOUT_LIMIT_MS));
+    esp_err_t ret = i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, TIMEOUT_LIMIT_MS);
+    return ret;
 }

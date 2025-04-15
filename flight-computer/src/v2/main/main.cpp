@@ -23,8 +23,8 @@ extern "C" void app_main()
 {
     ApoAggregator apo;
     SdCardManager sd;
-    EspHal *hal = new EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
-    RFM96 radio = new Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, RADIOLIB_NC);
+    EspHal *hal = EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
+    RFM96 radio = Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, RADIOLIB_NC);
 
     SYS_INIT(apo, sd, radio);
 }
