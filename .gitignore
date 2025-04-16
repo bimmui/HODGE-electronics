@@ -1,3 +1,6 @@
+*
+!*.*
+!*/
 *.devcontainer
 *build/
 *sdkconfig
@@ -12,3 +15,10 @@
 *.pytest_cache/
 *__pycache__/
 *DS_Store
+**/CMakeFiles
+**/corrosion
+**/corrosion_generated
+*.a
+**/CMakeCache.txt
+**/target
+**/_deps
