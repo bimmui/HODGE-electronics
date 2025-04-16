@@ -1,6 +1,13 @@
 *.devcontainer
 *build/
 *sdkconfig
+*sdkconfig.old
+*sdkconfig.defaults
 *.vscode
 *.o
 *.exe
+*.lock
+*managed_components/
+*.pyc
+*.pytest_cache/
+*__pycache__/

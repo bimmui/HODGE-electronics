@@ -33,6 +33,7 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
     switch (event_id)
     {
     case GPS_UPDATE:
+    {
         gps = (gps_t *)event_data;
         /* print information parsed from GPS statements */
         ESP_LOGI(TAG, "%d/%d/%d %d:%d:%d => \r\n"
@@ -51,10 +52,12 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
                  gps->sats_in_use, gps->fix, gps->valid ? "true" : "false",
                  gps->variation);
         break;
+    }
     case GPS_UNKNOWN:
-        /* print unknown statements */
+    { /* print unknown statements */
         ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
+    }
     default:
         break;
     }
