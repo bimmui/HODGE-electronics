@@ -18,7 +18,7 @@ else
     # Environment variable to find rust library
     ENV_VAR="RUST_LIB_DIR";
     # Default path (Change if you use this other places!)
-    DEFAULT="../rust/"
+    DEFAULT="./main/compress/"
     CWD=$(pwd)
 
     # Did they pass an argument?

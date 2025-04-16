@@ -19,15 +19,15 @@ pub trait Compress {
 }
 
 struct Compressor {
-    inner: Thinger,
+    inner: ()//Thinger,
 }
 
 impl Compressor {
     fn return_value(&self) -> u32 {
-        self.inner.return_value()
+        5//self.inner.return_value()
     }
     fn make() -> Self {
-        Self { inner: Thinger::make() }
+        Self { inner: ()}//Thinger::make() }
     }
 }
 fn make() -> Box<Compressor> {
