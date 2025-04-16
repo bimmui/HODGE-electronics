@@ -1,0 +1,20 @@
+dependencies:
+  RadioLib:
+    component_hash: 3025a93b9754faff93a9edd837d76db0a2a390e1ce52b5504cfce8c325db1bc9
+    dependencies:
+    - name: idf
+      version: '>=4.1'
+    source:
+      git: https://github.com/jgromes/RadioLib.git
+      path: .
+      type: git
+    version: d26b1ff38e2fbdced7d79689662dbd162fa54070
+  idf:
+    source:
+      type: idf
+    version: 5.4.0
+direct_dependencies:
+- RadioLib
+manifest_hash: 14f9e4a6045ccfdd08c73c133bdcb15a828a7e9c0198bdf95c8479750622de61
+target: esp32
+version: 2.0.0
