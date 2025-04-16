@@ -2,6 +2,7 @@ use lazy_static::lazy_static;
 use macros::export_concrete;
 use paste::paste;
 
+mod bitrep;
 mod efloat;
 mod huffman;
 

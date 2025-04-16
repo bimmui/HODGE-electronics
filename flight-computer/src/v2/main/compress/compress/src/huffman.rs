@@ -1,6 +1,5 @@
 use std::{cmp::Ordering, collections::{BTreeMap, BinaryHeap, HashMap, HashSet}, hash::Hash};
-
-use bitstream_io::BitRead;
+use super::bitrep::*;
 use itertools::Itertools;
 
 enum HuffmanNode<T> {
@@ -32,13 +31,8 @@ impl<T: Copy> HuffmanNode<T> {
     }
 }
 
-pub struct BitRepr {
-    pub bits: u64,
-    pub len: u8,
-}
-
 pub struct TranslationTable<T: Hash + Copy + Eq> {
-    table: HashMap<T, BitRepr>,
+    table: HashMap<T, BitRep>,
 }
 
 impl<T: Hash + Copy + Eq> From<&HuffmanNode<T>> for TranslationTable<T> {
@@ -46,18 +40,18 @@ impl<T: Hash + Copy + Eq> From<&HuffmanNode<T>> for TranslationTable<T> {
         let mut table = HashMap::new();
         match value {
             HuffmanNode::Leaf(val) => {
-                table.insert(*val, BitRepr { bits: 0, len: 0 });
+                table.insert(*val, BitRep { bytes: Vec::new(), bits_free: 64 });
             }
             HuffmanNode::Inner(left, right) => {
                 let left_table: TranslationTable<T> = (&**left).into();
                 for (val, bits) in left_table.table.iter() {
-                    let new_bits = BitRepr { bits: bits.bits, len: bits.len + 1 };
+                    let new_bits = BitRep { bits: bits.bits, len: bits.len + 1 };
                     table.insert(*val, new_bits);
                 }
 
                 let right_table: TranslationTable<T> = (&**right).into();
                 for (val, bits) in right_table.table.iter() {
-                    let new_bits = BitRepr { bits: bits.bits | (1 << bits.len + 1), len: bits.len + 1 };
+                    let new_bits = BitRep { bits: bits.bits | (1 << bits.len + 1), len: bits.len + 1 };
                     table.insert(*val, new_bits);
                 }
             }

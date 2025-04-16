@@ -6,7 +6,6 @@ edition = "2021"
 crate-type = ["staticlib"]
 
 [dependencies]
-bitstream-io = "2.6.0"
 cxx = "1.0.144"
 itertools = "0.14.0"
 lazy_static = "1.5"
