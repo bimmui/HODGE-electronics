@@ -55,17 +55,17 @@ static const char *TAG = "icm test";
 
 #define MASTER_TRANSMIT_TIMEOUT (50)
 
-void icm20948_write(i2c_master_dev_handle_t sensor,
-                    uint8_t const *data_buf, const uint8_t data_len)
+void _write(i2c_master_dev_handle_t sensor,
+            uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, 50));
 }
 
-void icm20948_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
+void _read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, 50));
 }
 
 ICM20948::ICM20948(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t icm20948_address, uint32_t scl_clk_speed)
@@ -133,18 +133,19 @@ void ICM20948::setBank(uint8_t bank)
     bank = (bank << 4) & REG_BANK_MASK;
 
     const uint8_t reg_and_data[] = {ICM20948_REG_BANK_SEL, bank};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::configureICM20948(icm20948_accel_fs_t acce_fs, icm20948_gyro_fs_t gyro_fs)
 {
-    reset();
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    // reset();
+    // vTaskDelay(10 / portTICK_PERIOD_MS);
     wakeup();
     setBank(0);
     uint8_t dev_id = getICM20948ID();
     // TODO: add some sort of check for the device id
-    // if (dev_id != ICM20948_WHO_AM_I_VAL)
+    // if (dev_id == ICM20948_WHO_AM_I_VAL)
+    //     printf("it works");
 
     setGyroFS(gyro_fs);
     setAccelFS(acce_fs);
@@ -157,7 +158,7 @@ void ICM20948::configureAK09916()
 {
     // reset the mag
     const uint8_t reg_and_data[] = {AK09916_CNTL3, 0x01};
-    icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
 
     vTaskDelay(10 / portTICK_PERIOD_MS);
     // setMagSampleRate(sample_rate);
@@ -166,39 +167,43 @@ void ICM20948::configureAK09916()
 uint8_t
 ICM20948::getICM20948ID()
 {
+    setBank(0);
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_WHO_AM_I, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_WHO_AM_I, tmp, sizeof(tmp));
     return tmp[0];
 }
 
 void ICM20948::wakeup()
 {
+    setBank(0);
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] &= (~BIT6); // esp_bit_defs.h
+    _read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
+    tmp[0] &= ~(0x40); // ~(0x01000000)
+    printf("the thing: %u", tmp[0]);
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::sleep()
 {
+    setBank(0);
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] |= BIT6;
+    _read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
+    tmp[0] |= 0x40; // 0x01000000
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::reset()
 {
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] |= BIT7; // esp_bit_defs.h
+    _read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
+    tmp[0] |= 0x80; // 0x10000000
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::setGyroFS(icm20948_gyro_fs_t gyro_fs)
@@ -206,7 +211,7 @@ void ICM20948::setGyroFS(icm20948_gyro_fs_t gyro_fs)
     setBank(2);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
 
 #if CONFIG_LOG_DEFAULT_LEVEL == 4
     printf(BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(tmp));
@@ -220,7 +225,7 @@ void ICM20948::setGyroFS(icm20948_gyro_fs_t gyro_fs)
 #endif
 
     const uint8_t reg_and_data[] = {ICM20948_GYRO_CONFIG_1, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 ICM20948::icm20948_gyro_fs_t
@@ -229,7 +234,7 @@ ICM20948::getGyroFS()
     setBank(2);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
 
 #if CONFIG_LOG_DEFAULT_LEVEL == 4
     printf(BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(tmp));
@@ -267,7 +272,7 @@ void ICM20948::setGyroSensitivity()
 void ICM20948::getRawGyro()
 {
     uint8_t data_rd[6] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_GYRO_XOUT_H, data_rd, sizeof(data_rd));
+    _read(icm20948_dev_handle, ICM20948_GYRO_XOUT_H, data_rd, sizeof(data_rd));
 
     curr_raw_gyro_vals.raw_gyro_x = (int16_t)((data_rd[0] << 8) + (data_rd[1]));
     curr_raw_gyro_vals.raw_gyro_y = (int16_t)((data_rd[2] << 8) + (data_rd[3]));
@@ -289,7 +294,7 @@ void ICM20948::setAccelFS(icm20948_accel_fs_t acce_fs)
 
     setBank(2);
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
 
 #if CONFIG_LOG_DEFAULT_LEVEL == 4
     printf(BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(tmp));
@@ -303,7 +308,7 @@ void ICM20948::setAccelFS(icm20948_accel_fs_t acce_fs)
 #endif
 
     const uint8_t reg_and_data[] = {ICM20948_ACCEL_CONFIG, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 ICM20948::icm20948_accel_fs_t
@@ -312,7 +317,7 @@ ICM20948::getAccelFS()
     setBank(2);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
 
 #if CONFIG_LOG_DEFAULT_LEVEL == 4
     printf(BYTE_TO_BINARY_PATTERN "\n", BYTE_TO_BINARY(tmp));
@@ -327,11 +332,13 @@ ICM20948::getAccelFS()
 void ICM20948::getRawAccel()
 {
     uint8_t data_rd[6] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_ACCEL_XOUT_H, data_rd, sizeof(data_rd));
+    _read(icm20948_dev_handle, ICM20948_ACCEL_XOUT_H, data_rd, sizeof(data_rd));
 
     curr_raw_accel_vals.raw_accel_x = (int16_t)((data_rd[0] << 8) + (data_rd[1]));
     curr_raw_accel_vals.raw_accel_y = (int16_t)((data_rd[2] << 8) + (data_rd[3]));
     curr_raw_accel_vals.raw_accel_z = (int16_t)((data_rd[4] << 8) + (data_rd[5]));
+    // printf("raw_ax: %d raw_ay: %d raw_az: %d", (int16_t)((data_rd[0] << 8) + (data_rd[1])), (int16_t)((data_rd[2] << 8) + (data_rd[3])), (int16_t)((data_rd[4] << 8) + (data_rd[5])));
+    // printf("x: %u, %u", (data_rd[0] << 8), (data_rd[1]));
 }
 
 void ICM20948::setAccelSensitivity()
@@ -372,12 +379,12 @@ void ICM20948::activateI2CBypass()
     setBank(0);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp, sizeof(tmp));
 
-    tmp[0] |= BIT5;
+    tmp[0] |= 0x20; // 0x00100000
 
     const uint8_t reg_and_data[] = {ICM20948_USER_CTRL, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 // void ICM20948::setMagSampleRate(ak09916_sample_rate_t rate)
@@ -387,13 +394,13 @@ void ICM20948::activateI2CBypass()
 
 //     uint8_t sample_rate_setting = (rate << 1);
 //     const uint8_t reg_and_data[] = {AK09916_CNTL2, sample_rate_setting};
-//     icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
+//     _write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
 // }
 
 void ICM20948::getMag(ak09916_mag_value_t *mag_vals)
 {
     uint8_t data_rd[6] = {0};
-    icm20948_read(ak09916_dev_handle, AK09916_MAG_XOUT_H, data_rd, sizeof(data_rd));
+    _read(ak09916_dev_handle, AK09916_MAG_XOUT_H, data_rd, sizeof(data_rd));
 
     mag_vals->mag_x = (int16_t)((data_rd[0] << 8) + (data_rd[1]));
     mag_vals->mag_y = (int16_t)((data_rd[2] << 8) + (data_rd[3]));
@@ -405,13 +412,13 @@ void ICM20948::setAccelDLPF(icm20948_dlpf_t dlpf_accel)
     setBank(2);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp, sizeof(tmp));
 
     tmp[0] &= DLPF_SET_MASK;
     tmp[0] |= dlpf_accel << 3;
 
     const uint8_t reg_and_data[] = {ICM20948_ACCEL_CONFIG, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::setGyroDLPF(icm20948_dlpf_t dlpf_gyro)
@@ -419,13 +426,13 @@ void ICM20948::setGyroDLPF(icm20948_dlpf_t dlpf_gyro)
     setBank(2);
 
     uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
+    _read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp, sizeof(tmp));
 
     tmp[0] &= DLPF_SET_MASK;
     tmp[0] |= dlpf_gyro << 3;
 
     const uint8_t reg_and_data[] = {ICM20948_GYRO_CONFIG_1, tmp[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
+    _write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ICM20948::enableDLPF(bool enable)
@@ -433,7 +440,7 @@ void ICM20948::enableDLPF(bool enable)
     setBank(2);
 
     uint8_t tmp1[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp1, sizeof(tmp1));
+    _read(icm20948_dev_handle, ICM20948_ACCEL_CONFIG, tmp1, sizeof(tmp1));
 
     if (enable)
         tmp1[0] |= DLPF_ENABLE_MASK;
@@ -441,10 +448,10 @@ void ICM20948::enableDLPF(bool enable)
         tmp1[0] &= DLPF_DISABLE_MASK;
 
     const uint8_t reg_and_data1[] = {ICM20948_ACCEL_CONFIG, tmp1[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data1, sizeof(reg_and_data1));
+    _write(icm20948_dev_handle, reg_and_data1, sizeof(reg_and_data1));
 
     uint8_t tmp2[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp2, sizeof(tmp2));
+    _read(icm20948_dev_handle, ICM20948_GYRO_CONFIG_1, tmp2, sizeof(tmp2));
 
     if (enable)
         tmp2[0] |= DLPF_ENABLE_MASK;
@@ -452,5 +459,5 @@ void ICM20948::enableDLPF(bool enable)
         tmp2[0] &= DLPF_DISABLE_MASK;
 
     const uint8_t reg_and_data2[] = {ICM20948_GYRO_CONFIG_1, tmp2[0]};
-    icm20948_write(icm20948_dev_handle, reg_and_data2, sizeof(reg_and_data2));
+    _write(icm20948_dev_handle, reg_and_data2, sizeof(reg_and_data2));
 }
