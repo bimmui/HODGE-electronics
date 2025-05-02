@@ -1,8 +1,8 @@
 use std::{collections::{BinaryHeap, HashMap}, hash::Hash};
-use crate::bitrep::BitRep;
+use crate::bitrep::{BitRep, BitRepIter};
 use itertools::Itertools;
 
-enum HuffmanNode<T: Clone + Copy + PartialEq + Eq + Hash> {
+pub enum HuffmanNode<T: Clone + Copy + PartialEq + Eq + Hash> {
     Inner(Box<HuffmanNode<T>>, Box<HuffmanNode<T>>),
     Leaf(T)
 }
@@ -62,7 +62,7 @@ impl<T: Clone + Copy + PartialEq + Eq + Hash> HuffmanNode<T> {
 
 type TranslationTable<T: Clone + Copy + PartialEq + Eq + Hash> = HashMap<T, BitRep>;
 
-struct HuffmanCompressor<T: Clone + Copy + PartialEq + Eq + Hash> {
+pub struct HuffmanCompressor<T: Clone + Copy + PartialEq + Eq + Hash> {
     table: TranslationTable<T>
 }
 
@@ -83,9 +83,13 @@ impl<T: Clone + Copy + PartialEq + Eq + Hash> HuffmanCompressor<T> {
         Self::add_to_table(&mut table, tree, BitRep::new());
         HuffmanCompressor { table }
     }
+
+    pub fn encode(&self, val: T) -> BitRep {
+        self.table[&val].clone()
+    }
 }
 
-struct HuffmanDecoder<T: Clone + Copy + PartialEq + Eq + Hash> {
+pub struct HuffmanDecoder<T: Clone + Copy + PartialEq + Eq + Hash> {
     arr: Vec<Option<T>>
 }
 
@@ -109,7 +113,7 @@ impl<T: Clone + Copy + PartialEq + Eq + Hash> HuffmanDecoder<T> {
         return idx;
     }
 
-    pub fn decode<I: Iterator<Item = u8>>(&self, it: &mut I) -> T {
+    pub fn decode(&self, it: &mut BitRepIter) -> T {
         return self.arr[self.bits_to_idx_consuming(it)].unwrap();
     }
 

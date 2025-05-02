@@ -67,6 +67,14 @@ impl BitRep {
     pub fn iter<'a>(&'a self) -> BitRepIter<'a> {
         BitRepIter { br: self, idx: 0 }
     }
+
+    // make more efficient?
+    pub fn append(&mut self, other: &BitRep) {
+        let mut it = other.iter();
+        while let Some(bit) = it.next() {
+            self.write_bit(bit);
+        }
+    }
 }
 
 pub struct BitRepIter<'a> {
