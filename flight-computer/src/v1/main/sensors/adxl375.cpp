@@ -29,14 +29,14 @@
 void adxl375_write(i2c_master_dev_handle_t sensor,
                    uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, 100));
 }
 
 void adxl375_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, 100));
 }
 
 ADXL375::ADXL375(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t adxl375_address, uint32_t scl_clk_speed)
@@ -72,36 +72,13 @@ ADXL375::getADXL375ID()
 void ADXL375::configureADXL375()
 {
 
-    // call getADXL375ID and check if its correct
-
-    // not using activity nor inactivity control
-    const uint8_t reg_and_data[] = {ADXL375_ACTIVITY_INACTIVITY_CTL, 0};
-    adxl375_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
-
-    // not using shock detection either, also gonna reuse the reg_and_data arr
-    const uint8_t reg_and_data1[] = {ADXL375_SHOCK_DETECTION_AXES_ENABLE, 0};
-    adxl375_write(adxl375_dev_handle, reg_and_data1, sizeof(reg_and_data1));
-
-    // fixing the device bandwidth length and output data rate to 100 Hz
-    // not letting it be in low power mode
-    const uint8_t reg_and_data2[] = {ADXL375_BW_RATE, 0x0A};
-    adxl375_write(adxl375_dev_handle, reg_and_data2, sizeof(reg_and_data2));
-
-    // setting the device to measure mode
+    // setting it to measurment mode
     const uint8_t reg_and_data3[] = {ADXL375_POWER_CTL, 0x08};
     adxl375_write(adxl375_dev_handle, reg_and_data3, sizeof(reg_and_data3));
 
-    // not using interrupts
-    const uint8_t reg_and_data4[] = {ADXL375_ENABLE_INTERRUPTS, 0};
-    adxl375_write(adxl375_dev_handle, reg_and_data4, sizeof(reg_and_data4));
-
-    // making the data right justified (LSB)
-    const uint8_t reg_and_data5[] = {ADXL375_DATA_FORMAT, 0x0B};
-    adxl375_write(adxl375_dev_handle, reg_and_data5, sizeof(reg_and_data5));
-
-    // not using the fifo either
-    const uint8_t reg_and_data6[] = {ADXL375_FIFO_CTL, 0};
-    adxl375_write(adxl375_dev_handle, reg_and_data6, sizeof(reg_and_data6));
+    // setting the data format
+    const uint8_t reg_and_data[] = {ADXL375_DATA_FORMAT, 0x0B};
+    adxl375_write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 void ADXL375::getAccel(adxl375_accel_value_t *accel_vals)

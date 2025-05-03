@@ -118,7 +118,7 @@ menu "Pita Plate Pin Configuration"
         config NMEA_PARSER_UART_RXD
             int "UART RXD pin number"
             range ENV_GPIO_RANGE_MIN ENV_GPIO_IN_RANGE_MAX
-            default 33
+            default 32
             help
                 GPIO number for UART RX pin on the ESP32
 

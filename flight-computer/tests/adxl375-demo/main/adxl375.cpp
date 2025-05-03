@@ -69,39 +69,69 @@ ADXL375::getADXL375ID()
     return tmp[0];
 }
 
+void ADXL375::wakeup()
+{
+    const uint8_t reg_and_data[] = {ADXL375_POWER_CTL, 0};
+    _write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+
+    // const uint8_t reg_and_data2[] = {ADXL375_POWER_CTL, 0x10};
+    // _write(adxl375_dev_handle, reg_and_data2, sizeof(reg_and_data2));
+
+    const uint8_t reg_and_data3[] = {ADXL375_POWER_CTL, 0x08};
+    _write(adxl375_dev_handle, reg_and_data3, sizeof(reg_and_data3));
+}
+
+void ADXL375::setDataFormat()
+{
+    // uint8_t tmp[1] = {0};
+    // _read(adxl375_dev_handle, ADXL375_DATA_FORMAT, tmp, sizeof(tmp));
+    // tmp[0] |= (0x0B);
+
+    const uint8_t reg_and_data[] = {ADXL375_DATA_FORMAT, 0b00001011};
+    _write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+}
+
 void ADXL375::configureADXL375()
 {
 
     // call getADXL375ID and check if its correct
-
-    // not using activity nor inactivity control
-    const uint8_t reg_and_data[] = {ADXL375_ACTIVITY_INACTIVITY_CTL, 0};
-    _write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
-
-    // not using shock detection either, also gonna reuse the reg_and_data arr
-    const uint8_t reg_and_data1[] = {ADXL375_SHOCK_DETECTION_AXES_ENABLE, 0};
-    _write(adxl375_dev_handle, reg_and_data1, sizeof(reg_and_data1));
-
-    // fixing the device bandwidth length and output data rate to 100 Hz
-    // not letting it be in low power mode
-    const uint8_t reg_and_data2[] = {ADXL375_BW_RATE, 0x0A};
-    _write(adxl375_dev_handle, reg_and_data2, sizeof(reg_and_data2));
+    // wakeup
+    // wakeup();
 
     // setting the device to measure mode
+    // const uint8_t reg_and_data3[] = {ADXL375_POWER_CTL, 0x08};
+    // _write(adxl375_dev_handle, reg_and_data3, sizeof(reg_and_data3));
+
+    // making the data right justified (LSB)
+    // setDataFormat();
+    // // not using activity nor inactivity control
+    // const uint8_t reg_and_data[] = {ADXL375_ACTIVITY_INACTIVITY_CTL, 0};
+    // _write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
+
+    // // not using shock detection either, also gonna reuse the reg_and_data arr
+    // const uint8_t reg_and_data1[] = {ADXL375_SHOCK_DETECTION_AXES_ENABLE, 0};
+    // _write(adxl375_dev_handle, reg_and_data1, sizeof(reg_and_data1));
+
+    // // fixing the device bandwidth length and output data rate to 100 Hz
+    // // not letting it be in low power mode
+    // const uint8_t reg_and_data2[] = {ADXL375_BW_RATE, 0x0F};
+    // _write(adxl375_dev_handle, reg_and_data2, sizeof(reg_and_data2));
+
+    // setting it to measurment mode
     const uint8_t reg_and_data3[] = {ADXL375_POWER_CTL, 0x08};
     _write(adxl375_dev_handle, reg_and_data3, sizeof(reg_and_data3));
 
-    // not using interrupts
-    const uint8_t reg_and_data4[] = {ADXL375_ENABLE_INTERRUPTS, 0};
-    _write(adxl375_dev_handle, reg_and_data4, sizeof(reg_and_data4));
+    // setting the data format
+    const uint8_t reg_and_data[] = {ADXL375_DATA_FORMAT, 0x0B};
+    _write(adxl375_dev_handle, reg_and_data, sizeof(reg_and_data));
 
-    // making the data right justified (LSB)
-    const uint8_t reg_and_data5[] = {ADXL375_DATA_FORMAT, 0x0B};
-    _write(adxl375_dev_handle, reg_and_data5, sizeof(reg_and_data5));
+    // // not using interrupts
+    // const uint8_t reg_and_data4[] = {ADXL375_ENABLE_INTERRUPTS, 0};
+    // _write(adxl375_dev_handle, reg_and_data4, sizeof(reg_and_data4));
 
-    // not using the fifo either
-    const uint8_t reg_and_data6[] = {ADXL375_FIFO_CTL, 0};
-    _write(adxl375_dev_handle, reg_and_data6, sizeof(reg_and_data6));
+    // // not using the fifo either
+    // const uint8_t reg_and_data6[] = {ADXL375_FIFO_CTL, 0};
+    // _write(adxl375_dev_handle, reg_and_data6, sizeof(reg_and_data6));
 }
 
 void ADXL375::getAccel(adxl375_accel_value_t *accel_vals)
@@ -109,7 +139,7 @@ void ADXL375::getAccel(adxl375_accel_value_t *accel_vals)
     uint8_t data_rd[6] = {0};
     _read(adxl375_dev_handle, ADXL375_ACCEL_X, data_rd, sizeof(data_rd));
 
-    accel_vals->accel_x = (int16_t)((data_rd[1] << 8) + (data_rd[0]));
-    accel_vals->accel_y = (int16_t)((data_rd[3] << 8) + (data_rd[2]));
-    accel_vals->accel_z = (int16_t)((data_rd[5] << 8) + (data_rd[4]));
+    accel_vals->accel_x = (static_cast<int16_t>(data_rd[1] << 8) | (data_rd[0])) * ADXL375_MG2G_MULTIPLIER;
+    accel_vals->accel_y = (static_cast<int16_t>(data_rd[3] << 8) | (data_rd[2])) * ADXL375_MG2G_MULTIPLIER;
+    accel_vals->accel_z = (static_cast<int16_t>(data_rd[5] << 8) | (data_rd[4])) * ADXL375_MG2G_MULTIPLIER;
 }

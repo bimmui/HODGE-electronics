@@ -74,14 +74,14 @@
 void bmp581_write(i2c_master_dev_handle_t sensor,
                   uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, -1));
 }
 
 void bmp581_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, -1));
 }
 
 BMP581::BMP581(i2c_port_num_t port, i2c_addr_bit_len_t addr_len,

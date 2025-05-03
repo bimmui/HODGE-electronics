@@ -122,7 +122,6 @@ public:
 
     void initAK09916(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t ak09916_address, uint32_t scl_clk_speed);
     void configureAK09916();
-    // void setMagSampleRate(ak09916_sample_rate_t rate);
     void getMag(ak09916_mag_value_t *mag_vals);
 
 private:
@@ -149,6 +148,7 @@ private:
 
     void setBank(uint8_t bank);
     void activateI2CBypass();
+    void getRawMag();
 
     void setGyroFS(icm20948_gyro_fs_t gyro_fs);
     void setGyroSensitivity();
