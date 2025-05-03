@@ -5,6 +5,7 @@ use paste::paste;
 mod bitrep;
 mod efloat;
 mod huffman;
+mod quantize;
 
 #[cxx::bridge(namespace = "ffi  ")] 
 mod ffi {
