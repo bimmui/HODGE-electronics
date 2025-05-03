@@ -33,6 +33,7 @@ void icm_read_task(void *args)
 
     icm20948_accel_value_t accels;
     icm20948_gyro_value_t gyros;
+    ak09916_mag_value_t mags;
 
     for (int i = 0; i < 100; ++i)
     {
@@ -40,6 +41,8 @@ void icm_read_task(void *args)
         ESP_LOGI(TAG, "ax: %lf ay: %lf az: %lf", accels.accel_x, accels.accel_y, accels.accel_z);
         icm->getGyro(&gyros);
         ESP_LOGI(TAG, "gx: %lf gy: %lf gz: %lf", gyros.gyro_x, gyros.gyro_y, gyros.gyro_z);
+        icm->getMag(&mags);
+        ESP_LOGI(TAG, "mx: %lf my: %lf mz: %lf", mags.mag_x, mags.mag_y, mags.mag_z);
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
 
@@ -55,6 +58,8 @@ extern "C" void app_main()
     static ICM20948 icm(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x68, CONFIG_I2C_MASTER_FREQUENCY);
     ESP_LOGI(TAG, "ICM20948 object initialized");
     icm.configureICM20948(ICM20948::ACCEL_FS_2G, ICM20948::GYRO_FS_1000DPS);
+    icm.initAK09916(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x0C, CONFIG_I2C_MASTER_FREQUENCY);
+    icm.configureAK09916();
 
     xTaskCreate(icm_read_task, "icm read task", 1024 * 10, &icm, 15, NULL);
 }

@@ -7,6 +7,7 @@
 // change address
 #define ADXL375_I2C_ADDRESS 0x69
 #define ADXL375_WHO_AM_I_VAL 0xE5
+#define ADXL375_MG2G_MULTIPLIER (0.049f)
 
 typedef struct
 {
@@ -27,6 +28,8 @@ public:
 
     void configureADXL375();
     uint8_t getADXL375ID();
+    void setDataFormat();
+    void wakeup();
 
     void getAccel(adxl375_accel_value_t *accel_vals);
 

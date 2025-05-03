@@ -20,12 +20,15 @@ typedef enum
     SENSOR_ERR_TASK,
 } sensor_status;
 
-struct atomic_sensor_data
+struct atomic_baro_data
 {
     std::atomic<double> baro_altitude{0.0};
     std::atomic<float> baro_temp{0.0f};
     std::atomic<float> baro_pressure{0.0f};
+}
 
+struct atommic_gps_data
+{
     std::atomic<double> gps_lat{0.0};
     std::atomic<double> gps_lon{0.0};
     std::atomic<double> gps_alt{0.0};
@@ -41,7 +44,10 @@ struct atomic_sensor_data
     std::atomic<int> gps_minute{0};
     std::atomic<int> gps_second{0};
     std::atomic<bool> gps_fix_valid{false};
+};
 
+struct atomic_imu_data
+{
     std::atomic<float> imu_accel_x{0.0f};
     std::atomic<float> imu_accel_y{0.0f};
     std::atomic<float> imu_accel_z{0.0f};
@@ -52,14 +58,19 @@ struct atomic_sensor_data
     std::atomic<float> imu_mag_y{0.0f};
     std::atomic<float> imu_mag_z{0.0f};
     std::atomic<float> imu_temp{0.0f};
+}
 
+struct atomic_highg_data
+{
     std::atomic<float> hg_accel_x{0.0f};
     std::atomic<float> hg_accel_y{0.0f};
     std::atomic<float> hg_accel_z{0.0f};
+}
 
+struct atomic_temp_data
+{
     std::atomic<float> temp_temp_c{0.0f};
-    std::atomic<unsigned long> timestamp{0.0f};
-};
+}
 
 struct sensor_data_snapshot
 {

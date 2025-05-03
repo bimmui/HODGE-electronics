@@ -82,22 +82,23 @@ void TMP1075::configureTMP1075()
     // low limit registers bc the alert pin isnt even connected
 
     // not using activity nor inactivity control
-    // uint8_t lsb = TMP1075_CONFIG_MASK & 0xFF;
-    // uint8_t msb = TMP1075_CONFIG_MASK >> 8;
+    uint8_t lsb = 0;
+    uint8_t msb = 0x40;
 
-    // const uint8_t reg_and_data[] = {TMP1075_CONFIG_REG, lsb, msb};
-    // _write(tmp1075_dev_handle, reg_and_data, sizeof(reg_and_data));
+    const uint8_t reg_and_data[] = {TMP1075_CONFIG_REG, lsb, msb};
+    _write(tmp1075_dev_handle, reg_and_data, sizeof(reg_and_data));
 }
 
 float TMP1075::readTempC()
 {
-    uint8_t tmp[2] = {0};
+    uint8_t tmp[] = {0};
     _read(tmp1075_dev_handle, TMP1075_TEMP_REG, tmp, sizeof(tmp));
 
     // first 4 lsb arent used
-    int16_t raw = (int16_t)((tmp[1] << 8) | tmp[0]);
-    raw >>= 4;
-    float tempC = raw * 0.0625f;
+    // int16_t raw = (int16_t)((tmp[1] << 8) | tmp[0]);
+
+    // raw >>= 4;
+    float tempC = ((tmp[0] << 4) + (tmp[1] >> 4)) * 0.0625;
     ESP_LOGI(TAG, "Temperature: %.2f °C", tempC);
     return tempC;
 }

@@ -27,19 +27,19 @@
 - polarity of alert pin set to low
 - sets alert pin function to comparator mode
 - puts the thing in continuous conversion */
-#define TMP1075_CONFIG_MASK ((uint16_t)0x6800)
+// #define TMP1075_CONFIG_MASK ((uint16_t)0x6800)
 
 void _write(i2c_master_dev_handle_t sensor,
             uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, -1));
 }
 
 void _read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, 50));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, -1));
 }
 
 TMP1075::TMP1075(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t tmp1075_address, uint32_t scl_clk_speed)
@@ -80,8 +80,8 @@ void TMP1075::configureTMP1075()
     // low limit registers bc the alert pin isnt even connected
 
     // not using activity nor inactivity control
-    uint8_t lsb = TMP1075_CONFIG_MASK & 0xFF;
-    uint8_t msb = TMP1075_CONFIG_MASK >> 8;
+    uint8_t lsb = 0;
+    uint8_t msb = 0x40;
 
     const uint8_t reg_and_data[] = {TMP1075_CONFIG_REG, lsb, msb};
     _write(tmp1075_dev_handle, reg_and_data, sizeof(reg_and_data));
@@ -91,10 +91,8 @@ float TMP1075::readTempC()
 {
     uint8_t tmp[2] = {0};
     _read(tmp1075_dev_handle, TMP1075_TEMP_REG, tmp, sizeof(tmp));
-
-    // first 4 lsb arent used
-    int16_t ntmp = (int16_t)((tmp[1] << 4) + (tmp[0]));
-    return (ntmp * 0.0625f);
+    float tempC = ((tmp[0] << 4) + (tmp[1] >> 4)) * 0.0625;
+    return tempC;
 }
 float TMP1075::readTempF()
 {

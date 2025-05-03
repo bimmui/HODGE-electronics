@@ -25,6 +25,7 @@ static const char *TAG = "icm test";
 #define ICM20948_GYRO_CONFIG_1 (0x01)
 #define ICM20948_ACCEL_CONFIG (0x14)
 #define ICM20948_USER_CTRL (0x03)
+#define ICM20948_INT_PIN_CFG (0x0F)
 #define ICM20948_INT_ENABLE (0x10)
 #define ICM20948_INT_ENABLE_1 (0x11)
 #define ICM20948_INT_ENABLE_2 (0x12)
@@ -49,23 +50,26 @@ static const char *TAG = "icm test";
 #define DLPF_DISABLE_MASK (0xFE)
 
 /* AK09916 registers */
+#define AK09916_WIA2 (0x01)
 #define AK09916_CNTL3 (0x32)
 #define AK09916_CNTL2 (0x31)
 #define AK09916_MAG_XOUT_H (0x11)
+#define AK09916_ST1 (0x10)
 
 #define MASTER_TRANSMIT_TIMEOUT (50)
+#define AK09916_SCALE_FACTOR (0.15) // µT per LSB
 
 void icm20948_write(i2c_master_dev_handle_t sensor,
                     uint8_t const *data_buf, const uint8_t data_len)
 {
-    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit(sensor, data_buf, data_len, -1));
 }
 
 void icm20948_read(i2c_master_dev_handle_t sensor, const uint8_t reg_start_addr, uint8_t *rx, uint8_t rx_size)
 {
     const uint8_t tx[] = {reg_start_addr};
 
-    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, MASTER_TRANSMIT_TIMEOUT));
+    ESP_ERROR_CHECK(i2c_master_transmit_receive(sensor, tx, sizeof(tx), rx, rx_size, -1));
 }
 
 ICM20948::ICM20948(i2c_port_num_t port, i2c_addr_bit_len_t addr_len, uint16_t icm20948_address, uint32_t scl_clk_speed)
@@ -156,10 +160,18 @@ void ICM20948::configureICM20948(icm20948_accel_fs_t acce_fs, icm20948_gyro_fs_t
 void ICM20948::configureAK09916()
 {
     // reset the mag
-    const uint8_t reg_and_data[] = {AK09916_CNTL3, 0x01};
-    icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
+    // const uint8_t reg_and_data[] = {AK09916_CNTL3, 0x01};
+    // icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
 
     vTaskDelay(10 / portTICK_PERIOD_MS);
+
+    uint8_t tmp[1] = {0};
+    icm20948_read(ak09916_dev_handle, AK09916_WIA2, tmp, sizeof(tmp));
+    printf("the thing: %u\n", tmp[0]);
+
+    // continuous measurmeent mode 4 (100 Hz)
+    const uint8_t reg_and_data2[] = {AK09916_CNTL2, 0x08};
+    icm20948_write(ak09916_dev_handle, reg_and_data2, sizeof(reg_and_data2));
     // setMagSampleRate(sample_rate);
 }
 
@@ -173,9 +185,10 @@ ICM20948::getICM20948ID()
 
 void ICM20948::wakeup()
 {
+    setBank(0);
     uint8_t tmp[1] = {0};
     icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] &= (~BIT6); // esp_bit_defs.h
+    tmp[0] &= ~(0x40); // ~(0x01000000)
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
@@ -183,9 +196,10 @@ void ICM20948::wakeup()
 
 void ICM20948::sleep()
 {
+    setBank(0);
     uint8_t tmp[1] = {0};
     icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] |= BIT6;
+    tmp[0] |= 0x40; // 0x01000000
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
@@ -195,7 +209,7 @@ void ICM20948::reset()
 {
     uint8_t tmp[1] = {0};
     icm20948_read(icm20948_dev_handle, ICM20948_PWR_MGMT_1, tmp, sizeof(tmp));
-    tmp[0] |= BIT7; // esp_bit_defs.h
+    tmp[0] |= 0x80; // 0x10000000
 
     const uint8_t reg_and_data[] = {ICM20948_PWR_MGMT_1, tmp[0]};
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
@@ -248,7 +262,7 @@ void ICM20948::setGyroSensitivity()
     switch (gyro_fs)
     {
     case GYRO_FS_250DPS:
-        gyro_sensitivity = 131;
+        gyro_sensitivity = 131.0;
         break;
     case GYRO_FS_500DPS:
         gyro_sensitivity = 65.5;
@@ -371,15 +385,34 @@ void ICM20948::activateI2CBypass()
 {
     setBank(0);
 
-    uint8_t tmp[1] = {0};
-    icm20948_read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp, sizeof(tmp));
+    // disable I2C master mode then enable the bypass
 
-    tmp[0] |= BIT5;
-
-    const uint8_t reg_and_data[] = {ICM20948_USER_CTRL, tmp[0]};
+    const uint8_t reg_and_data[] = {ICM20948_USER_CTRL, 0x00};
     icm20948_write(icm20948_dev_handle, reg_and_data, sizeof(reg_and_data));
-}
 
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // uint8_t tmp1[1] = {0};
+    // icm20948_read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp1, sizeof(tmp1));
+    // printf("init: the thing for master: %u\n", tmp1[0]);
+
+    uint8_t tmp[1] = {0};
+    icm20948_read(icm20948_dev_handle, ICM20948_INT_PIN_CFG, tmp, sizeof(tmp));
+
+    tmp[0] |= 0x02; // 0x00000010
+
+    const uint8_t reg_and_data2[] = {ICM20948_INT_PIN_CFG, tmp[0]};
+    icm20948_write(icm20948_dev_handle, reg_and_data2, sizeof(reg_and_data2));
+
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // uint8_t tmp2[1] = {0};
+    // icm20948_read(icm20948_dev_handle, ICM20948_INT_PIN_CFG, tmp2, sizeof(tmp2));
+    // printf("init: the thing for bypass: %u\n", tmp2[0]);
+    // uint8_t tmp3[1] = {0};
+    // icm20948_read(icm20948_dev_handle, ICM20948_USER_CTRL, tmp3, sizeof(tmp3));
+    // printf("init: the thing for master: %u\n", tmp3[0]);
+}
 // void ICM20948::setMagSampleRate(ak09916_sample_rate_t rate)
 // {
 //     // after resetting, cntl2 register should be clear with 0
@@ -390,14 +423,24 @@ void ICM20948::activateI2CBypass()
 //     icm20948_write(ak09916_dev_handle, reg_and_data, sizeof(reg_and_data));
 // }
 
-void ICM20948::getMag(ak09916_mag_value_t *mag_vals)
+void ICM20948::getRawMag()
 {
     uint8_t data_rd[6] = {0};
     icm20948_read(ak09916_dev_handle, AK09916_MAG_XOUT_H, data_rd, sizeof(data_rd));
 
-    mag_vals->mag_x = (int16_t)((data_rd[0] << 8) + (data_rd[1]));
-    mag_vals->mag_y = (int16_t)((data_rd[2] << 8) + (data_rd[3]));
-    mag_vals->mag_z = (int16_t)((data_rd[4] << 8) + (data_rd[5]));
+    curr_raw_mag_vals.raw_mag_x = (int16_t)((data_rd[1] << 8) + (data_rd[0]));
+    curr_raw_mag_vals.raw_mag_y = (int16_t)((data_rd[3] << 8) + (data_rd[2]));
+    curr_raw_mag_vals.raw_mag_z = (int16_t)((data_rd[5] << 8) + (data_rd[6]));
+}
+
+void ICM20948::getMag(ak09916_mag_value_t *mag_vals)
+{
+    setBank(0);
+    getRawMag();
+
+    mag_vals->mag_x = (float)curr_raw_mag_vals.raw_mag_x / AK09916_SCALE_FACTOR;
+    mag_vals->mag_y = (float)curr_raw_mag_vals.raw_mag_y / AK09916_SCALE_FACTOR;
+    mag_vals->mag_z = (float)curr_raw_mag_vals.raw_mag_z / AK09916_SCALE_FACTOR;
 }
 
 void ICM20948::setAccelDLPF(icm20948_dlpf_t dlpf_accel)

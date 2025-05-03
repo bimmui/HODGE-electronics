@@ -33,7 +33,7 @@ void adxl_read_task(void *args)
 
     adxl375_accel_value_t accels;
 
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 10000; ++i)
     {
         adxl->getAccel(&accels);
         ESP_LOGI(TAG, "ax: %lf ay: %lf az: %lf", accels.accel_x, accels.accel_y, accels.accel_z);
