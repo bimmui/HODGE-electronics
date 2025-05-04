@@ -1,0 +1,126 @@
+menu "Pita Plate Pin Configuration"
+
+    config I2C_MASTER_SCL
+        int "SCL GPIO Num"
+        default 1
+        help
+            GPIO number for I2C Master clock line.
+
+    config I2C_MASTER_SDA
+        int "SDA GPIO Num"
+        default 0
+        help
+            GPIO number for I2C Master data line.
+
+    config I2C_MASTER_FREQUENCY
+        int "Master Frequency"
+        default 100000
+        help
+            I2C Speed of Master device.
+
+    config BMP_ADDRESS
+        hex "BMP I2C Address"
+        default 0x46
+
+    config IMU_ADDRESS
+        hex "IMU I2C Address"
+        default 0x68
+
+    menu "SD SPI Example Configuration"
+
+        config FORMAT_IF_MOUNT_FAILED
+            bool "Format the card if mount failed"
+            default n
+            help
+                If this config item is set, format_if_mount_failed will be set to true and the card will be formatted if
+                the mount has failed.
+    
+        config FORMAT_SD_CARD
+            bool "Format the card as a part of the example"
+            default n
+            help
+                If this config item is set, the card will be formatted as a part of the example.
+    
+        config PIN_MOSI
+            int "MOSI GPIO number"
+            default 73 
+    
+        config PIN_MISO
+            int "MISO GPIO number"
+            default 2
+    
+        config PIN_CLK
+            int "CLK GPIO number"
+            default 6
+    
+        config PIN_CS
+            int "CS GPIO number"
+            default 5
+    
+        config DEBUG_PIN_CONNECTIONS
+            bool "Debug sd pin connections and pullup strength"
+            default n
+    
+        config ENABLE_ADC_FEATURE
+            bool "Enable ADC feature"
+            depends on DEBUG_PIN_CONNECTIONS
+            default y if IDF_TARGET_ESP32
+            default n
+    
+        config ADC_UNIT
+            int "ADC Unit"
+            depends on DEBUG_PIN_CONNECTIONS
+            default 1 if IDF_TARGET_ESP32
+            default 0 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_MOSI
+            int "MOSI mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 3 if IDF_TARGET_ESP32
+            default 7 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_MISO
+            int "MISO mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 2 if IDF_TARGET_ESP32
+            default 1 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_CLK
+            int "CLK mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 6 if IDF_TARGET_ESP32
+            default 0 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config ADC_PIN_CS
+            int "CS mapped ADC pin"
+            depends on ENABLE_ADC_FEATURE
+            default 4 if IDF_TARGET_ESP32
+            default 6 if IDF_TARGET_ESP32S3
+            default 1
+    
+        config SD_PWR_CTRL_LDO_INTERNAL_IO
+            depends on SOC_SDMMC_IO_POWER_EXTERNAL
+            bool "SD power supply comes from internal LDO IO (READ HELP!)"
+            default n
+            help
+                Only needed when the SD card is connected to specific IO pins which can be used for high-speed SDMMC.
+                Please read the schematic first and check if the SD VDD is connected to any internal LDO output.
+                Unselect this option if the SD card is powered by an external power supply.
+    
+        config SD_PWR_CTRL_LDO_IO_ID
+            depends on SOC_SDMMC_IO_POWER_EXTERNAL && EXAMPLE_SD_PWR_CTRL_LDO_INTERNAL_IO
+            int "LDO ID"
+            default 4 if IDF_TARGET_ESP32P4
+            help
+                Please read the schematic first and input your LDO ID.
+    endmenu
+            
+   
+
+    endmenu
+
+endmenu
