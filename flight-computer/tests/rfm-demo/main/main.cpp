@@ -21,14 +21,14 @@
 #include "sdkconfig.h"
 
 // create a new instance of the HAL class
-EspHal *hal = new EspHal(CONFIG_SPI_CLK, CONFIG_SPI_MISO, CONFIG_SPI_MOSI);
+EspHal *hal = new EspHal(14, 12, 13);
 
 // now we can create the radio module
 // NSS pin:   18
 // DIO0 pin:  26
 // NRST pin:  14
 // DIO1 pin:  33
-RFM96 radio = new Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, RADIOLIB_NC);
+RFM96 radio = new Module(hal, 27, RADIOLIB_NC, RADIOLIB_NC, 26);
 
 static const char *TAG = "main";
 
@@ -38,6 +38,16 @@ extern "C" void app_main(void)
 {
   // initialize just like with Arduino
   ESP_LOGI(TAG, "[RFM96] Initializing ... ");
+  gpio_config_t io_conf = {};
+  io_conf.intr_type = GPIO_INTR_DISABLE;
+  io_conf.mode = GPIO_MODE_OUTPUT;
+  io_conf.pin_bit_mask = (1ULL << GPIO_NUM_27);
+  io_conf.pull_down_en = static_cast<gpio_pulldown_t>(0);
+  io_conf.pull_up_en = static_cast<gpio_pullup_t>(0);
+  gpio_config(&io_conf);
+
+  gpio_set_level(GPIO_NUM_27, 1);
+
   int state = radio.begin(434.550);
   if (state != RADIOLIB_ERR_NONE)
   {

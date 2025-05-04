@@ -18,6 +18,14 @@ menu "Pita Plate Pin Configuration"
         help
             I2C Speed of Master device.
 
+    config RFM96W_CS_PIN
+        int "THE PIN"
+        default 27
+
+    config RFM96W_RESET_PIN
+        int "THE PIN"
+        default 24
+            
     menu "SD SPI Example Configuration"
 
         config FORMAT_IF_MOUNT_FAILED
