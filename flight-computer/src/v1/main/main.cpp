@@ -119,7 +119,7 @@ static flight_data gpslog;
 static esp_err_t
 write_file(const char *path, const char *data)
 {
-    ESP_LOGI(TAG, "open %s", path);
+    // ESP_LOGI(TAG, "open %s", path);
     FILE *f = fopen(path, "a");
     if (!f)
     {
@@ -128,7 +128,7 @@ write_file(const char *path, const char *data)
     }
     fputs(data, f); // avoid format-string hazard
     fclose(f);
-    ESP_LOGI(TAG, "written");
+    // ESP_LOGI(TAG, "written");
     return ESP_OK;
 }
 
@@ -173,10 +173,12 @@ static void gps_event_handler(void *event_handler_arg, esp_event_base_t event_ba
     }
     case GPS_UNKNOWN:
     { /* print unknown statements */
+        printf("in here 2");
         ESP_LOGW(TAG, "Unknown statement:%s", (char *)event_data);
         break;
     }
     default:
+        printf("in here 3");
         break;
     }
 }
@@ -456,6 +458,8 @@ extern "C" void app_main(void)
     static ICM20948 icm(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x68, CONFIG_I2C_MASTER_FREQUENCY);
     ESP_LOGI(TAG, "ICM20948 object initialized");
     icm.configureICM20948(ICM20948::ACCEL_FS_2G, ICM20948::GYRO_FS_1000DPS);
+    icm.initAK09916(I2C_NUM_0, I2C_ADDR_BIT_LEN_7, 0x0C, CONFIG_I2C_MASTER_FREQUENCY);
+    icm.configureAK09916();
 
     /* NMEA parser configuration */
     nmea_parser_config_t config = NMEA_PARSER_CONFIG_DEFAULT();
@@ -465,6 +469,7 @@ extern "C" void app_main(void)
     nmea_parser_add_handler(nmea_hdl, gps_event_handler, &gpslog);
 
     ESP_LOGI(TAG, "Beginning sensor reading");
+
     while (true)
     {
         adxl375_accel_value_t accels;
@@ -477,7 +482,7 @@ extern "C" void app_main(void)
         sample = bmp581.bmp581_get_sample();
         flightlog.pressure = (double)sample.pressure;
         flightlog.bmp_temp = sample.temperature_c;
-        flightlog.altitude = sample.altitude;
+        flightlog.bmp_altitude = sample.altitude;
         // ESP_LOGI(TAG, "bmp581 readings obtained");
 
         flightlog.tmp_temp = tmp.readTempC();
@@ -495,9 +500,9 @@ extern "C" void app_main(void)
         flightlog.icm20948_gyro_x = gyros.gyro_x;
         flightlog.icm20948_gyro_y = gyros.gyro_y;
         flightlog.icm20948_gyro_z = gyros.gyro_z;
-        flightlog.icm20948_mag_x = gyros.mag_x;
-        flightlog.icm20948_mag_y = gyros.mag_y;
-        flightlog.icm20948_mag_z = gyros.mag_z;
+        flightlog.icm20948_mag_x = mags.mag_x;
+        flightlog.icm20948_mag_y = mags.mag_y;
+        flightlog.icm20948_mag_z = mags.mag_z;
         // ESP_LOGI(TAG, "imu readings obtained");
 
         float kf_accels[3] = {icm_accels.accel_x, icm_accels.accel_y, icm_accels.accel_z};
@@ -531,18 +536,18 @@ extern "C" void app_main(void)
             ESP_LOGE(TAG, "Couldn't write to SD card");
         }
 
-        // state = radio.transmit(csv_row);
-        // if (state == RADIOLIB_ERR_NONE)
-        // {
-        //     // the packet was successfully transmitted
-        //     ESP_LOGI(TAG, "success!");
-        // }
-        // else
-        // {
-        //     ESP_LOGI(TAG, "failed, code %d\n", state);
-        // }
+        //     // state = radio.transmit(csv_row);
+        //     // if (state == RADIOLIB_ERR_NONE)
+        //     // {
+        //     //     // the packet was successfully transmitted
+        //     //     ESP_LOGI(TAG, "success!");
+        //     // }
+        //     // else
+        //     // {
+        //     //     ESP_LOGI(TAG, "failed, code %d\n", state);
+        //     // }
 
-        // // wait for a second before transmitting again
-        // hal->delay(500);
+        //     // // wait for a second before transmitting again
+        //     // hal->delay(500);
     }
 }
