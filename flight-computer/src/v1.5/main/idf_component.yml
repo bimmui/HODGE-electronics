@@ -1,0 +1,6 @@
+dependencies:
+  RadioLib:
+    git: https://github.com/jgromes/RadioLib.git
+    version: "7.1.2"
+  sd_card:
+    path: ${IDF_PATH}/examples/storage/sd_card/sdmmc/components/sd_card
