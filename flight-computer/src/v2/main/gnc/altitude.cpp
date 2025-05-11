@@ -12,7 +12,7 @@ Estimator::Estimator(float sigma_accel, float sigma_gyro, float sigma_baro,
 {
 }
 
-void Estimator::estimate(float accel[3], float gyro[3], float mag[3], float baro_alt, uint32_t timestamp)
+filter_estimates Estimator::estimate(float accel[3], float gyro[3], float mag[3], float baro_alt, uint32_t timestamp)
 {
         float dt = (float)(timestamp - previous_time_) / 1000.0f;
 
@@ -36,15 +36,13 @@ void Estimator::estimate(float accel[3], float gyro[3], float mag[3], float baro
         prev_vertical_accel_ = vertical_accel;
         previous_time_ = timestamp;
 
+        filter_estimates esti;
         // updating results to return
-        estimates_.angles = attitude;
-        estimates_.cf_results = cfr;
-        estimates_.vertical_accel = vertical_accel;
-}
+        esti.angles = attitude;
+        esti.cf_results = cfr;
+        esti.vertical_accel = vertical_accel;
 
-filter_estimates Estimator::getEstimates()
-{
-        return estimates_;
+        return esti;
 }
 
 void Estimator::setInitTime(uint32_t time)

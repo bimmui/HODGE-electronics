@@ -33,9 +33,7 @@ filter_estimates StateDeterminer::determineState(float accel_data[3], float gyro
     first_step_ = true;
   }
 
-  estimator_.estimate(accel_data, gyro_data, mag_data, altitude, curr_time);
-
-  return estimator_.getEstimates();
+  return estimator_.estimate(accel_data, gyro_data, mag_data, altitude, curr_time);
 
   // if (manager.curr_state == state::LAUNCH_READY)
   // {

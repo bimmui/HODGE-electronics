@@ -17,8 +17,6 @@
 #include "sd_manager.h"
 #include "EspHal.h"
 
-#define MILLIS() (esp_timer_get_time() / 1000ULL)
-
 extern "C" void app_main()
 {
     ApoAggregator apo;
@@ -27,4 +25,9 @@ extern "C" void app_main()
     RFM96 radio = Module(hal, CONFIG_RFM96_CHIP_SELECT, 5, CONFIG_RFM69_HARDWARE_RESET, RADIOLIB_NC);
 
     SYS_INIT(apo, sd, radio);
+
+    while (true)
+    {
+        complete_sensor_data_snapshot complete_snap = apo.generateCompleteSnapshot();
+    }
 }

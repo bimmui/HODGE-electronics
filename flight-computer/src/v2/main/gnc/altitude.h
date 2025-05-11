@@ -20,9 +20,7 @@ public:
   Estimator(float sigma_accel, float sigma_gyro, float sigma_baro,
             float accel_threshold);
 
-  void estimate(float accel[3], float gyro[3], float mag[3], float baro_alt, uint32_t timestamp);
-
-  filter_estimates getEstimates();
+  filter_estimates estimate(float accel[3], float gyro[3], float mag[3], float baro_alt, uint32_t timestamp);
 
   void setInitTime(uint32_t time);
 

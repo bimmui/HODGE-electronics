@@ -16,11 +16,14 @@ public:
 private:
     ApoSensor *sensors_[MAX_SENSORS];
     uint8_t num_sensors_;
+
     atomic_baro_data baro_polling_data_;
     atomic_gps_data gps_polling_data_;
     atomic_imu_data imu_polling_data_;
     atomic_highg_data hg_polling_data_;
     atomic_temp_data temp_polling_data_;
+
+    StateDeterminer determiner;
 
     sensor_data_snapshot generateSnapshot() const;
 };
