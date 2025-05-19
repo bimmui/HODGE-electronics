@@ -39,7 +39,8 @@ class DummyRocket:
             "External Temp": [],
             "Acceleration": [],
             "Velocity": [],
-            "Altitude": []
+            "Altitude": [],
+            "State":"Current State"
         }  
         self.start_time = time.time()
 
@@ -140,6 +141,7 @@ def dashboard(rocket):
     # Initial positions
     positions = data["Positions"]
     #print(f"line 65, last pos: {positions[-1]}")
+    rocketState = "State: " + data["State"]
 
     app.layout = html.Div([
 
@@ -195,10 +197,10 @@ def dashboard(rocket):
         dbc.Row([
             dbc.Col([
                 dbc.Card(dbc.CardBody(
-                    html.H4("State goes here!")
+                    html.H1(rocketState,style={"height": "10vh","text-align":"center"})
                 )),
                 dbc.Row(
-                    dcc.Graph(id="live-update-accel-gauge", style={'height': '45vh'})
+                    dcc.Graph(id="live-update-accel-gauge", style={'height': '35vh'})
                 ),
             ]),
 
@@ -238,7 +240,7 @@ def dashboard(rocket):
                         ]),
                         html.P([
                             html.Span(
-                                "Signal Quality: ",
+                                "RSSI: ",
                                 style={"fontWeight": "bold", "textDecoration": "underline"},
                             ),
                             html.Span(id="signal_quality", className="card-text"),    
@@ -345,19 +347,19 @@ def dashboard(rocket):
             title_text="Temperatures",
             title_x=0.5,
             #height=600,
-            showlegend=True,
+            showlegend=False,
             hovermode="closest",
-            legend=dict(
-                x=0.5,  # Center horizontally
-                y=-0.2,  # Move below the plot
-                xanchor="center",  # Anchor position to center
-                yanchor="top"
-            )
+            # legend=dict(
+            #     x=0.5,  # Center horizontally
+            #     y=-0.2,  # Move below the plot
+            #     xanchor="center",  # Anchor position to center
+            #     yanchor="top"
+            # )
         )
 
         tempFig.update_xaxes(title_text="Time (s)", row=2, col=1)
-        tempFig.update_yaxes(title_text="Degrees", row=1, col=1)
-        tempFig.update_yaxes(title_text="Degrees", row=2, col=1)
+        tempFig.update_yaxes(title_text="Degrees (°C)", row=1, col=1)
+        tempFig.update_yaxes(title_text="Degrees (°C)", row=2, col=1)
 
 
         return tempFig
@@ -387,8 +389,8 @@ def dashboard(rocket):
 
         new_values = {
             "coordinates": f"Lat: {current_positions[-1][0]:.2f}, Lon: {current_positions[-1][1]:.2f}",
-            "altitude-m": f"{data["Altitude"][-1]:.2f} m",
-            "altitude-ft": f"{data["Altitude"][-1]*3.28:.2f} ft",
+            "altitude-m": f'{data["Altitude"][-1]:.2f} m',
+            "altitude-ft": f'{data["Altitude"][-1]*3.28:.2f} ft',
             "signal_quality": f"{random.randint(0, 100)}",
             "gps_fix": "Yes" if random.choice([True, False]) else "No",
             "antenna_status": (
@@ -435,7 +437,10 @@ def dashboard(rocket):
                 ]
         if is_imperial:
             for x in range(0,10):
-                valList[x] *=3.28
+                if x > 3:
+                    valList[x] *=3.28
+                else:
+                    valList[x] = valList[x]/9.8
         
         data = rocketo_proxy.get()
         accelFig = go.Figure(
@@ -461,12 +466,12 @@ def dashboard(rocket):
                     
                 },
                 domain={"x": [0, 1], "y": [0, 1]},
-                title=f"Acceleration ({"ft/s^2" if is_imperial else "m/s^2"})"
+                title=f'Total Acceleration ({"G" if is_imperial else "m/s^2"})'
             )
         )
 
         accelFig.update_layout(
-            paper_bgcolor='yellow',
+            paper_bgcolor='lightblue',
             margin=dict(l=25, r=50, t=35, b=10),
         )
         
@@ -493,12 +498,12 @@ def dashboard(rocket):
                 },
                 
                 domain={"x": [0, 1], "y": [0, 1]},
-                title=f"Velocity ({"ft/s" if is_imperial else "m/s"})"
+                title=f'Total Velocity ({"ft/s" if is_imperial else "m/s"})'
             )
         )
 
         velFig.update_layout(
-            paper_bgcolor='yellow',
+            paper_bgcolor=('orange' if is_imperial else 'yellow'),
             margin=dict(l=25, r=50, t=35, b=10),
         )
 
@@ -524,12 +529,12 @@ def dashboard(rocket):
                 },
                 
                 domain={"x": [0, 1], "y": [0, 1]},
-                title=f"Altitude ({"ft" if is_imperial else "m"})"
+                title=f'Altitude ({"ft" if is_imperial else "m"})'
             )
         )
 
         altFig.update_layout(
-            paper_bgcolor='lightblue',
+            paper_bgcolor=('orange' if is_imperial else 'yellow'),
             margin=dict(l=25, r=50, t=35, b=10),
         )
 
