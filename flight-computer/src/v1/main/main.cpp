@@ -436,7 +436,7 @@ extern "C" void app_main(void)
     sdmmc_card_print_info(stdout, card);
 
     // settting up the datalog csv file
-    ret = write_file("/sdcard/datalog.csv", "day,month,year,hour,minute,latitude,longitude,gps_altitude,speed,cog,num_sats,fix_status,fix_valid,mag_vari,adxl375_accel_x,adxl375_accel_y,adxl375_accel_z,pressure,bmp_temp,bmp_altitude,tmp_temp,icm20948_accel_x,icm20948_accel_y,icm20948_accel_z,icm20948_gyro_x,icm20948_gyro_y,icm20948_gyro_z,kf_altitude,kf_vert_velo,kf_accel,time\n");
+    ret = write_file("/sdcard/datalog.csv", "day,month,year,hour,minute,latitude,longitude,gps_altitude,speed,cog,num_sats,fix_status,fix_valid,mag_vari,adxl375_accel_x,adxl375_accel_y,adxl375_accel_z,pressure,bmp_temp,bmp_altitude,tmp_temp,icm20948_accel_x,icm20948_accel_y,icm20948_accel_z,icm20948_gyro_x,icm20948_gyro_y,icm20948_gyro_z,icm20948_mag_x,icm20948_mag_y,icm20948_mag_z,kf_altitude,kf_vert_velo,kf_accel,time\n");
     if (ret != ESP_OK)
     {
         ESP_LOGE(TAG, "Couldn't write to SD card");
