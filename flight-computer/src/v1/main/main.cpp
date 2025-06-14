@@ -525,7 +525,7 @@ extern "C" void app_main(void)
                 flightlog.tmp_temp,
                 flightlog.icm20948_accel_x, flightlog.icm20948_accel_y, flightlog.icm20948_accel_z,
                 flightlog.icm20948_gyro_x, flightlog.icm20948_gyro_y, flightlog.icm20948_gyro_z,
-                flightlog.icm20948_mag_x, flightlog.icm20948_mag_y, flightlog.icm20948_mag_z,
+           +     flightlog.icm20948_mag_x, flightlog.icm20948_mag_y, flightlog.icm20948_mag_z,
                 flightlog.kf_altitude, flightlog.kf_vert_velo, flightlog.kf_accel,
                 (unsigned long)(esp_timer_get_time() / 1000ULL));
 
