@@ -15,19 +15,19 @@ menu "SD SPI Example Configuration"
 
     config EXAMPLE_PIN_MOSI
         int "MOSI GPIO number"
-        default 7 
+        default 13
 
     config EXAMPLE_PIN_MISO
         int "MISO GPIO number"
-        default 2
+        default 12
 
     config EXAMPLE_PIN_CLK
         int "CLK GPIO number"
-        default 6
+        default 14
 
-    config EXAfault 6MPLE_PIN_CS
+    config EXAMPLE_PIN_CS
         int "CS GPIO number"
-        default 10
+        default 5
 
     config EXAMPLE_DEBUG_PIN_CONNECTIONS
         bool "Debug sd pin connections and pullup strength"
